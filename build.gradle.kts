@@ -3,6 +3,8 @@ plugins {
     kotlin("plugin.spring") version "1.9.25"
     id("org.springframework.boot") version "3.3.3"
     id("io.spring.dependency-management") version "1.1.6"
+    id("org.jlleitschuh.gradle.ktlint") version "10.3.0"
+    id("org.jlleitschuh.gradle.ktlint-idea") version "10.3.0"
     kotlin("plugin.jpa") version "1.9.25"
 }
 
@@ -37,7 +39,7 @@ repositories {
 dependencies {
     // ====================================== prod ======================================
     // security
-    //implementation("org.springframework.boot:spring-boot-starter-security") todo 시큐리티 적용
+    // implementation("org.springframework.boot:spring-boot-starter-security") todo 시큐리티 적용
 
     // db
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
@@ -53,7 +55,7 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect")
 
     // swagger
-    implementation ("org.springdoc:springdoc-openapi-starter-webmvc-ui:${versions["swagger"]}")
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:${versions["swagger"]}")
 
     // aws cloud
     implementation("io.awspring.cloud:spring-cloud-starter-aws-secrets-manager-config:${versions["awsSpringCloud"]}")
