@@ -26,21 +26,39 @@ repositories {
 }
 
 dependencies {
-	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+	// ====================================== prod ======================================
+	// security
 	//implementation("org.springframework.boot:spring-boot-starter-security") todo 시큐리티 적용
+
+	// db
+	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("org.springframework.boot:spring-boot-starter-jdbc")
-	implementation("org.springframework.boot:spring-boot-starter-validation")
+	implementation("mysql:mysql-connector-java:8.0.26")
+
+	// web
 	implementation("org.springframework.boot:spring-boot-starter-web")
+	implementation("org.springframework.boot:spring-boot-starter-validation")
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+
+	// kotlin
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
+
+	// aws cloud
+	implementation("io.awspring.cloud:spring-cloud-starter-aws-secrets-manager-config:2.4.4")
+
 	compileOnly("org.projectlombok:lombok")
 	annotationProcessor("org.projectlombok:lombok")
-	testImplementation("org.springframework.boot:spring-boot-starter-test")
-	testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
+
+	// ====================================== test ======================================
+	// security
 	testImplementation("org.springframework.security:spring-security-test")
+
+	// spring
+	testImplementation("org.springframework.boot:spring-boot-starter-test")
+
+	// junit
+	testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
-	implementation("mysql:mysql-connector-java:8.0.26")
-	implementation("io.awspring.cloud:spring-cloud-starter-aws-secrets-manager-config:2.4.4")
 }
 
 kotlin {
