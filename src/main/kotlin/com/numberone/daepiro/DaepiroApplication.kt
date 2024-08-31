@@ -7,5 +7,5 @@ import org.springframework.boot.runApplication
 class DaepiroApplication
 
 fun main(args: Array<String>) {
-	runApplication<DaepiroApplication>(*args)
+    runApplication<DaepiroApplication>(*args)
 }
