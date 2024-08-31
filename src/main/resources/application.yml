@@ -12,3 +12,5 @@ spring:
     url: ${DB_URL}
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
+  config:
+    import: 'aws-secretsmanager:daepiro'
