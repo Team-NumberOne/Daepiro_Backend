@@ -1,0 +1,18 @@
+# todo: 프로파일 별 분리 필요 prod/dev/local
+spring:
+  jpa:
+    hibernate:
+      # todo: 릴리즈 된 이후에 update -> none 으로 변경 필요
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+    show-sql: true
+    defer-datasource-initialization: true
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+  config:
+    import: 'aws-secretsmanager:daepiro'
