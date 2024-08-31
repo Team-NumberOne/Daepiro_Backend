@@ -9,20 +9,20 @@ plugins {
 }
 
 // 버전 관리
-val versions = mapOf(
-    "mysqlConnector" to "8.0.26",
-    "awsSpringCloud" to "2.4.4",
-    "java" to "17",
-    "kotlinLogging" to "3.0.5",
-    "swagger" to "2.2.0"
-)
+object VERSIONS {
+    const val MYSQL_CONNECTOR = "8.0.26"
+    const val AWS_SPRING_CLOUD = "2.4.4"
+    const val JAVA = "17"
+    const val KOTLIN_LOGGING = "3.0.5"
+    const val SWAGGER = "2.2.0"
+}
 
 group = "com.numberone"
 version = "0.0.1-SNAPSHOT"
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(versions["java"]!!) // non-null
+        languageVersion = JavaLanguageVersion.of(VERSIONS.JAVA) // non-null
     }
 }
 
@@ -44,7 +44,7 @@ dependencies {
     // db
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-jdbc")
-    implementation("mysql:mysql-connector-java:${versions["mysqlConnector"]}")
+    implementation("mysql:mysql-connector-java:${VERSIONS.MYSQL_CONNECTOR}")
 
     // web
     implementation("org.springframework.boot:spring-boot-starter-web")
@@ -55,13 +55,13 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect")
 
     // swagger
-    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:${versions["swagger"]}")
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:${VERSIONS.SWAGGER}")
 
     // aws cloud
-    implementation("io.awspring.cloud:spring-cloud-starter-aws-secrets-manager-config:${versions["awsSpringCloud"]}")
+    implementation("io.awspring.cloud:spring-cloud-starter-aws-secrets-manager-config:${VERSIONS.AWS_SPRING_CLOUD}")
 
     // logging
-    implementation("io.github.microutils:kotlin-logging-jvm:${versions["kotlinLogging"]}")
+    implementation("io.github.microutils:kotlin-logging-jvm:${VERSIONS.KOTLIN_LOGGING}")
 
     // ====================================== test ======================================
     // security
