@@ -1,6 +1,8 @@
+# todo: 프로파일 별 분리 필요 prod/dev/local
 spring:
   jpa:
     hibernate:
+      # todo: 릴리즈 된 이후에 update -> none 으로 변경 필요
       ddl-auto: update
     properties:
       hibernate:
