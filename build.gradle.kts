@@ -11,7 +11,8 @@ val versions = mapOf(
     "mysqlConnector" to "8.0.26",
     "awsSpringCloud" to "2.4.4",
     "java" to "17",
-    "kotlinLogging" to "3.0.5"
+    "kotlinLogging" to "3.0.5",
+    "swagger" to "2.2.0"
 )
 
 group = "com.numberone"
@@ -51,11 +52,14 @@ dependencies {
     // kotlin
     implementation("org.jetbrains.kotlin:kotlin-reflect")
 
+    // swagger
+    implementation ("org.springdoc:springdoc-openapi-starter-webmvc-ui:${versions["swagger"]}")
+
     // aws cloud
     implementation("io.awspring.cloud:spring-cloud-starter-aws-secrets-manager-config:${versions["awsSpringCloud"]}")
 
     // logging
-    implementation ("io.github.microutils:kotlin-logging-jvm:${versions["kotlinLogging"]}")
+    implementation("io.github.microutils:kotlin-logging-jvm:${versions["kotlinLogging"]}")
 
     // ====================================== test ======================================
     // security
