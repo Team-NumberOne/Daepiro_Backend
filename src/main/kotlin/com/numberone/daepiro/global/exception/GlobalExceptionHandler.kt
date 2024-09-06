@@ -1,7 +1,7 @@
 package com.numberone.daepiro.global.exception
 
+import com.numberone.daepiro.global.DprApiResponse
 import mu.KotlinLogging
-import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
 import org.springframework.web.context.request.RequestContextHolder
@@ -12,28 +12,25 @@ private val logger = KotlinLogging.logger { }
 @RestControllerAdvice
 class GlobalExceptionHandler {
     @ExceptionHandler(CustomException::class)
-    fun handleCustomException(exception: CustomException): ResponseEntity<CustomErrorResponse> {
+    fun <T> handleCustomException(exception: CustomException): DprApiResponse<T> {
         return handle(exception.context, exception, extractEndpoint())
     }
 
     @ExceptionHandler(Exception::class)
-    fun handleUnCaughtException(exception: Exception): ResponseEntity<CustomErrorResponse> {
+    fun <T> handleUnCaughtException(exception: Exception): DprApiResponse<T> {
         return handle(CustomErrorContext.UNCAUGHT_ERROR, exception, extractEndpoint())
     }
 
-    private fun handle(
+    private fun <T> handle(
         context: CustomErrorContext,
         exception: Throwable,
         endpoint: String
-    ): ResponseEntity<CustomErrorResponse> {
-        val response = CustomErrorResponse.of(context, endpoint)
-
+    ): DprApiResponse<T> {
         when (context.logLevel) {
-            LogLevel.DEBUG -> logger.debug(exception) { "Handling at $endpoint" }
-            LogLevel.ERROR -> logger.error(exception) { "Handling at $endpoint" }
+            LogLevel.DEBUG -> logger.debug(exception) { "Error occurs at $endpoint" }
+            LogLevel.ERROR -> logger.error(exception) { "Error occurs at $endpoint" }
         }
-
-        return ResponseEntity.status(response.code).body(response)
+        return DprApiResponse.error(context, endpoint)
     }
 
     private fun extractEndpoint(): String {
