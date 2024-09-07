@@ -16,3 +16,9 @@ spring:
     password: ${DB_PASSWORD}
   config:
     import: 'aws-secretsmanager:daepiro'
+springdoc:
+  api-docs:
+    path: /api-docs  # API 문서의 기본 경로 설정
+  swagger-ui:
+    path: /swagger-ui.html  # Swagger UI 경로 설정
+    operationsSorter: method  # 메서드 정렬 (get, post 순)
