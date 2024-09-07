@@ -19,7 +19,7 @@ class FileEntity(
         protected set
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "varchar(255)")
     var documentType = documentType
         protected set
 
