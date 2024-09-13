@@ -7,12 +7,12 @@ import jakarta.persistence.Table
 @Entity
 @Table(name = "`address`")
 class Address(
-    si: String? = null,
+    si: String,
     gu: String? = null,
     dong: String? = null,
     depth: Int = 0
 ) : PrimaryKeyEntity() {
-    var si: String? = si
+    var si: String = si
         protected set
 
     var gu: String? = gu
