@@ -17,6 +17,12 @@ object VERSIONS {
     const val SWAGGER = "2.2.0"
 }
 
+allOpen {
+    annotation("jakarta.persistence.Entity")
+    annotation("jakarta.persistence.MappedSuperclass")
+    annotation("jakarta.persistence.Embeddable")
+}
+
 group = "com.numberone"
 version = "0.0.1-SNAPSHOT"
 
