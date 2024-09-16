@@ -2,7 +2,7 @@ package com.numberone.daepiro.domain.user.controller
 
 import com.numberone.daepiro.domain.user.dto.response.GetUserResponse
 import com.numberone.daepiro.domain.user.service.UserService
-import com.numberone.daepiro.global.DprApiResponse
+import com.numberone.daepiro.global.ApiResult
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.web.bind.annotation.GetMapping
@@ -17,7 +17,7 @@ class UserController(
 ) {
     @GetMapping("/v1")
     @Operation(summary = "Get user", description = "Get user")
-    fun getUser(): DprApiResponse<GetUserResponse> {
-        return DprApiResponse.ok(GetUserResponse.fake(), "/users/v1")
+    fun getUser(): ApiResult<GetUserResponse> {
+        return ApiResult.ok(GetUserResponse.fake(), "/users/v1")
     }
 }
