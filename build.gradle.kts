@@ -44,8 +44,9 @@ repositories {
 
 dependencies {
     // ====================================== prod ======================================
-    // security
-    // implementation("org.springframework.boot:spring-boot-starter-security") todo 시큐리티 적용
+    // auth
+    implementation("org.springframework.boot:spring-boot-starter-security")
+    implementation("io.jsonwebtoken:jjwt:0.12.3")
 
     // db
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")

@@ -22,3 +22,10 @@ springdoc:
   swagger-ui:
     path: /swagger-ui.html  # Swagger UI 경로 설정
     operationsSorter: method  # 메서드 정렬 (get, post 순)
+jwt:
+  secret-key: ${JWT_SECRET_KEY}
+  access-token-expire: ${JWT_ACCESS_TOKEN_EXPIRE}
+  refresh-token-expire: ${JWT_REFRESH_TOKEN_EXPIRE}
+  admin-token-expire: ${JWT_ADMIN_TOKEN_EXPIRE}
+
+
