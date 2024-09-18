@@ -6,6 +6,7 @@ import com.numberone.daepiro.domain.auth.dto.request.RefreshTokenRequest
 import com.numberone.daepiro.domain.auth.dto.request.SocialLoginRequest
 import com.numberone.daepiro.domain.auth.dto.response.TokenResponse
 import com.numberone.daepiro.domain.auth.service.AuthService
+import com.numberone.daepiro.domain.user.enums.SocialPlatform
 import com.numberone.daepiro.global.dto.ApiResult
 import com.numberone.daepiro.global.exception.CustomErrorContext.UNSUPPORTED_PLATFORM
 import com.numberone.daepiro.global.exception.CustomException
@@ -22,10 +23,10 @@ class AuthController(
         request: SocialLoginRequest
     ): ResponseEntity<ApiResult<TokenResponse>> {
         return when (platform) {
-            "kakao" -> authService.kakaoLogin(request)
+            SocialPlatform.KAKAO.path -> authService.kakaoLogin(request)
                 .toResponseEntity()
 
-            "naver" -> authService.naverLogin(request)
+            SocialPlatform.NAVER.path -> authService.naverLogin(request)
                 .toResponseEntity()
 
             else -> throw CustomException(UNSUPPORTED_PLATFORM)

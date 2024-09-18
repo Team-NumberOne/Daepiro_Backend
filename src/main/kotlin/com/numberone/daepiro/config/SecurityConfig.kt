@@ -1,6 +1,12 @@
 package com.numberone.daepiro.config
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.numberone.daepiro.domain.auth.filter.JwtFilter
+import com.numberone.daepiro.global.dto.ApiResult
+import com.numberone.daepiro.global.exception.CustomErrorContext
+import com.numberone.daepiro.global.exception.CustomErrorContext.NOT_AUTHENTICATED
+import com.numberone.daepiro.global.exception.CustomErrorContext.NOT_AUTHORIZED
+import jakarta.servlet.http.HttpServletResponse
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.HttpMethod
@@ -18,7 +24,8 @@ import org.springframework.security.web.access.ExceptionTranslationFilter
 
 @Configuration
 class SecurityConfig(
-    private val jwtFilter: JwtFilter
+    private val jwtFilter: JwtFilter,
+    private val objectMapper: ObjectMapper
 ) {
     @Bean
     fun filterChain(
@@ -57,14 +64,27 @@ class SecurityConfig(
     @Bean
     fun authenticaionEntryPoint(): AuthenticationEntryPoint {
         return AuthenticationEntryPoint { request, response, authException ->
-            response.sendError(401, "Unauthorized")
+            setErrorResponse(response, NOT_AUTHENTICATED)
         }
     }
 
     @Bean
     fun accessDeniedHandler(): AccessDeniedHandler {
         return AccessDeniedHandler { request, response, accessDeniedException ->
-            response.sendError(403, "Forbidden")
+            setErrorResponse(response, NOT_AUTHORIZED)
         }
+    }
+
+    private fun setErrorResponse(
+        response: HttpServletResponse,
+        exceptionContext: CustomErrorContext
+    ) {
+        val result = ApiResult.error(exceptionContext)
+        val json = objectMapper.writeValueAsString(result)
+
+        response.status = exceptionContext.httpStatus.value()
+        response.contentType = "application/json"
+        response.characterEncoding = "UTF-8"
+        response.writer.write(json)
     }
 }

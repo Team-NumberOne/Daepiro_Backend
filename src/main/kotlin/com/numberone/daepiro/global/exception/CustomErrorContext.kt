@@ -12,8 +12,10 @@ enum class CustomErrorContext(
     //20xx: 인증 관련 오류
     UNSUPPORTED_PLATFORM(BAD_REQUEST, 2000, "지원되지 않는 소셜 로그인 플랫폼입니다."),
     INVALID_TOKEN(BAD_REQUEST, 2001, "유효하지 않은 토큰입니다."),
-    INVALID_PASSWORD(BAD_REQUEST,2002,"비밀번호가 잘못되었습니다."),
+    INVALID_PASSWORD(BAD_REQUEST, 2002, "비밀번호가 잘못되었습니다."),
     INVALID_SOCIAL_TOKEN(BAD_REQUEST, 2003, "유효하지 않은 소셜 토큰입니다."),
+    NOT_AUTHENTICATED(UNAUTHORIZED, 2004, "인증이 필요합니다."),
+    NOT_AUTHORIZED(FORBIDDEN, 2005, "관리자 권한이 필요합니다."),
 
     //21xx: 사용자 관련 오류
     NOT_FOUND_USER(NOT_FOUND, 2100, "사용자를 찾을 수 없습니다."),

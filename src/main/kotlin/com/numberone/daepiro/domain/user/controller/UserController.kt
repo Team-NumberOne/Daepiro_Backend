@@ -9,13 +9,13 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
-@RequestMapping("/users")
+@RequestMapping("/v1/users")
 @RestController
-@Tag(name = "User API", description = "회원 관련 API")
+@Tag(name = "User API", description = "회원 관련 API")//todo 인터페이스로 swagger 내용 분리
 class UserController(
     userService: UserService
 ) {
-    @GetMapping("/v1")
+    @GetMapping
     @Operation(summary = "Get user", description = "Get user")
     fun getUser(): ApiResult<GetUserResponse> {
         return ApiResult.ok(GetUserResponse.fake(), "/users/v1")
