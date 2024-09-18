@@ -42,6 +42,12 @@ repositories {
     mavenCentral()
 }
 
+dependencyManagement {
+    imports {
+        mavenBom("org.springframework.cloud:spring-cloud-dependencies:2023.0.3")
+    }
+}
+
 dependencies {
     // ====================================== prod ======================================
     // auth
@@ -80,6 +86,9 @@ dependencies {
     // junit
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+
+    // open feign
+    implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
 }
 
 kotlin {

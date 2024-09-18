@@ -1,6 +1,6 @@
 package com.numberone.daepiro.domain
 
-import com.numberone.daepiro.global.ApiResult
+import com.numberone.daepiro.global.dto.ApiResult
 import io.swagger.v3.oas.annotations.Operation
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping

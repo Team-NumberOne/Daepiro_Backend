@@ -6,7 +6,7 @@ import com.numberone.daepiro.domain.auth.dto.request.RefreshTokenRequest
 import com.numberone.daepiro.domain.auth.dto.request.SocialLoginRequest
 import com.numberone.daepiro.domain.auth.dto.response.TokenResponse
 import com.numberone.daepiro.domain.auth.service.AuthService
-import com.numberone.daepiro.global.ApiResult
+import com.numberone.daepiro.global.dto.ApiResult
 import com.numberone.daepiro.global.exception.CustomErrorContext.UNSUPPORTED_PLATFORM
 import com.numberone.daepiro.global.exception.CustomException
 import org.springframework.http.ResponseEntity
@@ -20,24 +20,29 @@ class AuthController(
     override fun socialLogin(
         platform: String,
         request: SocialLoginRequest
-    ): ResponseEntity<ApiResult<Unit>> {
+    ): ResponseEntity<ApiResult<TokenResponse>> {
         return when (platform) {
             "kakao" -> authService.kakaoLogin(request)
+                .toResponseEntity()
+
             "naver" -> authService.naverLogin(request)
-            "apple" -> authService.appleLogin(request)
+                .toResponseEntity()
+
             else -> throw CustomException(UNSUPPORTED_PLATFORM)
         }
     }
 
     override fun adminLogin(
         request: AdminLoginRequest
-    ): ResponseEntity<ApiResult<Unit>> {
+    ): ResponseEntity<ApiResult<TokenResponse>> {
         return authService.adminLogin(request)
+            .toResponseEntity()
     }
 
     override fun refreshToken(
         request: RefreshTokenRequest
     ): ResponseEntity<ApiResult<TokenResponse>> {
         return authService.refreshToken(request)
+            .toResponseEntity()
     }
 }

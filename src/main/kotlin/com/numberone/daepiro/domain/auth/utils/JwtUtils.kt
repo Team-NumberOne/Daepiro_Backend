@@ -14,43 +14,42 @@ import io.jsonwebtoken.security.Keys
 import java.nio.charset.StandardCharsets.UTF_8
 import java.util.*
 
-class JwtUtils {
-    companion object {
-        const val CLAIM_ID = "id"
-        const val CLAIM_AUTHORITY = "authority"
-        const val CLAIM_TYPE = "type"
+object JwtUtils {
+    const val CLAIM_ID = "id"
+    const val CLAIM_AUTHORITY = "authority"
+    const val CLAIM_TYPE = "type"
+    const val PREFIX_BEARER = "Bearer "
 
-        fun createToken(
-            user: UserEntity,
-            type: TokenType,
-            expire: Long,
-            secretKey: String,
-        ): String {
-            return Jwts.builder()
-                .claim(CLAIM_ID, user.id)
-                .claim(CLAIM_AUTHORITY, user.role)
-                .claim(CLAIM_TYPE, type)
-                .expiration(Date(System.currentTimeMillis() + expire))
-                .signWith(Keys.hmacShaKeyFor(secretKey.toByteArray(UTF_8)))
-                .compact()
-        }
+    fun createToken(
+        user: UserEntity,
+        type: TokenType,
+        expire: Long,
+        secretKey: String,
+    ): String {
+        return Jwts.builder()
+            .claim(CLAIM_ID, user.id)
+            .claim(CLAIM_AUTHORITY, user.role.name)
+            .claim(CLAIM_TYPE, type.name)
+            .expiration(Date(System.currentTimeMillis() + expire))
+            .signWith(Keys.hmacShaKeyFor(secretKey.toByteArray(UTF_8)))
+            .compact()
+    }
 
-        fun extractInfoFromToken(
-            token: String,
-            secretKey: String,
-        ): TokenInfo {
-            val claims: Claims = Jwts.parser()
-                .verifyWith(Keys.hmacShaKeyFor(secretKey.toByteArray(UTF_8)))
-                .build()
-                .parseSignedClaims(token)
-                .payload
+    fun extractInfoFromToken(
+        token: String,
+        secretKey: String,
+    ): TokenInfo {
+        val claims: Claims = Jwts.parser()
+            .verifyWith(Keys.hmacShaKeyFor(secretKey.toByteArray(UTF_8)))
+            .build()
+            .parseSignedClaims(token)
+            .payload
+        val tokenType = TokenType.valueOf(claims.get(CLAIM_TYPE, String::class.java))
 
-            if (claims.get(CLAIM_TYPE, TokenType::class.java) != TokenType.ACCESS)
-                throw CustomException(INVALID_TOKEN)
-            return TokenInfo(
-                claims.get(CLAIM_ID, Long::class.java),
-                claims.get(CLAIM_AUTHORITY, Role::class.java)
-            )
-        }
+        return TokenInfo(
+            claims.get(CLAIM_ID, Integer::class.java).toLong(),
+            Role.valueOf(claims.get(CLAIM_AUTHORITY, String::class.java)),
+            tokenType
+        )
     }
 }

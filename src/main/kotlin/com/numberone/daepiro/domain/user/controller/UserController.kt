@@ -2,7 +2,7 @@ package com.numberone.daepiro.domain.user.controller
 
 import com.numberone.daepiro.domain.user.dto.response.GetUserResponse
 import com.numberone.daepiro.domain.user.service.UserService
-import com.numberone.daepiro.global.ApiResult
+import com.numberone.daepiro.global.dto.ApiResult
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.web.bind.annotation.GetMapping

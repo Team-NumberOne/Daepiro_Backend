@@ -29,10 +29,15 @@ class SecurityConfig(
         http {
             csrf { disable() }
             authorizeRequests {
-                authorize(POST, "/v1/auth/login", permitAll)
+                authorize("/favicon.ico", permitAll)
+                authorize("/error", permitAll)
+                authorize("/swagger-ui/**", permitAll)
+                authorize("/swagger-resources/**", permitAll)
+                authorize("/api-docs/**", permitAll)
+                authorize(POST, "/v1/auth/login/**", permitAll)
                 authorize(POST, "/v1/auth/refresh", permitAll)
-                authorize(POST, "/v1/auth/signup", permitAll)
                 authorize(POST, "/v1/auth/admin", permitAll)
+                authorize(anyRequest, authenticated)
             }
             addFilterBefore<ExceptionTranslationFilter>(jwtFilter)
             exceptionHandling {
@@ -45,21 +50,21 @@ class SecurityConfig(
     }
 
     @Bean
-    fun authenticationEntryPoint(): AuthenticationEntryPoint {
+    fun passwordEncoder(): PasswordEncoder {
+        return BCryptPasswordEncoder()
+    }
+
+    @Bean
+    fun authenticaionEntryPoint(): AuthenticationEntryPoint {
         return AuthenticationEntryPoint { request, response, authException ->
-            response.sendError(401, "Unauthorized")//todo 공통 response 형식과 통일
+            response.sendError(401, "Unauthorized")
         }
     }
 
     @Bean
     fun accessDeniedHandler(): AccessDeniedHandler {
         return AccessDeniedHandler { request, response, accessDeniedException ->
-            response.sendError(403, "Forbidden")//todo 공통 response 형식과 통일
+            response.sendError(403, "Forbidden")
         }
-    }
-
-    @Bean
-    fun passwordEncoder(): PasswordEncoder {
-        return BCryptPasswordEncoder()
     }
 }

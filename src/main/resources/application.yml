@@ -27,5 +27,14 @@ jwt:
   access-token-expire: ${JWT_ACCESS_TOKEN_EXPIRE}
   refresh-token-expire: ${JWT_REFRESH_TOKEN_EXPIRE}
   admin-token-expire: ${JWT_ADMIN_TOKEN_EXPIRE}
+oauth:
+  kakao:
+    base-url: ${KAKAO_BASE_URL}
+    token-info-url: ${KAKAO_TOKEN_INFO_URL}
+  naver:
+    base-url: ${NAVER_BASE_URL}
+    token-info-url: ${NAVER_TOKEN_INFO_URL}
+
+
 
 

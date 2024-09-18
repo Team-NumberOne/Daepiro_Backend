@@ -5,9 +5,7 @@ import com.numberone.daepiro.domain.user.enums.Role
 import com.numberone.daepiro.domain.user.enums.SocialPlatform
 import com.numberone.daepiro.domain.user.vo.PasswordLoginInformation
 import com.numberone.daepiro.domain.user.vo.SocialLoginInformation
-import jakarta.persistence.Embedded
-import jakarta.persistence.Entity
-import jakarta.persistence.Table
+import jakarta.persistence.*
 
 @Entity
 @Table(name = "`users`")
@@ -18,6 +16,7 @@ class UserEntity(
     realname: String? = null,
     nickname: String? = null
 ) : PrimaryKeyEntity() {
+    @Enumerated(EnumType.STRING)
     var role: Role = role
         protected set
 
