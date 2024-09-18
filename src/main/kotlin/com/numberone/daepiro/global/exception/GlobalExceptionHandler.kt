@@ -1,7 +1,10 @@
 package com.numberone.daepiro.global.exception
 
-import com.numberone.daepiro.global.DprApiResponse
+import com.numberone.daepiro.global.dto.ApiResult
+import com.numberone.daepiro.global.exception.CustomErrorContext.*
 import mu.KotlinLogging
+import org.springframework.http.ResponseEntity
+import org.springframework.http.converter.HttpMessageNotReadableException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
 import org.springframework.web.context.request.RequestContextHolder
@@ -12,25 +15,44 @@ private val logger = KotlinLogging.logger { }
 @RestControllerAdvice
 class GlobalExceptionHandler {
     @ExceptionHandler(CustomException::class)
-    fun <T> handleCustomException(exception: CustomException): DprApiResponse<T> {
+    fun handleCustomException(
+        exception: CustomException
+    ): ResponseEntity<ApiResult<Unit>> {
         return handle(exception.context, exception, extractEndpoint())
     }
 
-    @ExceptionHandler(Exception::class)
-    fun <T> handleUnCaughtException(exception: Exception): DprApiResponse<T> {
-        return handle(CustomErrorContext.UNCAUGHT_ERROR, exception, extractEndpoint())
+    @ExceptionHandler(HttpMessageNotReadableException::class)
+    fun handleJsonException(
+        exception: HttpMessageNotReadableException
+    ): ResponseEntity<ApiResult<Unit>> {
+        return handle(INVALID_JSON_FORMAT, exception, extractEndpoint())
     }
 
-    private fun <T> handle(
+    @ExceptionHandler(IllegalArgumentException::class)
+    fun handleArgumentException(
+        exception: IllegalArgumentException
+    ): ResponseEntity<ApiResult<Unit>> {
+        return handle(INVALID_VALUE, exception, extractEndpoint())
+    }
+
+    @ExceptionHandler(Exception::class)
+    fun handleUnCaughtException(
+        exception: Exception
+    ): ResponseEntity<ApiResult<Unit>> {
+        return handle(UNCAUGHT_ERROR, exception, extractEndpoint())
+    }
+
+    private fun handle(
         context: CustomErrorContext,
         exception: Throwable,
         endpoint: String
-    ): DprApiResponse<T> {
+    ): ResponseEntity<ApiResult<Unit>> {
         when (context.logLevel) {
             LogLevel.DEBUG -> logger.debug(exception) { "Error occurs at $endpoint" }
             LogLevel.ERROR -> logger.error(exception) { "Error occurs at $endpoint" }
         }
-        return DprApiResponse.error(context, endpoint)
+        return ApiResult.error(context, endpoint)
+            .toResponseEntity()
     }
 
     private fun extractEndpoint(): String {
