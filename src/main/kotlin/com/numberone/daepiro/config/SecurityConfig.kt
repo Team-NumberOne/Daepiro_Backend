@@ -9,11 +9,9 @@ import com.numberone.daepiro.global.exception.CustomErrorContext.NOT_AUTHORIZED
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.http.HttpMethod
 import org.springframework.http.HttpMethod.POST
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.invoke
-import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.config.http.SessionCreationPolicy.STATELESS
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
@@ -63,14 +61,14 @@ class SecurityConfig(
 
     @Bean
     fun authenticaionEntryPoint(): AuthenticationEntryPoint {
-        return AuthenticationEntryPoint { request, response, authException ->
+        return AuthenticationEntryPoint { _, response, _ ->
             setErrorResponse(response, NOT_AUTHENTICATED)
         }
     }
 
     @Bean
     fun accessDeniedHandler(): AccessDeniedHandler {
-        return AccessDeniedHandler { request, response, accessDeniedException ->
+        return AccessDeniedHandler { _, response, _ ->
             setErrorResponse(response, NOT_AUTHORIZED)
         }
     }

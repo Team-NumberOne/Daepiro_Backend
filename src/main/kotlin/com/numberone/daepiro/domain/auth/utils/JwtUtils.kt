@@ -4,15 +4,11 @@ import com.numberone.daepiro.domain.auth.enums.TokenType
 import com.numberone.daepiro.domain.auth.vo.TokenInfo
 import com.numberone.daepiro.domain.user.entity.UserEntity
 import com.numberone.daepiro.domain.user.enums.Role
-import com.numberone.daepiro.global.exception.CustomErrorContext
-import com.numberone.daepiro.global.exception.CustomErrorContext.INVALID_TOKEN
-import com.numberone.daepiro.global.exception.CustomException
 import io.jsonwebtoken.Claims
-import io.jsonwebtoken.JwtException
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.security.Keys
 import java.nio.charset.StandardCharsets.UTF_8
-import java.util.*
+import java.util.Date
 
 object JwtUtils {
     const val CLAIM_ID = "id"

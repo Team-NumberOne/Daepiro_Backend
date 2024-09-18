@@ -5,5 +5,4 @@ import org.springframework.context.annotation.Configuration
 
 @Configuration
 @EnableFeignClients(basePackages = ["com.numberone.daepiro"])
-class FeignConfig {
-}
+class FeignConfig

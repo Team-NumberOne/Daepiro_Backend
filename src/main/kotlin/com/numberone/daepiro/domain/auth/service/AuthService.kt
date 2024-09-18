@@ -5,20 +5,20 @@ import com.numberone.daepiro.domain.auth.dto.request.RefreshTokenRequest
 import com.numberone.daepiro.domain.auth.dto.request.SocialLoginRequest
 import com.numberone.daepiro.domain.auth.dto.response.TokenResponse
 import com.numberone.daepiro.domain.auth.enums.TokenType
-import com.numberone.daepiro.domain.auth.filter.JwtFilter
 import com.numberone.daepiro.domain.auth.utils.JwtUtils
 import com.numberone.daepiro.domain.user.entity.UserEntity
 import com.numberone.daepiro.domain.user.enums.SocialPlatform
 import com.numberone.daepiro.domain.user.repository.UserRepository
 import com.numberone.daepiro.global.dto.ApiResult
-import com.numberone.daepiro.global.exception.CustomErrorContext
-import com.numberone.daepiro.global.exception.CustomErrorContext.*
+import com.numberone.daepiro.global.exception.CustomErrorContext.INVALID_PASSWORD
+import com.numberone.daepiro.global.exception.CustomErrorContext.INVALID_SOCIAL_TOKEN
+import com.numberone.daepiro.global.exception.CustomErrorContext.INVALID_TOKEN
+import com.numberone.daepiro.global.exception.CustomErrorContext.NOT_FOUND_USER
 import com.numberone.daepiro.global.exception.CustomException
 import com.numberone.daepiro.global.feign.KakaoFeign
 import com.numberone.daepiro.global.feign.NaverFeign
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.data.repository.findByIdOrNull
-import org.springframework.http.ResponseEntity
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 
@@ -69,10 +69,10 @@ class AuthService(
         return ApiResult.ok(TokenResponse.of(user, secretKey, adminTokenExpire, adminTokenExpire))
     }
 
-    //todo redis에서 refresh token 관리하도록 변경
     fun refreshToken(
         request: RefreshTokenRequest
     ): ApiResult<TokenResponse> {
+        // todo redis에서 refresh token 관리하도록 변경
         val tokenInfo = JwtUtils.extractInfoFromToken(request.refreshToken, secretKey)
         if (tokenInfo.type != TokenType.REFRESH)
             throw CustomException(INVALID_TOKEN)
@@ -81,5 +81,4 @@ class AuthService(
 
         return ApiResult.ok(TokenResponse.of(user, secretKey, accessTokenExpire, refreshTokenExpire))
     }
-
 }

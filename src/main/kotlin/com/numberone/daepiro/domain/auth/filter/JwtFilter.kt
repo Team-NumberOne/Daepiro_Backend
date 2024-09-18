@@ -2,7 +2,6 @@ package com.numberone.daepiro.domain.auth.filter
 
 import com.numberone.daepiro.domain.auth.enums.TokenType
 import com.numberone.daepiro.domain.auth.utils.JwtUtils
-import io.jsonwebtoken.JwtException
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse

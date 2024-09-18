@@ -13,7 +13,6 @@ import com.numberone.daepiro.global.exception.CustomException
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.RestController
 
-
 @RestController
 class AuthController(
     private val authService: AuthService

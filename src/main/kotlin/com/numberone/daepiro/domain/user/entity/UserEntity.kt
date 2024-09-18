@@ -5,7 +5,11 @@ import com.numberone.daepiro.domain.user.enums.Role
 import com.numberone.daepiro.domain.user.enums.SocialPlatform
 import com.numberone.daepiro.domain.user.vo.PasswordLoginInformation
 import com.numberone.daepiro.domain.user.vo.SocialLoginInformation
-import jakarta.persistence.*
+import jakarta.persistence.Embedded
+import jakarta.persistence.Entity
+import jakarta.persistence.EnumType
+import jakarta.persistence.Enumerated
+import jakarta.persistence.Table
 
 @Entity
 @Table(name = "`users`")
