@@ -14,30 +14,19 @@ import jakarta.persistence.Table
 @Entity
 @Table(name = "`users`")
 class UserEntity(
-    role: Role,
-    socialLoginInformation: SocialLoginInformation? = null,
-    passwordLoginInformation: PasswordLoginInformation? = null,
-    realname: String? = null,
-    nickname: String? = null
-) : PrimaryKeyEntity() {
     @Enumerated(EnumType.STRING)
-    var role: Role = role
-        protected set
+    val role: Role,
 
     @Embedded
-    var socialLoginInformation = socialLoginInformation
-        protected set
+    val socialLoginInformation: SocialLoginInformation? = null,
 
     @Embedded
-    var passwordLoginInformation = passwordLoginInformation
-        protected set
+    val passwordLoginInformation: PasswordLoginInformation? = null,
 
-    var realname = realname
-        protected set
+    var realname: String? = null,
 
-    var nickname = nickname
-        protected set
-
+    var nickname: String? = null
+) : PrimaryKeyEntity() {
     companion object {
         fun of(
             platform: SocialPlatform,
