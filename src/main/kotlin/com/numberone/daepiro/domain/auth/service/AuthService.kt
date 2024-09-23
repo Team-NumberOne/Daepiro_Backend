@@ -39,7 +39,7 @@ class AuthService(
         val userInfo = kakaoFeign.getUserInfo(JwtUtils.PREFIX_BEARER + request.socialToken)
             ?: throw CustomException(INVALID_SOCIAL_TOKEN)
         val socialId = userInfo.id.toString()
-        val user = userRepository.findBySocialLoginInformation_SocialId(socialId)
+        val user = userRepository.findBySocialIdAndPlatform(socialId, SocialPlatform.KAKAO)
             ?: userRepository.save(UserEntity.of(SocialPlatform.KAKAO, socialId))
 
         return ApiResult.ok(TokenResponse.of(user, secretKey, accessTokenExpire, refreshTokenExpire))
@@ -51,7 +51,7 @@ class AuthService(
         val userInfo = naverFeign.getUserInfo(JwtUtils.PREFIX_BEARER + request.socialToken)
             ?: throw CustomException(INVALID_SOCIAL_TOKEN)
         val socialId = userInfo.response.id
-        val user = userRepository.findBySocialLoginInformation_SocialId(socialId)
+        val user = userRepository.findBySocialIdAndPlatform(socialId, SocialPlatform.NAVER)
             ?: userRepository.save(UserEntity.of(SocialPlatform.NAVER, socialId))
 
         return ApiResult.ok(TokenResponse.of(user, secretKey, accessTokenExpire, refreshTokenExpire))
@@ -60,7 +60,7 @@ class AuthService(
     fun adminLogin(
         request: AdminLoginRequest
     ): ApiResult<TokenResponse> {
-        val user = userRepository.findByPasswordLoginInformation_Username(request.username)
+        val user = userRepository.findByUsername(request.username)
             ?: throw CustomException(NOT_FOUND_USER)
         require(user.passwordLoginInformation != null)
         if (!passwordEncoder.matches(request.password, user.passwordLoginInformation!!.password))
