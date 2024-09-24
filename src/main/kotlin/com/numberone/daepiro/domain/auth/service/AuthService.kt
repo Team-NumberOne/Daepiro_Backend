@@ -43,8 +43,7 @@ class AuthService(
         val userInfo = kakaoFeign.getUserInfo(JwtUtils.PREFIX_BEARER + request.socialToken)
             ?: throw CustomException(INVALID_SOCIAL_TOKEN)
         val socialId = userInfo.id.toString()
-        val user = userRepository.findBySocialIdAndPlatform(socialId, SocialPlatform.KAKAO)
-            ?: userRepository.save(UserEntity.of(SocialPlatform.KAKAO, socialId))
+        val user = getOrCreateUser(socialId, SocialPlatform.KAKAO)
 
         return ApiResult.ok(
             getTokenResponse(
@@ -62,8 +61,7 @@ class AuthService(
         val userInfo = naverFeign.getUserInfo(JwtUtils.PREFIX_BEARER + request.socialToken)
             ?: throw CustomException(INVALID_SOCIAL_TOKEN)
         val socialId = userInfo.response.id
-        val user = userRepository.findBySocialIdAndPlatform(socialId, SocialPlatform.NAVER)
-            ?: userRepository.save(UserEntity.of(SocialPlatform.NAVER, socialId))
+        val user = getOrCreateUser(socialId, SocialPlatform.NAVER)
 
         return ApiResult.ok(
             getTokenResponse(
@@ -79,10 +77,8 @@ class AuthService(
     ): ApiResult<TokenResponse> {
         val user = userRepository.findByUsername(request.username)
             ?: throw CustomException(NOT_FOUND_USER)
-        require(user.passwordLoginInformation != null)
-        if (!passwordEncoder.matches(request.password, user.passwordLoginInformation!!.password))
-            throw CustomException(INVALID_PASSWORD)
 
+        validatePassword(request.password, user)
         return ApiResult.ok(
             getTokenResponse(
                 user,
@@ -110,7 +106,7 @@ class AuthService(
         )
     }
 
-    fun getTokenResponse(
+    private fun getTokenResponse(
         user: UserEntity,
         accessExpire: Long,
         refreshExpire: Long
@@ -119,5 +115,24 @@ class AuthService(
         val refreshToken = JwtUtils.createToken(user, TokenType.REFRESH, refreshExpire, secretKey)
 
         return TokenResponse.of(accessToken, refreshToken)
+    }
+
+    private fun getOrCreateUser(
+        socialId: String,
+        platform: SocialPlatform
+    ): UserEntity {
+        return userRepository.findBySocialIdAndPlatform(socialId, platform)
+            ?: userRepository.save(UserEntity.of(platform, socialId))
+    }
+
+    private fun validatePassword(
+        password: String,
+        user: UserEntity
+    ) {
+        val passwordLoginInformation = user.passwordLoginInformation
+            ?: throw CustomException(INVALID_PASSWORD)
+
+        if (!passwordEncoder.matches(password, passwordLoginInformation.password))
+            throw CustomException(INVALID_PASSWORD)
     }
 }
