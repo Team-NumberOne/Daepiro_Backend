@@ -17,61 +17,40 @@ import jakarta.persistence.Table
 @Entity
 @Table(name = "article")
 class Article(
-    title: String = "",
-    body: String = "",
-    type: ArticleType = ArticleType.SNS,
-    likeCount: Int = 0,
-    viewCount: Int = 0,
-    commentCount: Int = 0,
-    reportCount: Int = 0,
-    status: ArticleStatus = ArticleStatus.ACTIVE,
-    authUser: UserEntity? = null,
-    address: Address? = null,
-) : PrimaryKeyEntity() {
     @Column(nullable = false)
-    var title = title
-        protected set
+    val title: String = "",
 
     @Column(nullable = false)
-    var body = body
-        protected set
+    val body: String = "",
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, columnDefinition = "varchar(255)")
-    var type = type
-        protected set
+    val type: ArticleType = ArticleType.SNS,
 
     @Column(nullable = false)
-    var likeCount = likeCount
-        protected set
+    val likeCount: Int = 0,
 
     @Column(nullable = false)
-    var viewCount = viewCount
-        protected set
+    val viewCount: Int = 0,
 
     @Column(nullable = false)
-    var commentCount = commentCount
-        protected set
+    val commentCount: Int = 0,
 
     @Column(nullable = false)
-    var reportComment = reportCount
-        protected set
+    val reportCount: Int = 0,
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, columnDefinition = "varchar(255)")
+    val status: ArticleStatus = ArticleStatus.ACTIVE,
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "auth_user_id", foreignKey = ForeignKey(ConstraintMode.NO_CONSTRAINT))
-    var authUser = authUser
-        protected set
+    val authUser: UserEntity? = null,
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "address_id", foreignKey = ForeignKey(ConstraintMode.NO_CONSTRAINT))
-    var address = address
-        protected set
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false, columnDefinition = "varchar(255)")
-    var status = status
-        protected set
-}
+    val address: Address? = null,
+) : PrimaryKeyEntity()
 
 enum class ArticleType {
     SNS, INFORMATION

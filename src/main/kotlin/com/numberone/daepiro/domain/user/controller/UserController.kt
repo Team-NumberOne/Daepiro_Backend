@@ -1,23 +1,21 @@
 package com.numberone.daepiro.domain.user.controller
 
 import com.numberone.daepiro.domain.user.dto.response.GetUserResponse
-import com.numberone.daepiro.domain.user.service.UserService
-import com.numberone.daepiro.global.DprApiResponse
+import com.numberone.daepiro.global.dto.ApiResult
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
-@RequestMapping("/users")
+@RequestMapping("/v1/users")
 @RestController
 @Tag(name = "User API", description = "회원 관련 API")
-class UserController(
-    userService: UserService
-) {
-    @GetMapping("/v1")
+class UserController {
+    @GetMapping
     @Operation(summary = "Get user", description = "Get user")
-    fun getUser(): DprApiResponse<GetUserResponse> {
-        return DprApiResponse.ok(GetUserResponse.fake(), "/users/v1")
+    fun getUser(): ApiResult<GetUserResponse> {
+        // todo 인터페이스로 swagger 내용 분리
+        return ApiResult.ok(GetUserResponse.fake(), "/users/v1")
     }
 }

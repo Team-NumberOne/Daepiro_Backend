@@ -15,24 +15,17 @@ import jakarta.persistence.Table
 @Entity
 @Table(name = "`user_like`")
 class UserLike(
-    user: UserEntity?,
-    documentType: UserLikeDocumentType,
-    documentId: Long
-) : PrimaryKeyEntity() {
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", foreignKey = ForeignKey(ConstraintMode.NO_CONSTRAINT))
-    var user = user
-        protected set
+    val user: UserEntity?,
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, columnDefinition = "varchar(255)")
-    var documentType = documentType
-        protected set
+    val documentType: UserLikeDocumentType,
 
     @Column(nullable = false)
-    var documentId = documentId
-        protected set
-}
+    var documentId: Long
+) : PrimaryKeyEntity()
 
 enum class UserLikeDocumentType {
     ARTICLE, DISASTER, COMMENT

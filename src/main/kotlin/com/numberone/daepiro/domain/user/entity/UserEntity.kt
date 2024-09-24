@@ -1,27 +1,57 @@
 package com.numberone.daepiro.domain.user.entity
 
 import com.numberone.daepiro.domain.baseentity.PrimaryKeyEntity
-import jakarta.persistence.Column
+import com.numberone.daepiro.domain.user.enums.Role
+import com.numberone.daepiro.domain.user.enums.SocialPlatform
+import com.numberone.daepiro.domain.user.vo.PasswordLoginInformation
+import com.numberone.daepiro.domain.user.vo.SocialLoginInformation
 import jakarta.persistence.Embedded
 import jakarta.persistence.Entity
+import jakarta.persistence.EnumType
+import jakarta.persistence.Enumerated
 import jakarta.persistence.Table
 
 @Entity
 @Table(name = "`users`")
 class UserEntity(
-    socialLoginInformation: SocialLoginInformation,
-    realname: String,
-    nickname: String
-) : PrimaryKeyEntity() {
+    @Enumerated(EnumType.STRING)
+    val role: Role,
+
     @Embedded
-    var socialLoginInformation = socialLoginInformation
-        protected set
+    val socialLoginInformation: SocialLoginInformation? = null,
 
-    @Column(nullable = false)
-    var realname: String = realname
-        protected set
+    @Embedded
+    val passwordLoginInformation: PasswordLoginInformation? = null,
 
-    @Column(nullable = false)
-    var nickname: String = nickname
-        protected set
+    var realname: String? = null,
+
+    var nickname: String? = null
+) : PrimaryKeyEntity() {
+    companion object {
+        fun of(
+            platform: SocialPlatform,
+            socialId: String,
+        ): UserEntity {
+            return UserEntity(
+                role = Role.USER,
+                socialLoginInformation = SocialLoginInformation(
+                    platform = platform,
+                    socialId = socialId
+                ),
+            )
+        }
+
+        fun adminOf(
+            username: String,
+            password: String
+        ): UserEntity {
+            return UserEntity(
+                role = Role.ADMIN,
+                passwordLoginInformation = PasswordLoginInformation(
+                    username = username,
+                    password = password
+                )
+            )
+        }
+    }
 }

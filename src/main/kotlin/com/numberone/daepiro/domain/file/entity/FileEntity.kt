@@ -10,23 +10,16 @@ import jakarta.persistence.Table
 @Entity
 @Table(name = "`file`")
 class FileEntity(
-    path: String,
-    documentType: FileDocumentType,
-    documentId: Long
-) : PrimaryKeyEntity() {
     @Column(nullable = false)
-    var path = path
-        protected set
+    val path: String,
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, columnDefinition = "varchar(255)")
-    var documentType = documentType
-        protected set
+    val documentType: FileDocumentType,
 
     @Column(nullable = false)
-    var documentId = documentId
-        protected set
-}
+    val documentId: Long
+) : PrimaryKeyEntity()
 
 enum class FileDocumentType {
     ARTICLE, DONATION, USER_PROFILE
