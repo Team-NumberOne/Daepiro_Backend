@@ -2,8 +2,11 @@ package com.numberone.daepiro.domain.user.repository
 
 import com.numberone.daepiro.domain.user.entity.UserEntity
 import com.numberone.daepiro.domain.user.enums.SocialPlatform
+import com.numberone.daepiro.global.exception.CustomErrorContext
+import com.numberone.daepiro.global.exception.CustomException
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
+import org.springframework.data.repository.findByIdOrNull
 
 interface UserRepository : JpaRepository<UserEntity, Long> {
     @Query(
@@ -20,4 +23,8 @@ interface UserRepository : JpaRepository<UserEntity, Long> {
             "and u.socialLoginInformation.platform = :platform"
     )
     fun findBySocialIdAndPlatform(socialId: String, platform: SocialPlatform): UserEntity?
+}
+
+fun UserRepository.findByIdOrThrow(id: Long): UserEntity {
+    return this.findByIdOrNull(id) ?: throw CustomException(CustomErrorContext.NOT_FOUND_USER)
 }

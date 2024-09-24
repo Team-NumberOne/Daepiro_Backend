@@ -9,6 +9,7 @@ import com.numberone.daepiro.domain.auth.utils.JwtUtils
 import com.numberone.daepiro.domain.user.entity.UserEntity
 import com.numberone.daepiro.domain.user.enums.SocialPlatform
 import com.numberone.daepiro.domain.user.repository.UserRepository
+import com.numberone.daepiro.domain.user.repository.findByIdOrThrow
 import com.numberone.daepiro.global.dto.ApiResult
 import com.numberone.daepiro.global.exception.CustomErrorContext.INVALID_PASSWORD
 import com.numberone.daepiro.global.exception.CustomErrorContext.INVALID_SOCIAL_TOKEN
@@ -98,8 +99,7 @@ class AuthService(
         val tokenInfo = JwtUtils.extractInfoFromToken(request.refreshToken, secretKey)
         if (tokenInfo.type != TokenType.REFRESH)
             throw CustomException(INVALID_TOKEN)
-        val user = userRepository.findByIdOrNull(tokenInfo.id)
-            ?: throw CustomException(NOT_FOUND_USER)
+        val user = userRepository.findByIdOrThrow(tokenInfo.id)
 
         return ApiResult.ok(
             getTokenResponse(
