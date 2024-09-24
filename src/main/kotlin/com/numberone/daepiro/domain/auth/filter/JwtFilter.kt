@@ -42,7 +42,7 @@ class JwtFilter(
                     SecurityContextHolder.getContext().authentication = auth
                 }
             } catch (e: Exception) {
-                logger.warn("Invalid JWT: $jwt")
+                logger.warn("Invalid JWT")
             }
         }
         filterChain.doFilter(request, response)

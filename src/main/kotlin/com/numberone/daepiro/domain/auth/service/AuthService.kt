@@ -21,8 +21,10 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
+@Transactional(readOnly = true)
 class AuthService(
     private val userRepository: UserRepository,
     private val passwordEncoder: PasswordEncoder,
@@ -33,6 +35,7 @@ class AuthService(
     @Value("\${jwt.refresh-token-expire}") private val refreshTokenExpire: Long,
     @Value("\${jwt.admin-token-expire}") private val adminTokenExpire: Long
 ) {
+    @Transactional
     fun kakaoLogin(
         request: SocialLoginRequest
     ): ApiResult<TokenResponse> {
@@ -42,9 +45,16 @@ class AuthService(
         val user = userRepository.findBySocialIdAndPlatform(socialId, SocialPlatform.KAKAO)
             ?: userRepository.save(UserEntity.of(SocialPlatform.KAKAO, socialId))
 
-        return ApiResult.ok(TokenResponse.of(user, secretKey, accessTokenExpire, refreshTokenExpire))
+        return ApiResult.ok(
+            getTokenResponse(
+                user,
+                accessTokenExpire,
+                refreshTokenExpire
+            )
+        )
     }
 
+    @Transactional
     fun naverLogin(
         request: SocialLoginRequest
     ): ApiResult<TokenResponse> {
@@ -54,7 +64,13 @@ class AuthService(
         val user = userRepository.findBySocialIdAndPlatform(socialId, SocialPlatform.NAVER)
             ?: userRepository.save(UserEntity.of(SocialPlatform.NAVER, socialId))
 
-        return ApiResult.ok(TokenResponse.of(user, secretKey, accessTokenExpire, refreshTokenExpire))
+        return ApiResult.ok(
+            getTokenResponse(
+                user,
+                accessTokenExpire,
+                refreshTokenExpire
+            )
+        )
     }
 
     fun adminLogin(
@@ -66,7 +82,13 @@ class AuthService(
         if (!passwordEncoder.matches(request.password, user.passwordLoginInformation!!.password))
             throw CustomException(INVALID_PASSWORD)
 
-        return ApiResult.ok(TokenResponse.of(user, secretKey, adminTokenExpire, adminTokenExpire))
+        return ApiResult.ok(
+            getTokenResponse(
+                user,
+                adminTokenExpire,
+                adminTokenExpire
+            )
+        )
     }
 
     fun refreshToken(
@@ -79,6 +101,23 @@ class AuthService(
         val user = userRepository.findByIdOrNull(tokenInfo.id)
             ?: throw CustomException(NOT_FOUND_USER)
 
-        return ApiResult.ok(TokenResponse.of(user, secretKey, accessTokenExpire, refreshTokenExpire))
+        return ApiResult.ok(
+            getTokenResponse(
+                user,
+                accessTokenExpire,
+                refreshTokenExpire
+            )
+        )
+    }
+
+    fun getTokenResponse(
+        user: UserEntity,
+        accessExpire: Long,
+        refreshExpire: Long
+    ): TokenResponse {
+        val accessToken = JwtUtils.createToken(user, TokenType.ACCESS, accessExpire, secretKey)
+        val refreshToken = JwtUtils.createToken(user, TokenType.REFRESH, refreshExpire, secretKey)
+
+        return TokenResponse.of(accessToken, refreshToken)
     }
 }

@@ -10,14 +10,12 @@ data class TokenResponse(
 ) {
     companion object {
         fun of(
-            user: UserEntity,
-            secretKey: String,
-            accessTokenExpire: Long,
-            refreshTokenExpire: Long
+            accessToken: String,
+            refreshToken: String
         ): TokenResponse {
             return TokenResponse(
-                accessToken = JwtUtils.createToken(user, TokenType.ACCESS, accessTokenExpire, secretKey),
-                refreshToken = JwtUtils.createToken(user, TokenType.REFRESH, refreshTokenExpire, secretKey)
+                accessToken = accessToken,
+                refreshToken = refreshToken
             )
         }
     }
