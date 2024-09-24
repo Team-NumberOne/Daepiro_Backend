@@ -19,7 +19,6 @@ import com.numberone.daepiro.global.exception.CustomException
 import com.numberone.daepiro.global.feign.KakaoFeign
 import com.numberone.daepiro.global.feign.NaverFeign
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional

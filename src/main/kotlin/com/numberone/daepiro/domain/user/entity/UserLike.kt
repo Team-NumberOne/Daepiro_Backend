@@ -25,8 +25,7 @@ class UserLike(
 
     @Column(nullable = false)
     var documentId: Long
-) : PrimaryKeyEntity() {
-}
+) : PrimaryKeyEntity()
 
 enum class UserLikeDocumentType {
     ARTICLE, DISASTER, COMMENT

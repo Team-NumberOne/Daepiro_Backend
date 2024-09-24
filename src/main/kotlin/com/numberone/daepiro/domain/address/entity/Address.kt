@@ -11,5 +11,4 @@ class Address(
     val gu: String? = null,
     val dong: String? = null,
     val depth: Int = 0
-) : PrimaryKeyEntity() {
-}
+) : PrimaryKeyEntity()
