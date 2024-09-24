@@ -26,7 +26,7 @@ class JwtFilter(
         filterChain: FilterChain
     ) {
         val jwt = request.getHeader(AUTHORIZATION)
-        if (jwt != null) {
+        if (jwt != null && jwt.startsWith(JwtUtils.PREFIX_BEARER)) {
             try {
                 val tokenInfo = JwtUtils.extractInfoFromToken(
                     jwt.replace(JwtUtils.PREFIX_BEARER, ""),

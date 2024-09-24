@@ -1,6 +1,6 @@
 package com.numberone.daepiro.domain.auth.controller
 
-import com.numberone.daepiro.domain.auth.api.AuthApi
+import com.numberone.daepiro.domain.auth.api.AuthApiV1
 import com.numberone.daepiro.domain.auth.dto.request.AdminLoginRequest
 import com.numberone.daepiro.domain.auth.dto.request.RefreshTokenRequest
 import com.numberone.daepiro.domain.auth.dto.request.SocialLoginRequest
@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 class AuthController(
     private val authService: AuthService
-) : AuthApi {
+) : AuthApiV1 {
     override fun socialLogin(
         platform: String,
         request: SocialLoginRequest

@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 
 @Tag(name = "Auth API", description = "인증 관련 API")
 @RequestMapping("/v1/auth")
-interface AuthApi {
+interface AuthApiV1 {
     @PostMapping("/login/{platform}")
     @Operation(summary = "소셜 로그인", description = "소셜 로그인을 합니다.")
     fun socialLogin(
