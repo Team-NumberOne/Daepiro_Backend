@@ -31,12 +31,13 @@ data class ApiResult<T>(
 
         fun error(
             context: CustomErrorContext,
-            path: String = ""
+            path: String = "",
+            additionalMsg: String = ""
         ) =
             ApiResult<Unit>(
                 httpStatus = context.httpStatus,
                 code = context.code,
-                message = context.message,
+                message = context.message + additionalMsg,
                 path = path
             )
     }

@@ -1,12 +1,11 @@
 package com.numberone.daepiro.global.exception
 
 import com.numberone.daepiro.global.dto.ApiResult
-import com.numberone.daepiro.global.exception.CustomErrorContext.INVALID_JSON_FORMAT
-import com.numberone.daepiro.global.exception.CustomErrorContext.INVALID_VALUE
-import com.numberone.daepiro.global.exception.CustomErrorContext.UNCAUGHT_ERROR
+import com.numberone.daepiro.global.exception.CustomErrorContext.*
 import mu.KotlinLogging
 import org.springframework.http.ResponseEntity
 import org.springframework.http.converter.HttpMessageNotReadableException
+import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
 import org.springframework.web.context.request.RequestContextHolder
@@ -30,6 +29,18 @@ class GlobalExceptionHandler {
         return handle(INVALID_JSON_FORMAT, exception, extractEndpoint())
     }
 
+    @ExceptionHandler(MethodArgumentNotValidException::class)
+    fun handleValidationException(
+        exception: MethodArgumentNotValidException
+    ): ResponseEntity<ApiResult<Unit>> {
+        return handle(
+            INVALID_VALIDATION,
+            exception,
+            extractEndpoint(),
+            " " + exception.message
+        )
+    }
+
     @ExceptionHandler(IllegalArgumentException::class)
     fun handleArgumentException(
         exception: IllegalArgumentException
@@ -47,13 +58,14 @@ class GlobalExceptionHandler {
     private fun handle(
         context: CustomErrorContext,
         exception: Throwable,
-        endpoint: String
+        endpoint: String,
+        additionalMsg: String = ""
     ): ResponseEntity<ApiResult<Unit>> {
         when (context.logLevel) {
             LogLevel.DEBUG -> logger.debug(exception) { "Error occurs at $endpoint" }
             LogLevel.ERROR -> logger.error(exception) { "Error occurs at $endpoint" }
         }
-        return ApiResult.error(context, endpoint)
+        return ApiResult.error(context, endpoint, additionalMsg)
             .toResponseEntity()
     }
 
