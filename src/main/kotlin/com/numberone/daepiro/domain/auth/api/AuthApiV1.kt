@@ -21,7 +21,7 @@ interface AuthApiV1 {
     @PostMapping("/login/{platform}")
     @Operation(summary = "소셜 로그인", description = "소셜 로그인을 합니다.")
     fun socialLogin(
-        @Schema(description = "소셜 로그인 플랫폼( kakao, naver )") @PathVariable platform: String,
+        @Schema(description = "소셜 로그인 플랫폼", example = "kakao") @PathVariable platform: String,
         @RequestBody request: SocialLoginRequest
     ): ResponseEntity<ApiResult<TokenResponse>>
 

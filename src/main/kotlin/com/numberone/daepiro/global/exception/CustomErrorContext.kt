@@ -19,6 +19,12 @@ enum class CustomErrorContext(
     // 21xx: 사용자 관련 오류
     NOT_FOUND_USER(HttpStatus.NOT_FOUND, 2100, "사용자를 찾을 수 없습니다."),
 
+    // 22xx: 재난 관련 오류
+    NOT_FOUND_DISASTER_TYPE(HttpStatus.NOT_FOUND, 2200, "재난 유형을 찾을 수 없습니다."),
+
+    // 23xx: 주소 관련 오류
+    INVALID_ADDRESS_FORMAT(HttpStatus.BAD_REQUEST, 2300, "주소 형식이 잘못되었습니다."),
+
     // 99xx: 공통 오류
     INVALID_JSON_FORMAT(HttpStatus.BAD_REQUEST, 9001, "JSON 형식이 잘못되었습니다."),
     INVALID_VALUE(HttpStatus.INTERNAL_SERVER_ERROR, 9002, "유효하지 않은 값이 발견되었습니다."),
