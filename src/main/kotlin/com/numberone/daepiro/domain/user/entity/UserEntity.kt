@@ -40,18 +40,13 @@ class UserEntity(
                 ),
             )
         }
+    }
 
-        fun adminOf(
-            username: String,
-            password: String
-        ): UserEntity {
-            return UserEntity(
-                role = Role.ADMIN,
-                passwordLoginInformation = PasswordLoginInformation(
-                    username = username,
-                    password = password
-                )
-            )
-        }
+    fun initName(
+        realname: String,
+        nickname: String
+    ) {
+        this.realname = realname
+        this.nickname = nickname
     }
 }
