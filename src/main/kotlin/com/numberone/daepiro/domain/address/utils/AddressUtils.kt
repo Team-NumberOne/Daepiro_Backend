@@ -1,6 +1,5 @@
 package com.numberone.daepiro.domain.address.utils
 
-import com.numberone.daepiro.domain.address.entity.Address
 import com.numberone.daepiro.global.exception.CustomErrorContext
 import com.numberone.daepiro.global.exception.CustomException
 

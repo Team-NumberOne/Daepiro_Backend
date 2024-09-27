@@ -2,9 +2,10 @@ package com.numberone.daepiro.domain.address.entity
 
 import com.numberone.daepiro.domain.address.utils.AddressUtils
 import com.numberone.daepiro.domain.baseentity.PrimaryKeyEntity
-import com.numberone.daepiro.global.exception.CustomErrorContext.INVALID_ADDRESS_FORMAT
-import com.numberone.daepiro.global.exception.CustomException
-import jakarta.persistence.*
+import jakarta.persistence.CascadeType
+import jakarta.persistence.Entity
+import jakarta.persistence.OneToMany
+import jakarta.persistence.Table
 import org.hibernate.annotations.Comment
 
 @Entity

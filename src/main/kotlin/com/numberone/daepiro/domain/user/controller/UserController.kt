@@ -13,8 +13,7 @@ import org.springframework.web.bind.annotation.RestController
 class UserController(
     private val userService: UserService
 ) : UserApiV1 {
-    override fun getUser(
-    ): ResponseEntity<ApiResult<GetUserResponse>> {
+    override fun getUser(): ResponseEntity<ApiResult<GetUserResponse>> {
         return ApiResult.ok(GetUserResponse.fake(), "/users/v1")
             .toResponseEntity()
     }

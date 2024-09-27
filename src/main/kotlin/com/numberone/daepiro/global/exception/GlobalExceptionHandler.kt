@@ -1,7 +1,10 @@
 package com.numberone.daepiro.global.exception
 
 import com.numberone.daepiro.global.dto.ApiResult
-import com.numberone.daepiro.global.exception.CustomErrorContext.*
+import com.numberone.daepiro.global.exception.CustomErrorContext.INVALID_JSON_FORMAT
+import com.numberone.daepiro.global.exception.CustomErrorContext.INVALID_VALIDATION
+import com.numberone.daepiro.global.exception.CustomErrorContext.INVALID_VALUE
+import com.numberone.daepiro.global.exception.CustomErrorContext.UNCAUGHT_ERROR
 import mu.KotlinLogging
 import org.springframework.http.ResponseEntity
 import org.springframework.http.converter.HttpMessageNotReadableException

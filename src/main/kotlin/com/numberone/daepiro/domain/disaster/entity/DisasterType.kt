@@ -1,11 +1,14 @@
 package com.numberone.daepiro.domain.disaster.entity
 
 import com.numberone.daepiro.domain.baseentity.PrimaryKeyEntity
-import com.numberone.daepiro.global.exception.CustomErrorContext
 import com.numberone.daepiro.global.exception.CustomErrorContext.NOT_FOUND_DISASTER_TYPE
 import com.numberone.daepiro.global.exception.CustomException
-import jakarta.persistence.*
-
+import jakarta.persistence.CascadeType
+import jakarta.persistence.Entity
+import jakarta.persistence.EnumType
+import jakarta.persistence.Enumerated
+import jakarta.persistence.OneToMany
+import jakarta.persistence.Table
 @Entity
 @Table(name = "`disaster_type`")
 class DisasterType(
@@ -18,7 +21,7 @@ class DisasterType(
     enum class Type(
         val korean: String
     ) {
-        //자연재난
+        // 자연재난
         DROUGHT("가뭄"),
         STRONG_WIND("강풍"),
         DRYNESS("건조"),
@@ -36,7 +39,7 @@ class DisasterType(
         HEAVY_RAIN("호우"),
         FLOOD("홍수"),
 
-        //사회재난
+        // 사회재난
         GAS("가스"),
         TRAFFIC("교통"),
         FINANCE("금융"),
@@ -52,12 +55,12 @@ class DisasterType(
         ENVIRONMENTAL_POLLUTION("환경오염사고"),
         AI("AI"),
 
-        //비상대비
+        // 비상대비
         EMERGENCY("비상사태"),
         TERROR("테러"),
         CHEMICAL("화생방사고"),
 
-        //기타
+        // 기타
         MISSING("실종"),
         OTHERS("기타");
 
