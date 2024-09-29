@@ -23,23 +23,23 @@ interface AuthApiV1 {
     fun socialLogin(
         @Schema(description = "소셜 로그인 플랫폼", example = "kakao") @PathVariable platform: String,
         @RequestBody request: SocialLoginRequest
-    ): ResponseEntity<ApiResult<TokenResponse>>
+    ): ApiResult<TokenResponse>
 
     @PostMapping("/admin")
     @Operation(summary = "관리자 로그인", description = "관리자 로그인을 합니다.")
     fun adminLogin(
         @RequestBody request: AdminLoginRequest
-    ): ResponseEntity<ApiResult<TokenResponse>>
+    ): ApiResult<TokenResponse>
 
     @PostMapping("/refresh")
     @Operation(summary = "토큰 갱신", description = "토큰을 갱신합니다.")
     fun refreshToken(
         @RequestBody request: RefreshTokenRequest
-    ): ResponseEntity<ApiResult<TokenResponse>>
+    ): ApiResult<TokenResponse>
 
     @GetMapping("/test")
     @Operation(summary = "테스트", description = "테스트")
-    fun test(): ResponseEntity<ApiResult<String>> {
-        return ApiResult.ok("test").toResponseEntity()
+    fun test(): ApiResult<String> {
+        return ApiResult.ok("test")
     }
 }

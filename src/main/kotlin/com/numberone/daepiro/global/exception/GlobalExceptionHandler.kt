@@ -21,40 +21,40 @@ class GlobalExceptionHandler {
     @ExceptionHandler(CustomException::class)
     fun handleCustomException(
         exception: CustomException
-    ): ResponseEntity<ApiResult<Unit>> {
+    ): ApiResult<Unit> {
         return handle(exception.context, exception, extractEndpoint())
     }
 
     @ExceptionHandler(HttpMessageNotReadableException::class)
     fun handleJsonException(
         exception: HttpMessageNotReadableException
-    ): ResponseEntity<ApiResult<Unit>> {
+    ): ApiResult<Unit> {
         return handle(INVALID_JSON_FORMAT, exception, extractEndpoint())
     }
 
     @ExceptionHandler(MethodArgumentNotValidException::class)
     fun handleValidationException(
         exception: MethodArgumentNotValidException
-    ): ResponseEntity<ApiResult<Unit>> {
+    ): ApiResult<Unit> {
         return handle(
             INVALID_VALIDATION,
             exception,
             extractEndpoint(),
-            " " + exception.message
+            " ${exception.message}"
         )
     }
 
     @ExceptionHandler(IllegalArgumentException::class)
     fun handleArgumentException(
         exception: IllegalArgumentException
-    ): ResponseEntity<ApiResult<Unit>> {
+    ): ApiResult<Unit> {
         return handle(INVALID_VALUE, exception, extractEndpoint())
     }
 
     @ExceptionHandler(Exception::class)
     fun handleUnCaughtException(
         exception: Exception
-    ): ResponseEntity<ApiResult<Unit>> {
+    ): ApiResult<Unit> {
         return handle(UNCAUGHT_ERROR, exception, extractEndpoint())
     }
 
@@ -63,13 +63,12 @@ class GlobalExceptionHandler {
         exception: Throwable,
         endpoint: String,
         additionalMsg: String = ""
-    ): ResponseEntity<ApiResult<Unit>> {
+    ): ApiResult<Unit> {
         when (context.logLevel) {
             LogLevel.DEBUG -> logger.debug(exception) { "Error occurs at $endpoint" }
             LogLevel.ERROR -> logger.error(exception) { "Error occurs at $endpoint" }
         }
         return ApiResult.error(context, endpoint, additionalMsg)
-            .toResponseEntity()
     }
 
     private fun extractEndpoint(): String {

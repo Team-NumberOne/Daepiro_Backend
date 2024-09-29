@@ -20,29 +20,23 @@ class AuthController(
     override fun socialLogin(
         platform: String,
         request: SocialLoginRequest
-    ): ResponseEntity<ApiResult<TokenResponse>> {
+    ): ApiResult<TokenResponse> {
         return when (platform) {
             SocialPlatform.KAKAO.path -> authService.kakaoLogin(request)
-                .toResponseEntity()
-
             SocialPlatform.NAVER.path -> authService.naverLogin(request)
-                .toResponseEntity()
-
             else -> throw CustomException(UNSUPPORTED_PLATFORM)
         }
     }
 
     override fun adminLogin(
         request: AdminLoginRequest
-    ): ResponseEntity<ApiResult<TokenResponse>> {
+    ): ApiResult<TokenResponse> {
         return authService.adminLogin(request)
-            .toResponseEntity()
     }
 
     override fun refreshToken(
         request: RefreshTokenRequest
-    ): ResponseEntity<ApiResult<TokenResponse>> {
+    ): ApiResult<TokenResponse> {
         return authService.refreshToken(request)
-            .toResponseEntity()
     }
 }

@@ -41,10 +41,4 @@ data class ApiResult<T>(
                 path = path
             )
     }
-
-    fun toResponseEntity(): ResponseEntity<ApiResult<T>> {
-        return ResponseEntity
-            .status(httpStatus)
-            .body(this)
-    }
 }

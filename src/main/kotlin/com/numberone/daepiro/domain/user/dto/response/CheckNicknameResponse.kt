@@ -7,7 +7,7 @@ data class CheckNicknameResponse(
     val isAvailable: Boolean
 ) {
     companion object {
-        fun of(
+        fun from(
             isAvailable: Boolean
         ): CheckNicknameResponse {
             return CheckNicknameResponse(

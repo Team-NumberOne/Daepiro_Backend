@@ -20,17 +20,17 @@ import org.springframework.web.bind.annotation.RequestMapping
 interface UserApiV1 {
     @GetMapping
     @Operation(summary = "Get user test", description = "Get user test")
-    fun getUser(): ResponseEntity<ApiResult<GetUserResponse>>
+    fun getUser(): ApiResult<GetUserResponse>
 
     @GetMapping("/nickname/{nickname}")
     @Operation(summary = "닉네임 중복 검사", description = "해당 닉네임으로 가입한 사용자가 이미 있는지 검사합니다.")
     fun checkNickname(
         @Schema(description = "닉네임", example = "초코송이") @PathVariable nickname: String,
-    ): ResponseEntity<ApiResult<CheckNicknameResponse>>
+    ): ApiResult<CheckNicknameResponse>
 
     @PutMapping("/onboarding")
     @Operation(summary = "온보딩 정보 입력", description = "사용자의 온보딩 정보를 등록합니다.")
     fun setOnboardingData(
         @RequestBody @Valid request: OnboardingRequest
-    ): ResponseEntity<ApiResult<Unit>>
+    ): ApiResult<Unit>
 }

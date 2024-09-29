@@ -1,6 +1,6 @@
 package com.numberone.daepiro.domain.address.entity
 
-import com.numberone.daepiro.domain.address.utils.AddressUtils
+import com.numberone.daepiro.domain.address.vo.AddressInfo
 import com.numberone.daepiro.domain.baseentity.PrimaryKeyEntity
 import jakarta.persistence.CascadeType
 import jakarta.persistence.Entity
@@ -27,8 +27,8 @@ class Address(
     val userAddresses: List<UserAddress> = emptyList()
 ) : PrimaryKeyEntity() {
     companion object {
-        fun of(
-            info: AddressUtils.AddressInfo,
+        fun from(
+            info: AddressInfo,
         ): Address {
             return Address(
                 si = info.si,

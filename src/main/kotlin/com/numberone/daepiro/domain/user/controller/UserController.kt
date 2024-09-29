@@ -6,6 +6,7 @@ import com.numberone.daepiro.domain.user.dto.response.CheckNicknameResponse
 import com.numberone.daepiro.domain.user.dto.response.GetUserResponse
 import com.numberone.daepiro.domain.user.service.UserService
 import com.numberone.daepiro.global.dto.ApiResult
+import com.numberone.daepiro.global.utils.SecurityContextUtils
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.RestController
 
@@ -13,22 +14,22 @@ import org.springframework.web.bind.annotation.RestController
 class UserController(
     private val userService: UserService
 ) : UserApiV1 {
-    override fun getUser(): ResponseEntity<ApiResult<GetUserResponse>> {
+    override fun getUser(): ApiResult<GetUserResponse> {
         return ApiResult.ok(GetUserResponse.fake(), "/users/v1")
-            .toResponseEntity()
     }
 
     override fun checkNickname(
         nickname: String
-    ): ResponseEntity<ApiResult<CheckNicknameResponse>> {
+    ): ApiResult<CheckNicknameResponse> {
         return userService.checkNickname(nickname)
-            .toResponseEntity()
     }
 
     override fun setOnboardingData(
         request: OnboardingRequest
-    ): ResponseEntity<ApiResult<Unit>> {
-        return userService.setOnboardingData(request)
-            .toResponseEntity()
+    ): ApiResult<Unit> {
+        return userService.setOnboardingData(
+            request,
+            SecurityContextUtils.getUserId()
+        )
     }
 }

@@ -13,12 +13,12 @@ import jakarta.persistence.Table
 @Table(name = "`disaster_type`")
 class DisasterType(
     @Enumerated(EnumType.STRING)
-    val type: Type,
+    val type: DisasterValue,
 
     @OneToMany(mappedBy = "disasterType", cascade = [CascadeType.ALL])
     val userDisasterTypes: List<UserDisasterType>
 ) : PrimaryKeyEntity() {
-    enum class Type(
+    enum class DisasterValue(
         val korean: String
     ) {
         // 자연재난
@@ -65,7 +65,7 @@ class DisasterType(
         OTHERS("기타");
 
         companion object {
-            fun kor2code(korean: String): Type {
+            fun kor2code(korean: String): DisasterValue {
                 return entries.find { it.korean == korean }
                     ?: throw CustomException(NOT_FOUND_DISASTER_TYPE)
             }
