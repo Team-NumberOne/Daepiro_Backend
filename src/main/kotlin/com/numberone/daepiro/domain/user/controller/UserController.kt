@@ -7,7 +7,6 @@ import com.numberone.daepiro.domain.user.dto.response.GetUserResponse
 import com.numberone.daepiro.domain.user.service.UserService
 import com.numberone.daepiro.global.dto.ApiResult
 import com.numberone.daepiro.global.utils.SecurityContextUtils
-import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.RestController
 
 @RestController

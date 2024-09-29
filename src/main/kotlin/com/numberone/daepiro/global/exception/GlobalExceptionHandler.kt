@@ -6,7 +6,6 @@ import com.numberone.daepiro.global.exception.CustomErrorContext.INVALID_VALIDAT
 import com.numberone.daepiro.global.exception.CustomErrorContext.INVALID_VALUE
 import com.numberone.daepiro.global.exception.CustomErrorContext.UNCAUGHT_ERROR
 import mu.KotlinLogging
-import org.springframework.http.ResponseEntity
 import org.springframework.http.converter.HttpMessageNotReadableException
 import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ExceptionHandler
