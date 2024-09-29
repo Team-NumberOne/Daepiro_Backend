@@ -25,7 +25,9 @@ class UserEntity(
 
     var realname: String? = null,
 
-    var nickname: String? = null
+    var nickname: String? = null,
+
+    var isCompletedOnboarding: Boolean = false
 ) : PrimaryKeyEntity() {
     companion object {
         fun of(
@@ -40,18 +42,17 @@ class UserEntity(
                 ),
             )
         }
+    }
 
-        fun adminOf(
-            username: String,
-            password: String
-        ): UserEntity {
-            return UserEntity(
-                role = Role.ADMIN,
-                passwordLoginInformation = PasswordLoginInformation(
-                    username = username,
-                    password = password
-                )
-            )
-        }
+    fun initName(
+        realname: String,
+        nickname: String
+    ) {
+        this.realname = realname
+        this.nickname = nickname
+    }
+
+    fun completeOnboarding() {
+        isCompletedOnboarding = true
     }
 }

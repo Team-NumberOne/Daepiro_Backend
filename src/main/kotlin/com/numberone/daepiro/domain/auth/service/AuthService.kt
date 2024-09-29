@@ -3,6 +3,7 @@ package com.numberone.daepiro.domain.auth.service
 import com.numberone.daepiro.domain.auth.dto.request.AdminLoginRequest
 import com.numberone.daepiro.domain.auth.dto.request.RefreshTokenRequest
 import com.numberone.daepiro.domain.auth.dto.request.SocialLoginRequest
+import com.numberone.daepiro.domain.auth.dto.response.LoginResponse
 import com.numberone.daepiro.domain.auth.dto.response.TokenResponse
 import com.numberone.daepiro.domain.auth.enums.TokenType
 import com.numberone.daepiro.domain.auth.utils.JwtUtils
@@ -38,17 +39,18 @@ class AuthService(
     @Transactional
     fun kakaoLogin(
         request: SocialLoginRequest
-    ): ApiResult<TokenResponse> {
+    ): ApiResult<LoginResponse> {
         val userInfo = kakaoFeign.getUserInfo(JwtUtils.PREFIX_BEARER + request.socialToken)
             ?: throw CustomException(INVALID_SOCIAL_TOKEN)
         val socialId = userInfo.id.toString()
         val user = getOrCreateUser(socialId, SocialPlatform.KAKAO)
 
+        val (accessToken, refreshToken) = createTokens(user, accessTokenExpire, refreshTokenExpire)
         return ApiResult.ok(
-            getTokenResponse(
-                user,
-                accessTokenExpire,
-                refreshTokenExpire
+            LoginResponse(
+                accessToken = accessToken,
+                refreshToken = refreshToken,
+                isCompletedOnboarding = user.isCompletedOnboarding
             )
         )
     }
@@ -56,17 +58,18 @@ class AuthService(
     @Transactional
     fun naverLogin(
         request: SocialLoginRequest
-    ): ApiResult<TokenResponse> {
+    ): ApiResult<LoginResponse> {
         val userInfo = naverFeign.getUserInfo(JwtUtils.PREFIX_BEARER + request.socialToken)
             ?: throw CustomException(INVALID_SOCIAL_TOKEN)
         val socialId = userInfo.response.id
         val user = getOrCreateUser(socialId, SocialPlatform.NAVER)
 
+        val (accessToken, refreshToken) = createTokens(user, accessTokenExpire, refreshTokenExpire)
         return ApiResult.ok(
-            getTokenResponse(
-                user,
-                accessTokenExpire,
-                refreshTokenExpire
+            LoginResponse(
+                accessToken = accessToken,
+                refreshToken = refreshToken,
+                isCompletedOnboarding = user.isCompletedOnboarding
             )
         )
     }
@@ -78,11 +81,11 @@ class AuthService(
             ?: throw CustomException(NOT_FOUND_USER)
 
         validatePassword(request.password, user)
+        val (accessToken, refreshToken) = createTokens(user, adminTokenExpire, adminTokenExpire)
         return ApiResult.ok(
-            getTokenResponse(
-                user,
-                adminTokenExpire,
-                adminTokenExpire
+            TokenResponse(
+                accessToken = accessToken,
+                refreshToken = refreshToken
             )
         )
     }
@@ -96,24 +99,24 @@ class AuthService(
             throw CustomException(INVALID_TOKEN)
         val user = userRepository.findByIdOrThrow(tokenInfo.id)
 
+        val (accessToken, refreshToken) = createTokens(user, accessTokenExpire, refreshTokenExpire)
         return ApiResult.ok(
-            getTokenResponse(
-                user,
-                accessTokenExpire,
-                refreshTokenExpire
+            TokenResponse(
+                accessToken = accessToken,
+                refreshToken = refreshToken
             )
         )
     }
 
-    private fun getTokenResponse(
+    private fun createTokens(
         user: UserEntity,
         accessExpire: Long,
         refreshExpire: Long
-    ): TokenResponse {
+    ): Pair<String, String> {
         val accessToken = JwtUtils.createToken(user, TokenType.ACCESS, accessExpire, secretKey)
         val refreshToken = JwtUtils.createToken(user, TokenType.REFRESH, refreshExpire, secretKey)
 
-        return TokenResponse.of(accessToken, refreshToken)
+        return Pair(accessToken, refreshToken)
     }
 
     private fun getOrCreateUser(

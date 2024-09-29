@@ -3,7 +3,6 @@ package com.numberone.daepiro.global.dto
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.numberone.daepiro.global.exception.CustomErrorContext
 import org.springframework.http.HttpStatus
-import org.springframework.http.ResponseEntity
 import java.time.LocalDateTime
 
 data class ApiResult<T>(
@@ -31,19 +30,14 @@ data class ApiResult<T>(
 
         fun error(
             context: CustomErrorContext,
-            path: String = ""
+            path: String = "",
+            additionalMsg: String = ""
         ) =
             ApiResult<Unit>(
                 httpStatus = context.httpStatus,
                 code = context.code,
-                message = context.message,
+                message = context.message + additionalMsg,
                 path = path
             )
-    }
-
-    fun toResponseEntity(): ResponseEntity<ApiResult<T>> {
-        return ResponseEntity
-            .status(httpStatus)
-            .body(this)
     }
 }

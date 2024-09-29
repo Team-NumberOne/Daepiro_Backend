@@ -23,6 +23,8 @@ interface UserRepository : JpaRepository<UserEntity, Long> {
             "and u.socialLoginInformation.platform = :platform"
     )
     fun findBySocialIdAndPlatform(socialId: String, platform: SocialPlatform): UserEntity?
+
+    fun findByNickname(nickname: String): UserEntity?
 }
 
 fun UserRepository.findByIdOrThrow(id: Long): UserEntity {

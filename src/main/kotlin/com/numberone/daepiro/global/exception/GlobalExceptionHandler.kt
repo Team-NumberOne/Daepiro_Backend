@@ -2,11 +2,12 @@ package com.numberone.daepiro.global.exception
 
 import com.numberone.daepiro.global.dto.ApiResult
 import com.numberone.daepiro.global.exception.CustomErrorContext.INVALID_JSON_FORMAT
+import com.numberone.daepiro.global.exception.CustomErrorContext.INVALID_VALIDATION
 import com.numberone.daepiro.global.exception.CustomErrorContext.INVALID_VALUE
 import com.numberone.daepiro.global.exception.CustomErrorContext.UNCAUGHT_ERROR
 import mu.KotlinLogging
-import org.springframework.http.ResponseEntity
 import org.springframework.http.converter.HttpMessageNotReadableException
+import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
 import org.springframework.web.context.request.RequestContextHolder
@@ -19,42 +20,54 @@ class GlobalExceptionHandler {
     @ExceptionHandler(CustomException::class)
     fun handleCustomException(
         exception: CustomException
-    ): ResponseEntity<ApiResult<Unit>> {
+    ): ApiResult<Unit> {
         return handle(exception.context, exception, extractEndpoint())
     }
 
     @ExceptionHandler(HttpMessageNotReadableException::class)
     fun handleJsonException(
         exception: HttpMessageNotReadableException
-    ): ResponseEntity<ApiResult<Unit>> {
+    ): ApiResult<Unit> {
         return handle(INVALID_JSON_FORMAT, exception, extractEndpoint())
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException::class)
+    fun handleValidationException(
+        exception: MethodArgumentNotValidException
+    ): ApiResult<Unit> {
+        return handle(
+            INVALID_VALIDATION,
+            exception,
+            extractEndpoint(),
+            " ${exception.message}"
+        )
     }
 
     @ExceptionHandler(IllegalArgumentException::class)
     fun handleArgumentException(
         exception: IllegalArgumentException
-    ): ResponseEntity<ApiResult<Unit>> {
+    ): ApiResult<Unit> {
         return handle(INVALID_VALUE, exception, extractEndpoint())
     }
 
     @ExceptionHandler(Exception::class)
     fun handleUnCaughtException(
         exception: Exception
-    ): ResponseEntity<ApiResult<Unit>> {
+    ): ApiResult<Unit> {
         return handle(UNCAUGHT_ERROR, exception, extractEndpoint())
     }
 
     private fun handle(
         context: CustomErrorContext,
         exception: Throwable,
-        endpoint: String
-    ): ResponseEntity<ApiResult<Unit>> {
+        endpoint: String,
+        additionalMsg: String = ""
+    ): ApiResult<Unit> {
         when (context.logLevel) {
             LogLevel.DEBUG -> logger.debug(exception) { "Error occurs at $endpoint" }
             LogLevel.ERROR -> logger.error(exception) { "Error occurs at $endpoint" }
         }
-        return ApiResult.error(context, endpoint)
-            .toResponseEntity()
+        return ApiResult.error(context, endpoint, additionalMsg)
     }
 
     private fun extractEndpoint(): String {
