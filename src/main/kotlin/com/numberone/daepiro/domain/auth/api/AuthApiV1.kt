@@ -3,6 +3,7 @@ package com.numberone.daepiro.domain.auth.api
 import com.numberone.daepiro.domain.auth.dto.request.AdminLoginRequest
 import com.numberone.daepiro.domain.auth.dto.request.RefreshTokenRequest
 import com.numberone.daepiro.domain.auth.dto.request.SocialLoginRequest
+import com.numberone.daepiro.domain.auth.dto.response.LoginResponse
 import com.numberone.daepiro.domain.auth.dto.response.TokenResponse
 import com.numberone.daepiro.global.dto.ApiResult
 import io.swagger.v3.oas.annotations.Operation
@@ -23,7 +24,7 @@ interface AuthApiV1 {
     fun socialLogin(
         @Schema(description = "소셜 로그인 플랫폼", example = "kakao") @PathVariable platform: String,
         @RequestBody request: SocialLoginRequest
-    ): ApiResult<TokenResponse>
+    ): ApiResult<LoginResponse>
 
     @PostMapping("/admin")
     @Operation(summary = "관리자 로그인", description = "관리자 로그인을 합니다.")

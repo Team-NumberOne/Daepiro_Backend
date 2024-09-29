@@ -25,7 +25,9 @@ class UserEntity(
 
     var realname: String? = null,
 
-    var nickname: String? = null
+    var nickname: String? = null,
+
+    var isCompletedOnboarding: Boolean = false
 ) : PrimaryKeyEntity() {
     companion object {
         fun of(
@@ -48,5 +50,9 @@ class UserEntity(
     ) {
         this.realname = realname
         this.nickname = nickname
+    }
+
+    fun completeOnboarding() {
+        isCompletedOnboarding = true
     }
 }

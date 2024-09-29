@@ -17,7 +17,6 @@ import com.numberone.daepiro.domain.user.entity.UserEntity
 import com.numberone.daepiro.domain.user.repository.UserRepository
 import com.numberone.daepiro.domain.user.repository.findByIdOrThrow
 import com.numberone.daepiro.global.dto.ApiResult
-import com.numberone.daepiro.global.utils.SecurityContextUtils
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -46,6 +45,7 @@ class UserService(
         user.initName(request.realname, request.nickname)
         handleOnboardingAddress(request.addresses, user)
         handleOnboardingDisasterType(request.disasterTypes, user)
+        user.completeOnboarding()
         return ApiResult.ok()
     }
 

@@ -4,6 +4,7 @@ import com.numberone.daepiro.domain.auth.api.AuthApiV1
 import com.numberone.daepiro.domain.auth.dto.request.AdminLoginRequest
 import com.numberone.daepiro.domain.auth.dto.request.RefreshTokenRequest
 import com.numberone.daepiro.domain.auth.dto.request.SocialLoginRequest
+import com.numberone.daepiro.domain.auth.dto.response.LoginResponse
 import com.numberone.daepiro.domain.auth.dto.response.TokenResponse
 import com.numberone.daepiro.domain.auth.service.AuthService
 import com.numberone.daepiro.domain.user.enums.SocialPlatform
@@ -20,7 +21,7 @@ class AuthController(
     override fun socialLogin(
         platform: String,
         request: SocialLoginRequest
-    ): ApiResult<TokenResponse> {
+    ): ApiResult<LoginResponse> {
         return when (platform) {
             SocialPlatform.KAKAO.path -> authService.kakaoLogin(request)
             SocialPlatform.NAVER.path -> authService.naverLogin(request)
