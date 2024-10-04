@@ -13,13 +13,11 @@ import org.springframework.web.bind.annotation.RestController
 class DataCollectorController(
     val dataCollectorService: DataCollectorService
 ) : DataCollectorApiV1 {
-    override fun getLatestNews(
-    ): ApiResult<GetLatestNewsResponse> {
+    override fun getLatestNews(): ApiResult<GetLatestNewsResponse> {
         return dataCollectorService.getLatestNews()
     }
 
-    override fun getLatestDisasters(
-    ): ApiResult<GetLatestDisasterResponse> {
+    override fun getLatestDisasters(): ApiResult<GetLatestDisasterResponse> {
         return dataCollectorService.getLatestDisasters()
     }
 
