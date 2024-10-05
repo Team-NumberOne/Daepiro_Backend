@@ -17,7 +17,7 @@ class News(
 
     val body: String,
 
-    val thumbnailUrl: String,
+    val thumbnailUrl: String?,
 ) : PrimaryKeyEntity() {
     companion object {
         fun of(
@@ -25,7 +25,7 @@ class News(
             publishedAt: LocalDateTime,
             subtitle: String,
             body: String,
-            thumbnailUrl: String
+            thumbnailUrl: String?
         ): News {
             return News(
                 title = title,

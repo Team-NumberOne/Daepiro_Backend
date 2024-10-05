@@ -21,5 +21,5 @@ data class NewsRequest(
     val body: String,
 
     @Schema(description = "뉴스 출처", example = "출처")
-    val thumbnailUrl: String,
+    val thumbnailUrl: String?,
 )
