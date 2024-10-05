@@ -20,7 +20,7 @@ class DataCollectorService(
     private val disasterRepository: DisasterRepository
 ) {
     fun getLatestNews(): ApiResult<GetLatestNewsResponse> {
-        val news = newsRepository.findLatestNews()
+        val news = newsRepository.findLatestNews().firstOrNull()
 
         return ApiResult.ok(
             GetLatestNewsResponse.from(
