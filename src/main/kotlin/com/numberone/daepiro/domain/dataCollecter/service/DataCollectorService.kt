@@ -31,7 +31,7 @@ class DataCollectorService(
     }
 
     fun getLatestDisasters(): ApiResult<GetLatestDisasterResponse> {
-        val disaster = disasterRepository.findLatestDisaster()
+        val disaster = disasterRepository.findLatestDisaster().firstOrNull()
 
         return ApiResult.ok(
             GetLatestDisasterResponse.from(
