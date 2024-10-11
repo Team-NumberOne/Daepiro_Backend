@@ -9,6 +9,7 @@ import jakarta.persistence.EnumType
 import jakarta.persistence.Enumerated
 import jakarta.persistence.OneToMany
 import jakarta.persistence.Table
+
 @Entity
 @Table(name = "`disaster_type`")
 class DisasterType(
@@ -16,7 +17,10 @@ class DisasterType(
     val type: DisasterValue,
 
     @OneToMany(mappedBy = "disasterType", cascade = [CascadeType.ALL])
-    val userDisasterTypes: List<UserDisasterType>
+    val userDisasterTypes: List<UserDisasterType>,
+
+    @OneToMany(mappedBy = "disasterType", cascade = [CascadeType.ALL])
+    val disasters: List<Disaster>
 ) : PrimaryKeyEntity() {
     enum class DisasterValue(
         val korean: String
