@@ -1,5 +1,7 @@
 package com.numberone.daepiro.domain.dataCollecter.service
 
+import com.numberone.daepiro.domain.address.repository.KoreaLocationRepository
+import com.numberone.daepiro.domain.address.vo.AddressInfo
 import com.numberone.daepiro.domain.dataCollecter.dto.request.SaveDisastersRequest
 import com.numberone.daepiro.domain.dataCollecter.dto.request.SaveNewsRequest
 import com.numberone.daepiro.domain.dataCollecter.dto.response.GetLatestDisasterResponse
@@ -7,8 +9,13 @@ import com.numberone.daepiro.domain.dataCollecter.dto.response.GetLatestNewsResp
 import com.numberone.daepiro.domain.dataCollecter.entity.News
 import com.numberone.daepiro.domain.dataCollecter.repository.NewsRepository
 import com.numberone.daepiro.domain.disaster.entity.Disaster
+import com.numberone.daepiro.domain.disaster.entity.DisasterType.DisasterValue
 import com.numberone.daepiro.domain.disaster.repository.DisasterRepository
+import com.numberone.daepiro.domain.disaster.repository.DisasterTypeRepository
 import com.numberone.daepiro.global.dto.ApiResult
+import com.numberone.daepiro.global.exception.CustomErrorContext.INVALID_ADDRESS_FORMAT
+import com.numberone.daepiro.global.exception.CustomErrorContext.NOT_FOUND_DISASTER_TYPE
+import com.numberone.daepiro.global.exception.CustomException
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
@@ -17,7 +24,9 @@ import java.time.LocalDateTime
 @Transactional(readOnly = true)
 class DataCollectorService(
     private val newsRepository: NewsRepository,
-    private val disasterRepository: DisasterRepository
+    private val disasterRepository: DisasterRepository,
+    private val koreaLocationRepository: KoreaLocationRepository,
+    private val disasterTypeRepository: DisasterTypeRepository
 ) {
     fun getLatestNews(): ApiResult<GetLatestNewsResponse> {
         val news = newsRepository.findLatestNews().firstOrNull()
@@ -66,7 +75,10 @@ class DataCollectorService(
                 generatedAt = it.generatedAt,
                 messageId = it.messageId,
                 message = it.message,
-                locationId = it.locationId
+                location = koreaLocationRepository.findByAddressInfo(AddressInfo.from(it.locationStr))
+                    ?: throw CustomException(INVALID_ADDRESS_FORMAT),
+                disasterType = disasterTypeRepository.findByType(DisasterValue.kor2code(it.disasterType))
+                    ?: throw CustomException(NOT_FOUND_DISASTER_TYPE),
             )
         }
 

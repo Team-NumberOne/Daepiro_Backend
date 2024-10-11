@@ -1,10 +1,13 @@
 package com.numberone.daepiro.domain.address.entity
 
+import com.numberone.daepiro.domain.disaster.entity.Disaster
+import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
+import jakarta.persistence.OneToMany
 
 @Entity
 class KoreaLocation {
@@ -20,4 +23,7 @@ class KoreaLocation {
 
     @Column(name = "eup_myeon_dong")
     var eupMyeonDong: String? = null
+
+    @OneToMany(mappedBy = "location", cascade = [CascadeType.ALL])
+    val disasters: List<Disaster> = emptyList()
 }
