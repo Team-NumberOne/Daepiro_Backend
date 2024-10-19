@@ -5,6 +5,7 @@ import io.swagger.v3.oas.models.OpenAPI
 import io.swagger.v3.oas.models.info.Info
 import io.swagger.v3.oas.models.security.SecurityRequirement
 import io.swagger.v3.oas.models.security.SecurityScheme
+import org.springdoc.core.models.GroupedOpenApi
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.HttpHeaders
@@ -17,6 +18,25 @@ class SwaggerConfig {
             .components(Components().addSecuritySchemes("JWT", bearerAuth()))
             .info(configurationInfo())
             .addSecurityItem(SecurityRequirement().addList("JWT"))
+    }
+
+    @Bean
+    fun readyToUseGroup(): GroupedOpenApi {
+        return GroupedOpenApi.builder()
+            .group("ready to use")
+            .pathsToMatch(
+                "/v1/auth/**",
+                "/v1/users/**",
+            )
+            .build()
+    }
+
+    @Bean
+    fun workInProgressGroup(): GroupedOpenApi {
+        return GroupedOpenApi.builder()
+            .group("work in progress")
+            .pathsToMatch("")
+            .build()
     }
 
     private fun configurationInfo(): Info {
