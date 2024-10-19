@@ -72,6 +72,7 @@ dependencies {
 
     // aws cloud
     implementation("io.awspring.cloud:spring-cloud-starter-aws-secrets-manager-config:${VERSIONS.AWS_SPRING_CLOUD}")
+    implementation("org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE")
 
     // logging
     implementation("io.github.microutils:kotlin-logging-jvm:${VERSIONS.KOTLIN_LOGGING}")
