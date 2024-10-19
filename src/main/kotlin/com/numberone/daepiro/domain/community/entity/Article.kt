@@ -25,7 +25,14 @@ class Article(
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, columnDefinition = "varchar(255)")
-    val type: ArticleType = ArticleType.SNS,
+    val type: ArticleType,
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, columnDefinition = "varchar(255)")
+    val category: ArticleCategory,
+
+    @Column(nullable = false)
+    val isLocationVisible: Boolean = false,
 
     @Column(nullable = false)
     val likeCount: Int = 0,
@@ -50,12 +57,59 @@ class Article(
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "address_id", foreignKey = ForeignKey(ConstraintMode.NO_CONSTRAINT))
     val address: Address? = null,
-) : PrimaryKeyEntity()
+) : PrimaryKeyEntity() {
+    companion object {
+        fun of(
+            title: String,
+            body: String,
+            type: ArticleType,
+            category: ArticleCategory,
+            isLocationVisible: Boolean,
+            likeCount: Int = 0,
+            viewCount: Int = 0,
+            commentCount: Int = 0,
+            reportCount: Int = 0,
+            status: ArticleStatus = ArticleStatus.ACTIVE,
+            authUser: UserEntity,
+            address: Address? = null
+        ): Article {
+            return Article(
+                title = title,
+                body = body,
+                type = type,
+                category = category,
+                isLocationVisible = isLocationVisible,
+                likeCount = likeCount,
+                viewCount = viewCount,
+                commentCount = commentCount,
+                reportCount = reportCount,
+                status = status,
+                authUser = authUser,
+                address = address,
+            )
+        }
+    }
+}
 
-enum class ArticleType {
-    SNS, INFORMATION
+enum class ArticleCategory {
+    LIFE,
+    TRAFFIC,
+    SAFE,
+    OTHER,
+    ;
+}
+
+enum class ArticleType(
+    val description: String
+) {
+    DONGNE("동네생활"),
+    INFORMATION("정보"),
+    DISASTER("재난상황"),
+    ;
 }
 
 enum class ArticleStatus {
-    DELETED, ACTIVE
+    DELETED,
+    ACTIVE,
+    ;
 }
