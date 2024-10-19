@@ -28,3 +28,22 @@ interface AddressRepository : JpaRepository<Address, Long> {
     )
     fun findChildAddress(ai: AddressInfo): List<Address>
 }
+
+fun AddressRepository.saveAddressIfNotExists(
+    si: String,
+    gu: String,
+    dong: String,
+): Address {
+    // todo: validate address is correct?
+    return findByAddress(
+        si = si,
+        gu = gu,
+        dong = dong
+    ) ?: save(
+        Address.of(
+            si = si,
+            gu = gu,
+            dong = dong
+        )
+    )
+}
