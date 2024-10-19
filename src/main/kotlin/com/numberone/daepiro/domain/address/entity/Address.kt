@@ -37,5 +37,18 @@ class Address(
                 depth = info.depth
             )
         }
+
+        fun of(
+            si: String,
+            gu: String,
+            dong: String,
+        ): Address {
+            return Address(
+                si = si,
+                gu = gu,
+                dong = dong,
+                depth = 0, // todo: si, gu, dong 이 주어졌을 때 depth 구하는 private fun
+            )
+        }
     }
 }
