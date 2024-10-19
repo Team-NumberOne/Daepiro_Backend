@@ -40,7 +40,9 @@ class SwaggerConfig {
     fun workInProgressGroup(): GroupedOpenApi {
         return GroupedOpenApi.builder()
             .group("work in progress")
-            .pathsToMatch("")
+            .pathsToMatch(
+                "/v1/articles/**"
+            )
             .build()
     }
 

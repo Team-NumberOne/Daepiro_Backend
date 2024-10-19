@@ -1,13 +1,12 @@
 package com.numberone.daepiro.domain.user.service
 
-import com.numberone.daepiro.domain.address.entity.Address
 import com.numberone.daepiro.domain.address.entity.UserAddress
 import com.numberone.daepiro.domain.address.repository.AddressRepository
+import com.numberone.daepiro.domain.address.repository.GeoLocationConverter
 import com.numberone.daepiro.domain.address.repository.UserAddressRepository
 import com.numberone.daepiro.domain.address.vo.AddressInfo
 import com.numberone.daepiro.domain.disaster.entity.DisasterType
 import com.numberone.daepiro.domain.disaster.entity.UserDisasterType
-import com.numberone.daepiro.domain.disaster.repository.DisasterRepository
 import com.numberone.daepiro.domain.disaster.repository.DisasterTypeRepository
 import com.numberone.daepiro.domain.disaster.repository.UserDisasterTypeRepository
 import com.numberone.daepiro.domain.disaster.repository.findByTypeOrThrow
@@ -22,10 +21,7 @@ import com.numberone.daepiro.domain.user.repository.UserRepository
 import com.numberone.daepiro.domain.user.repository.findByIdOrThrow
 import com.numberone.daepiro.global.dto.ApiResult
 import com.numberone.daepiro.global.exception.CustomErrorContext.INVALID_ADDRESS_FORMAT
-import com.numberone.daepiro.global.exception.CustomErrorContext.INVALID_COORDINATES_CONVERTER
 import com.numberone.daepiro.global.exception.CustomException
-import com.numberone.daepiro.global.feign.KakaoLocalFeign
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -36,14 +32,12 @@ class UserService(
     private val userAddressRepository: UserAddressRepository,
     private val userDisasterTypeRepository: UserDisasterTypeRepository,
     private val disasterTypeRepository: DisasterTypeRepository,
-    private val kakaoLocalFeign: KakaoLocalFeign,
     private val addressRepository: AddressRepository,
-    private val disasterRepository: DisasterRepository,
     private val disasterService: DisasterService,
-    @Value("\${kakao.client-id}") private val kakaoClientId: String,
+    private val geoLocationConverter: GeoLocationConverter,
 ) {
     fun checkNickname(
-        nickname: String
+        nickname: String,
     ): ApiResult<CheckNicknameResponse> {
         val user = userRepository.findByNickname(nickname)
         return ApiResult.ok(CheckNicknameResponse.from(user == null))
@@ -52,7 +46,7 @@ class UserService(
     @Transactional
     fun setOnboardingData(
         request: OnboardingRequest,
-        userId: Long
+        userId: Long,
     ): ApiResult<Unit> {
         val user = userRepository.findByIdOrThrow(userId)
         user.initName(request.realname, request.nickname)
@@ -65,7 +59,7 @@ class UserService(
 
     private fun handleOnboardingDisasterType(
         disasterTypes: List<String>,
-        user: UserEntity
+        user: UserEntity,
     ) {
         userDisasterTypeRepository.deleteAllByUser(user)
 
@@ -84,7 +78,7 @@ class UserService(
 
     private fun handleOnboardingAddress(
         addresses: List<AddressRequest>,
-        user: UserEntity
+        user: UserEntity,
     ) {
         userAddressRepository.deleteAllByUser(user)
 
@@ -107,35 +101,13 @@ class UserService(
     @Transactional
     fun updateGps(
         request: UpdateGpsRequest,
-        userId: Long
+        userId: Long,
     ): ApiResult<Unit> {
-        val address = getAddressFromGPS(request.longitude, request.latitude)
+        val address = geoLocationConverter.findByLongitudeAndLatitudeOrThrow(request.longitude, request.latitude)
         val user = userRepository.findByIdOrThrow(userId)
 
         user.updateLocation(address)
         return ApiResult.ok()
-    }
-
-    private fun getAddressFromGPS(
-        longitude: Double,
-        latitude: Double
-    ): Address {
-        val kakaoAddress = kakaoLocalFeign.getAddress(
-            "KakaoAK $kakaoClientId",
-            longitude,
-            latitude
-        ) ?: throw CustomException(INVALID_COORDINATES_CONVERTER)
-        val address = kakaoAddress.documents.firstOrNull { it.regionType == "B" }
-            ?: throw CustomException(INVALID_COORDINATES_CONVERTER)
-        val location = addressRepository.findByAddressInfo(
-            AddressInfo.from(
-                address.siDo,
-                if (address.siGunGu == "") null else address.siGunGu,
-                if (address.eupMyeonDong == "") null else address.eupMyeonDong
-            )
-        ) ?: throw CustomException(INVALID_ADDRESS_FORMAT)
-
-        return location
     }
 
     fun getRecentDisasters(userId: Long): ApiResult<List<DisasterWithRegionResponse>> {
