@@ -16,6 +16,7 @@ spring:
     password: ${DB_PASSWORD}
   config:
     import: 'aws-secretsmanager:daepiro'
+
 springdoc:
   api-docs:
     path: /api-docs  # API 문서의 기본 경로 설정
@@ -38,6 +39,12 @@ naver:
 fcm:
   key-path: ${FCM_KEY_PATH}
 
+s3:
+  credentials:
+    access: ${S3_ACCESS_KEY}
+    secret: ${S3_SECRET_KEY}
+  bucket: ${S3_BUCKET}
+  region: ap-northeast-2
 
 
 
