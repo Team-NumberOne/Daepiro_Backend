@@ -3,6 +3,7 @@ package com.numberone.daepiro.domain.user.api
 import com.numberone.daepiro.domain.user.dto.request.OnboardingRequest
 import com.numberone.daepiro.domain.user.dto.request.UpdateGpsRequest
 import com.numberone.daepiro.domain.user.dto.response.CheckNicknameResponse
+import com.numberone.daepiro.domain.user.dto.response.DisasterWithRegionResponse
 import com.numberone.daepiro.domain.user.dto.response.GetUserResponse
 import com.numberone.daepiro.global.dto.ApiResult
 import io.swagger.v3.oas.annotations.Operation
@@ -40,4 +41,8 @@ interface UserApiV1 {
     fun updateGps(
         @RequestBody @Valid request: UpdateGpsRequest
     ): ApiResult<Unit>
+
+    @GetMapping("/disasters")
+    @Operation(summary = "최근 재난문자 내역 조회", description = "사용자의 최근 재난문자 내역을 조회합니다.")
+    fun getRecentDisasters(): ApiResult<List<DisasterWithRegionResponse>>
 }

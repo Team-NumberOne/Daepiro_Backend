@@ -3,7 +3,6 @@ package com.numberone.daepiro.domain.user.dto.request
 import io.swagger.v3.oas.annotations.media.Schema
 import jakarta.validation.constraints.DecimalMax
 import jakarta.validation.constraints.DecimalMin
-import jakarta.validation.constraints.Size
 
 data class UpdateGpsRequest(
     @Schema(description = "경도", example = "126.921212")

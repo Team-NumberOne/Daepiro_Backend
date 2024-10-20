@@ -4,6 +4,7 @@ import com.numberone.daepiro.domain.user.api.UserApiV1
 import com.numberone.daepiro.domain.user.dto.request.OnboardingRequest
 import com.numberone.daepiro.domain.user.dto.request.UpdateGpsRequest
 import com.numberone.daepiro.domain.user.dto.response.CheckNicknameResponse
+import com.numberone.daepiro.domain.user.dto.response.DisasterWithRegionResponse
 import com.numberone.daepiro.domain.user.dto.response.GetUserResponse
 import com.numberone.daepiro.domain.user.service.UserService
 import com.numberone.daepiro.global.dto.ApiResult
@@ -40,5 +41,9 @@ class UserController(
             request,
             SecurityContextUtils.getUserId()
         )
+    }
+
+    override fun getRecentDisasters(): ApiResult<List<DisasterWithRegionResponse>> {
+        return userService.getRecentDisasters(SecurityContextUtils.getUserId())
     }
 }

@@ -7,8 +7,10 @@ import com.numberone.daepiro.domain.address.repository.AddressRepository
 import com.numberone.daepiro.domain.address.repository.KoreaLocationRepository
 import com.numberone.daepiro.domain.address.repository.UserAddressRepository
 import com.numberone.daepiro.domain.address.vo.AddressInfo
+import com.numberone.daepiro.domain.disaster.entity.Disaster
 import com.numberone.daepiro.domain.disaster.entity.DisasterType
 import com.numberone.daepiro.domain.disaster.entity.UserDisasterType
+import com.numberone.daepiro.domain.disaster.repository.DisasterRepository
 import com.numberone.daepiro.domain.disaster.repository.DisasterTypeRepository
 import com.numberone.daepiro.domain.disaster.repository.UserDisasterTypeRepository
 import com.numberone.daepiro.domain.disaster.repository.findByTypeOrThrow
@@ -16,6 +18,7 @@ import com.numberone.daepiro.domain.user.dto.request.AddressRequest
 import com.numberone.daepiro.domain.user.dto.request.OnboardingRequest
 import com.numberone.daepiro.domain.user.dto.request.UpdateGpsRequest
 import com.numberone.daepiro.domain.user.dto.response.CheckNicknameResponse
+import com.numberone.daepiro.domain.user.dto.response.DisasterWithRegionResponse
 import com.numberone.daepiro.domain.user.entity.UserEntity
 import com.numberone.daepiro.domain.user.repository.UserRepository
 import com.numberone.daepiro.domain.user.repository.findByIdOrThrow
@@ -23,7 +26,6 @@ import com.numberone.daepiro.global.dto.ApiResult
 import com.numberone.daepiro.global.exception.CustomErrorContext.INVALID_ADDRESS_FORMAT
 import com.numberone.daepiro.global.exception.CustomErrorContext.INVALID_COORDINATES_CONVERTER
 import com.numberone.daepiro.global.exception.CustomException
-import com.numberone.daepiro.global.feign.KakaoAuthFeign
 import com.numberone.daepiro.global.feign.KakaoLocalFeign
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
@@ -39,6 +41,7 @@ class UserService(
     private val disasterTypeRepository: DisasterTypeRepository,
     private val kakaoLocalFeign: KakaoLocalFeign,
     private val koreaLocationRepository: KoreaLocationRepository,
+    private val disasterRepository: DisasterRepository,
     @Value("\${kakao.client-id}") private val kakaoClientId: String,
 ) {
     fun checkNickname(
@@ -65,6 +68,8 @@ class UserService(
         disasterTypes: List<String>,
         user: UserEntity
     ) {
+        userDisasterTypeRepository.deleteAllByUser(user)
+
         val userDisasterTypeList = mutableListOf<UserDisasterType>()
         for (str in disasterTypes) {
             val disasterType = disasterTypeRepository.findByTypeOrThrow(DisasterType.DisasterValue.kor2code(str))
@@ -82,6 +87,8 @@ class UserService(
         addresses: List<AddressRequest>,
         user: UserEntity
     ) {
+        userAddressRepository.deleteAllByUser(user)
+
         val userAddressList = mutableListOf<UserAddress>()
         for (addressReq in addresses) {
             val addressInfo = AddressInfo.from(addressReq.address)
@@ -130,5 +137,38 @@ class UserService(
         ) ?: throw CustomException(INVALID_ADDRESS_FORMAT)
 
         return location
+    }
+
+    fun getRecentDisasters(userId: Long): ApiResult<List<DisasterWithRegionResponse>> {
+        val user = userRepository.findByIdOrThrow(userId)
+        val desiredDisasterTypes = user.userDisasterTypes.map { it.disasterType.type }
+        val result = mutableListOf<DisasterWithRegionResponse>()
+        val allDisasters = mutableSetOf<Disaster>()
+
+        for (ua in user.userAddresses) {
+            val region = ua.name
+            val addressInfo = AddressInfo.from(
+                ua.address.si,
+                ua.address.gu,
+                ua.address.dong
+            )
+            val currentLocation = koreaLocationRepository.findByAddressInfo(addressInfo)
+                ?: throw CustomException(INVALID_ADDRESS_FORMAT)
+            val parentLocationId = koreaLocationRepository.findParentLocation(addressInfo).map { it.id!! }
+            var disasters = disasterRepository.findByLocationIdIn(parentLocationId + currentLocation.id!!)
+            disasters = disasters.filter { desiredDisasterTypes.contains(it.disasterType.type) }
+
+            allDisasters.addAll(disasters)
+
+            result.add(DisasterWithRegionResponse.of(region, disasters))
+        }
+        result.add(
+            0,
+            DisasterWithRegionResponse.of(
+                "전국",
+                allDisasters.sortedBy { it.generatedAt }.reversed()
+            )
+        )
+        return ApiResult.ok(result)
     }
 }

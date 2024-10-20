@@ -7,4 +7,6 @@ import org.springframework.data.jpa.repository.Query
 interface DisasterRepository : JpaRepository<Disaster, Long> {
     @Query("select d from Disaster d order by d.messageId desc")
     fun findLatestDisaster(): List<Disaster>
+
+    fun findByLocationIdIn(locationIds: List<Long>): List<Disaster>
 }
