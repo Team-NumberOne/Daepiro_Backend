@@ -1,7 +1,9 @@
 package com.numberone.daepiro.domain.user.api
 
 import com.numberone.daepiro.domain.user.dto.request.OnboardingRequest
+import com.numberone.daepiro.domain.user.dto.request.UpdateGpsRequest
 import com.numberone.daepiro.domain.user.dto.response.CheckNicknameResponse
+import com.numberone.daepiro.domain.user.dto.response.DisasterWithRegionResponse
 import com.numberone.daepiro.domain.user.dto.response.GetUserResponse
 import com.numberone.daepiro.global.dto.ApiResult
 import io.swagger.v3.oas.annotations.Operation
@@ -10,6 +12,7 @@ import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
@@ -32,4 +35,14 @@ interface UserApiV1 {
     fun setOnboardingData(
         @RequestBody @Valid request: OnboardingRequest
     ): ApiResult<Unit>
+
+    @PostMapping("/gps")
+    @Operation(summary = "GPS 정보 업데이트", description = "사용자의 GPS 정보를 업데이트합니다.")
+    fun updateGps(
+        @RequestBody @Valid request: UpdateGpsRequest
+    ): ApiResult<Unit>
+
+    @GetMapping("/disasters")
+    @Operation(summary = "최근 재난문자 내역 조회", description = "사용자의 최근 재난문자 내역을 조회합니다.")
+    fun getRecentDisasters(): ApiResult<List<DisasterWithRegionResponse>>
 }

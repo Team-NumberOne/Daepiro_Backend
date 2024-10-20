@@ -13,4 +13,18 @@ interface KoreaLocationRepository : JpaRepository<KoreaLocation, Long> {
             "(k.eupMyeonDong = :#{#addressInfo.dong} or (:#{#addressInfo.dong} is null and k.eupMyeonDong is null))"
     )
     fun findByAddressInfo(addressInfo: AddressInfo): KoreaLocation?
+
+    @Query(
+        "select k from KoreaLocation k " +
+            "where (:#{#ai.depth} > 1 and k.siDo = :#{#ai.si} and k.siGunGu is null and k.eupMyeonDong is null) or " +
+            "(:#{#ai.depth} > 2 and k.siDo = :#{#ai.si} and k.siGunGu = :#{#ai.gu} and k.eupMyeonDong is null)"
+    )
+    fun findParentLocation(ai: AddressInfo): List<KoreaLocation>
+
+    @Query(
+        "select k from KoreaLocation k " +
+            "where (:#{#ai.depth} = 1 and k.siDo = :#{#ai.si}) or " +
+            "(:#{#ai.depth} = 2 and k.siDo = :#{#ai.si} and k.siGunGu = :#{#ai.gu})"
+    )
+    fun findChildLocation(ai: AddressInfo): List<KoreaLocation>
 }

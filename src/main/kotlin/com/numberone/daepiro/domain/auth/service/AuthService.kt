@@ -17,7 +17,7 @@ import com.numberone.daepiro.global.exception.CustomErrorContext.INVALID_SOCIAL_
 import com.numberone.daepiro.global.exception.CustomErrorContext.INVALID_TOKEN
 import com.numberone.daepiro.global.exception.CustomErrorContext.NOT_FOUND_USER
 import com.numberone.daepiro.global.exception.CustomException
-import com.numberone.daepiro.global.feign.KakaoFeign
+import com.numberone.daepiro.global.feign.KakaoAuthFeign
 import com.numberone.daepiro.global.feign.NaverFeign
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.security.crypto.password.PasswordEncoder
@@ -29,7 +29,7 @@ import org.springframework.transaction.annotation.Transactional
 class AuthService(
     private val userRepository: UserRepository,
     private val passwordEncoder: PasswordEncoder,
-    private val kakaoFeign: KakaoFeign,
+    private val kakaoAuthFeign: KakaoAuthFeign,
     private val naverFeign: NaverFeign,
     @Value("\${jwt.secret-key}") private val secretKey: String,
     @Value("\${jwt.access-token-expire}") private val accessTokenExpire: Long,
@@ -40,7 +40,7 @@ class AuthService(
     fun kakaoLogin(
         request: SocialLoginRequest
     ): ApiResult<LoginResponse> {
-        val userInfo = kakaoFeign.getUserInfo(JwtUtils.PREFIX_BEARER + request.socialToken)
+        val userInfo = kakaoAuthFeign.getUserInfo(JwtUtils.PREFIX_BEARER + request.socialToken)
             ?: throw CustomException(INVALID_SOCIAL_TOKEN)
         val socialId = userInfo.id.toString()
         val user = getOrCreateUser(socialId, SocialPlatform.KAKAO)
