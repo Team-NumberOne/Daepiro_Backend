@@ -2,6 +2,7 @@ package com.numberone.daepiro.domain.user.controller
 
 import com.numberone.daepiro.domain.user.api.UserApiV1
 import com.numberone.daepiro.domain.user.dto.request.OnboardingRequest
+import com.numberone.daepiro.domain.user.dto.request.UpdateGpsRequest
 import com.numberone.daepiro.domain.user.dto.response.CheckNicknameResponse
 import com.numberone.daepiro.domain.user.dto.response.GetUserResponse
 import com.numberone.daepiro.domain.user.service.UserService
@@ -27,6 +28,15 @@ class UserController(
         request: OnboardingRequest
     ): ApiResult<Unit> {
         return userService.setOnboardingData(
+            request,
+            SecurityContextUtils.getUserId()
+        )
+    }
+
+    override fun updateGps(
+        request: UpdateGpsRequest
+    ): ApiResult<Unit> {
+        return userService.updateGps(
             request,
             SecurityContextUtils.getUserId()
         )

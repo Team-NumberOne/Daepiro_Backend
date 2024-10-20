@@ -48,5 +48,18 @@ data class AddressInfo(
                 depth = depth
             )
         }
+
+        fun from(
+            si: String,
+            gu: String?,
+            dong: String?
+        ): AddressInfo {
+            return AddressInfo(
+                si = si,
+                gu = gu,
+                dong = dong,
+                depth = if (dong != null) 3 else if (gu != null) 2 else 1
+            )
+        }
     }
 }
