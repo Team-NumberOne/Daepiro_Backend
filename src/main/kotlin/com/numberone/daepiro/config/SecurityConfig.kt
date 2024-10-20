@@ -19,6 +19,9 @@ import org.springframework.security.web.AuthenticationEntryPoint
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.access.AccessDeniedHandler
 import org.springframework.security.web.access.ExceptionTranslationFilter
+import org.springframework.web.cors.CorsConfiguration
+import org.springframework.web.cors.CorsConfigurationSource
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 
 @Configuration
 class SecurityConfig(
@@ -42,9 +45,12 @@ class SecurityConfig(
                 authorize(POST, "/v1/auth/login/**", permitAll)
                 authorize(POST, "/v1/auth/refresh", permitAll)
                 authorize(POST, "/v1/auth/admin", permitAll)
+                authorize(POST, "/v1/auth/user", permitAll)
+                authorize("/v1/datacollector/**", hasAuthority("ADMIN"))
                 authorize(anyRequest, authenticated)
             }
             addFilterBefore<ExceptionTranslationFilter>(jwtFilter)
+            cors { configurationSource = corsConfigurationSource() }
             exceptionHandling {
                 authenticationEntryPoint = authNFailHandler
                 accessDeniedHandler = authZFailHandler
@@ -52,6 +58,17 @@ class SecurityConfig(
             sessionManagement { sessionCreationPolicy = STATELESS }
         }
         return http.build()
+    }
+
+    @Bean
+    fun corsConfigurationSource(): CorsConfigurationSource {
+        val configuration = CorsConfiguration()
+        configuration.allowedOrigins = listOf("*")
+        configuration.allowedMethods = listOf("POST", "GET", "DELETE", "PUT")
+        configuration.allowedHeaders = listOf("*")
+        val source = UrlBasedCorsConfigurationSource()
+        source.registerCorsConfiguration("/**", configuration)
+        return source
     }
 
     @Bean
