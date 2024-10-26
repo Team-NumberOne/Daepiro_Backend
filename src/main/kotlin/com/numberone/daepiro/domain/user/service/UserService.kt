@@ -1,10 +1,8 @@
 package com.numberone.daepiro.domain.user.service
 
 import com.numberone.daepiro.domain.address.entity.Address
-import com.numberone.daepiro.domain.address.entity.KoreaLocation
 import com.numberone.daepiro.domain.address.entity.UserAddress
 import com.numberone.daepiro.domain.address.repository.AddressRepository
-import com.numberone.daepiro.domain.address.repository.KoreaLocationRepository
 import com.numberone.daepiro.domain.address.repository.UserAddressRepository
 import com.numberone.daepiro.domain.address.vo.AddressInfo
 import com.numberone.daepiro.domain.disaster.entity.Disaster
@@ -35,12 +33,11 @@ import org.springframework.transaction.annotation.Transactional
 @Transactional(readOnly = true)
 class UserService(
     private val userRepository: UserRepository,
-    private val addressRepository: AddressRepository,
     private val userAddressRepository: UserAddressRepository,
     private val userDisasterTypeRepository: UserDisasterTypeRepository,
     private val disasterTypeRepository: DisasterTypeRepository,
     private val kakaoLocalFeign: KakaoLocalFeign,
-    private val koreaLocationRepository: KoreaLocationRepository,
+    private val addressRepository: AddressRepository,
     private val disasterRepository: DisasterRepository,
     @Value("\${kakao.client-id}") private val kakaoClientId: String,
 ) {
@@ -92,8 +89,8 @@ class UserService(
         val userAddressList = mutableListOf<UserAddress>()
         for (addressReq in addresses) {
             val addressInfo = AddressInfo.from(addressReq.address)
-            val addressEntity = addressRepository.findByAddress(addressInfo.si, addressInfo.gu, addressInfo.dong)
-                ?: addressRepository.save(Address.from(addressInfo))
+            val addressEntity = addressRepository.findByAddressInfo(addressInfo)
+                ?: throw CustomException(INVALID_ADDRESS_FORMAT)
             userAddressList.add(
                 UserAddress.of(
                     name = addressReq.name,
@@ -110,17 +107,17 @@ class UserService(
         request: UpdateGpsRequest,
         userId: Long
     ): ApiResult<Unit> {
-        val location = getLocationFromGPS(request.longitude, request.latitude)
+        val address = getAddressFromGPS(request.longitude, request.latitude)
         val user = userRepository.findByIdOrThrow(userId)
 
-        user.updateLocation(location)
+        user.updateLocation(address)
         return ApiResult.ok()
     }
 
-    private fun getLocationFromGPS(
+    private fun getAddressFromGPS(
         longitude: Double,
         latitude: Double
-    ): KoreaLocation {
+    ): Address {
         val kakaoAddress = kakaoLocalFeign.getAddress(
             "KakaoAK $kakaoClientId",
             longitude,
@@ -128,7 +125,7 @@ class UserService(
         ) ?: throw CustomException(INVALID_COORDINATES_CONVERTER)
         val address = kakaoAddress.documents.firstOrNull { it.regionType == "B" }
             ?: throw CustomException(INVALID_COORDINATES_CONVERTER)
-        val location = koreaLocationRepository.findByAddressInfo(
+        val location = addressRepository.findByAddressInfo(
             AddressInfo.from(
                 address.siDo,
                 if (address.siGunGu == "") null else address.siGunGu,
@@ -148,14 +145,14 @@ class UserService(
         for (ua in user.userAddresses) {
             val region = ua.name
             val addressInfo = AddressInfo.from(
-                ua.address.si,
-                ua.address.gu,
-                ua.address.dong
+                ua.address.siDo,
+                ua.address.siGunGu,
+                ua.address.eupMyeonDong
             )
-            val currentLocation = koreaLocationRepository.findByAddressInfo(addressInfo)
+            val currentAddress = addressRepository.findByAddressInfo(addressInfo)
                 ?: throw CustomException(INVALID_ADDRESS_FORMAT)
-            val parentLocationId = koreaLocationRepository.findParentLocation(addressInfo).map { it.id!! }
-            var disasters = disasterRepository.findByLocationIdIn(parentLocationId + currentLocation.id!!)
+            val parentAddressIds = addressRepository.findParentAddress(addressInfo).map { it.id!! }
+            var disasters = disasterRepository.findByAddressIdIn(parentAddressIds + currentAddress.id!!)
             disasters = disasters.filter { desiredDisasterTypes.contains(it.disasterType.type) }
 
             allDisasters.addAll(disasters)

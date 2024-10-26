@@ -21,7 +21,7 @@ data class DisasterResponse(
         fun of(disaster: Disaster): DisasterResponse {
             return DisasterResponse(
                 disasterType = disaster.disasterType.type.korean,
-                title = "${disaster.location.toAddress()} ${disaster.disasterType.type.korean} 발생",
+                title = "${disaster.address.toAddress()} ${disaster.disasterType.type.korean} 발생",
                 content = disaster.message,
                 time = disaster.generatedAt
             )

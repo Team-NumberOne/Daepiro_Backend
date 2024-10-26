@@ -1,6 +1,6 @@
 package com.numberone.daepiro.domain.disaster.entity
 
-import com.numberone.daepiro.domain.address.entity.KoreaLocation
+import com.numberone.daepiro.domain.address.entity.Address
 import com.numberone.daepiro.domain.baseentity.PrimaryKeyEntity
 import jakarta.persistence.ConstraintMode
 import jakarta.persistence.Entity
@@ -21,8 +21,8 @@ class Disaster(
     val message: String,
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "location_id", foreignKey = ForeignKey(ConstraintMode.NO_CONSTRAINT))
-    val location: KoreaLocation,
+    @JoinColumn(name = "address_id", foreignKey = ForeignKey(ConstraintMode.NO_CONSTRAINT))
+    val address: Address,
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "disaster_type_id", foreignKey = ForeignKey(ConstraintMode.NO_CONSTRAINT))
@@ -35,14 +35,14 @@ class Disaster(
             generatedAt: LocalDateTime,
             messageId: Long,
             message: String,
-            location: KoreaLocation,
+            address: Address,
             disasterType: DisasterType
         ): Disaster {
             return Disaster(
                 generatedAt = generatedAt,
                 messageId = messageId,
                 message = message,
-                location = location,
+                address = address,
                 disasterType = disasterType,
                 isDummy = false
             )
@@ -52,14 +52,14 @@ class Disaster(
             generatedAt: LocalDateTime,
             messageId: Long,
             message: String,
-            location: KoreaLocation,
+            address: Address,
             disasterType: DisasterType
         ): Disaster {
             return Disaster(
                 generatedAt = generatedAt,
                 messageId = messageId,
                 message = message,
-                location = location,
+                address = address,
                 disasterType = disasterType,
                 isDummy = true
             )

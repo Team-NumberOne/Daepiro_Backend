@@ -1,41 +1,39 @@
 package com.numberone.daepiro.domain.address.entity
 
-import com.numberone.daepiro.domain.address.vo.AddressInfo
-import com.numberone.daepiro.domain.baseentity.PrimaryKeyEntity
+import com.numberone.daepiro.domain.disaster.entity.Disaster
 import jakarta.persistence.CascadeType
+import jakarta.persistence.Column
 import jakarta.persistence.Entity
+import jakarta.persistence.GeneratedValue
+import jakarta.persistence.GenerationType
+import jakarta.persistence.Id
 import jakarta.persistence.OneToMany
-import jakarta.persistence.Table
-import org.hibernate.annotations.Comment
 
 @Entity
-@Table(name = "`address`")
 class Address(
-    @Comment("시/도")
-    val si: String,
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    var id: Long? = null,
 
-    @Comment("시/군/구")
-    val gu: String? = null,
+    @Column(name = "si_do")
+    var siDo: String,
 
-    @Comment("읍/면/동")
-    val dong: String? = null,
+    @Column(name = "si_gun_gu")
+    var siGunGu: String? = null,
 
-    // 1: 시/도, 2: 시/군/구, 3: 읍/면/동
+    @Column(name = "eup_myeon_dong")
+    var eupMyeonDong: String? = null,
+
     val depth: Int = 0,
 
     @OneToMany(mappedBy = "address", cascade = [CascadeType.ALL])
+    val disasters: List<Disaster> = emptyList(),
+
+    @OneToMany(mappedBy = "address", cascade = [CascadeType.ALL])
     val userAddresses: List<UserAddress> = emptyList()
-) : PrimaryKeyEntity() {
-    companion object {
-        fun from(
-            info: AddressInfo,
-        ): Address {
-            return Address(
-                si = info.si,
-                gu = info.gu,
-                dong = info.dong,
-                depth = info.depth
-            )
-        }
+) {
+    fun toAddress(): String {
+        val ret = "$siDo $siGunGu $eupMyeonDong"
+        return ret.replace(" null", "")
     }
 }

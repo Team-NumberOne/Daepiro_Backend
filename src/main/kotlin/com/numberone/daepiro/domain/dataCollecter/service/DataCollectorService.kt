@@ -1,6 +1,6 @@
 package com.numberone.daepiro.domain.dataCollecter.service
 
-import com.numberone.daepiro.domain.address.repository.KoreaLocationRepository
+import com.numberone.daepiro.domain.address.repository.AddressRepository
 import com.numberone.daepiro.domain.address.vo.AddressInfo
 import com.numberone.daepiro.domain.dataCollecter.dto.request.SaveDisastersRequest
 import com.numberone.daepiro.domain.dataCollecter.dto.request.SaveNewsRequest
@@ -25,7 +25,7 @@ import java.time.LocalDateTime
 class DataCollectorService(
     private val newsRepository: NewsRepository,
     private val disasterRepository: DisasterRepository,
-    private val koreaLocationRepository: KoreaLocationRepository,
+    private val addressRepository: AddressRepository,
     private val disasterTypeRepository: DisasterTypeRepository
 ) {
     fun getLatestNews(): ApiResult<GetLatestNewsResponse> {
@@ -75,7 +75,7 @@ class DataCollectorService(
                 generatedAt = it.generatedAt,
                 messageId = it.messageId,
                 message = it.message,
-                location = koreaLocationRepository.findByAddressInfo(AddressInfo.from(it.locationStr))
+                address = addressRepository.findByAddressInfo(AddressInfo.from(it.locationStr))
                     ?: throw CustomException(INVALID_ADDRESS_FORMAT),
                 disasterType = disasterTypeRepository.findByType(DisasterValue.kor2code(it.disasterType))
                     ?: throw CustomException(NOT_FOUND_DISASTER_TYPE),
