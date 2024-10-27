@@ -21,6 +21,7 @@ enum class CustomErrorContext(
 
     // 22xx: 재난 관련 오류
     NOT_FOUND_DISASTER_TYPE(HttpStatus.NOT_FOUND, 2200, "재난 유형을 찾을 수 없습니다."),
+    NOT_FOUND_OCCURRED_DISASTER(HttpStatus.NOT_FOUND, 2201, "발생한 재난을 찾을 수 없습니다."),
 
     // 23xx: 주소 관련 오류
     INVALID_ADDRESS_FORMAT(HttpStatus.BAD_REQUEST, 2300, "주소 형식이 잘못되었습니다."),

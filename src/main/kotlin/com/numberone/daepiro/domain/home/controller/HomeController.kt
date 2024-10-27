@@ -19,7 +19,8 @@ class HomeController(
     }
 
     override fun getWarning(): ApiResult<GetWarningResponse> {
-        TODO("Not yet implemented")
+        val userId = SecurityContextUtils.getUserId()
+        return homeService.getWarning(userId)
     }
 
     override fun getStatus(): ApiResult<GetStatusResponse> {
