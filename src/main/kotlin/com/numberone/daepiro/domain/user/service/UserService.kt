@@ -12,6 +12,7 @@ import com.numberone.daepiro.domain.disaster.repository.DisasterRepository
 import com.numberone.daepiro.domain.disaster.repository.DisasterTypeRepository
 import com.numberone.daepiro.domain.disaster.repository.UserDisasterTypeRepository
 import com.numberone.daepiro.domain.disaster.repository.findByTypeOrThrow
+import com.numberone.daepiro.domain.disaster.service.DisasterService
 import com.numberone.daepiro.domain.user.dto.request.AddressRequest
 import com.numberone.daepiro.domain.user.dto.request.OnboardingRequest
 import com.numberone.daepiro.domain.user.dto.request.UpdateGpsRequest
@@ -39,6 +40,7 @@ class UserService(
     private val kakaoLocalFeign: KakaoLocalFeign,
     private val addressRepository: AddressRepository,
     private val disasterRepository: DisasterRepository,
+    private val disasterService: DisasterService,
     @Value("\${kakao.client-id}") private val kakaoClientId: String,
 ) {
     fun checkNickname(
@@ -138,34 +140,25 @@ class UserService(
 
     fun getRecentDisasters(userId: Long): ApiResult<List<DisasterWithRegionResponse>> {
         val user = userRepository.findByIdOrThrow(userId)
-        val desiredDisasterTypes = user.userDisasterTypes.map { it.disasterType.type }
+        val desiredDisasterTypes = user.userDisasterTypes.map { it.disasterType }
+        val allAddresses = user.userAddresses.map { it.address }
         val result = mutableListOf<DisasterWithRegionResponse>()
-        val allDisasters = mutableSetOf<Disaster>()
 
-        for (ua in user.userAddresses) {
-            val region = ua.name
-            val addressInfo = AddressInfo.from(
-                ua.address.siDo,
-                ua.address.siGunGu,
-                ua.address.eupMyeonDong
-            )
-            val currentAddress = addressRepository.findByAddressInfo(addressInfo)
-                ?: throw CustomException(INVALID_ADDRESS_FORMAT)
-            val parentAddressIds = addressRepository.findParentAddress(addressInfo).map { it.id!! }
-            var disasters = disasterRepository.findByAddressIdIn(parentAddressIds + currentAddress.id!!)
-            disasters = disasters.filter { desiredDisasterTypes.contains(it.disasterType.type) }
-
-            allDisasters.addAll(disasters)
-
-            result.add(DisasterWithRegionResponse.of(region, disasters))
-        }
         result.add(
-            0,
             DisasterWithRegionResponse.of(
                 "전국",
-                allDisasters.sortedBy { it.generatedAt }.reversed()
+                disasterService.getDisasterByAddressAndType(allAddresses, desiredDisasterTypes)
             )
         )
+        for (ua in user.userAddresses) {
+            val disasters = disasterService.getDisasterByAddressAndType(ua.address, desiredDisasterTypes)
+            result.add(
+                DisasterWithRegionResponse.of(
+                    ua.name,
+                    disasters
+                )
+            )
+        }
         return ApiResult.ok(result)
     }
 }
