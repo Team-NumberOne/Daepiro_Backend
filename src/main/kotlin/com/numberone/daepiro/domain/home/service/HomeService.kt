@@ -2,6 +2,7 @@ package com.numberone.daepiro.domain.home.service
 
 import com.numberone.daepiro.domain.disaster.entity.Disaster
 import com.numberone.daepiro.domain.disaster.service.DisasterService
+import com.numberone.daepiro.domain.home.dto.response.GetStatusResponse
 import com.numberone.daepiro.domain.home.dto.response.GetWarningResponse
 import com.numberone.daepiro.domain.home.dto.response.HomeDisasterFeed
 import com.numberone.daepiro.domain.user.repository.UserRepository
@@ -40,12 +41,21 @@ class HomeService(
             user.userAddresses.map { it.address },
             user.userDisasterTypes.map { it.disasterType }
         )
-        val twentyFourHoursAgo = LocalDateTime.now().minusHours(24)
+        val twentyFourHoursAgo = LocalDateTime.now().minusHours(240)
         val disaster = disasters.firstOrNull()
             ?: throw CustomException(NOT_FOUND_OCCURRED_DISASTER)
         if (disaster.generatedAt.isBefore(twentyFourHoursAgo))
             throw CustomException(NOT_FOUND_OCCURRED_DISASTER)
 
         return ApiResult.ok(GetWarningResponse.from(disaster))
+    }
+
+    fun getStatus(userId: Long): ApiResult<GetStatusResponse> {
+        try {
+            getWarning(userId)
+        } catch (e: CustomException) {
+            return ApiResult.ok(GetStatusResponse(false))
+        }
+        return ApiResult.ok(GetStatusResponse(true))
     }
 }

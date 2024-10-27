@@ -24,6 +24,7 @@ class HomeController(
     }
 
     override fun getStatus(): ApiResult<GetStatusResponse> {
-        TODO("Not yet implemented")
+        val userId = SecurityContextUtils.getUserId()
+        return homeService.getStatus(userId)
     }
 }
