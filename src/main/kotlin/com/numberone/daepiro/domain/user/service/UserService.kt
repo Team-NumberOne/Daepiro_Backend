@@ -5,7 +5,6 @@ import com.numberone.daepiro.domain.address.entity.UserAddress
 import com.numberone.daepiro.domain.address.repository.AddressRepository
 import com.numberone.daepiro.domain.address.repository.UserAddressRepository
 import com.numberone.daepiro.domain.address.vo.AddressInfo
-import com.numberone.daepiro.domain.disaster.entity.Disaster
 import com.numberone.daepiro.domain.disaster.entity.DisasterType
 import com.numberone.daepiro.domain.disaster.entity.UserDisasterType
 import com.numberone.daepiro.domain.disaster.repository.DisasterRepository

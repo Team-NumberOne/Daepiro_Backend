@@ -16,7 +16,7 @@ data class GetWarningResponse(
 
     @Schema(description = "발생 시간", example = "2024-10-23T19:53:00")
     val time: LocalDateTime
-){
+) {
     companion object {
         fun from(disaster: Disaster): GetWarningResponse {
             return GetWarningResponse(
