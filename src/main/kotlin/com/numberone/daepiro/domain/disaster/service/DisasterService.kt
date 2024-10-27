@@ -28,7 +28,7 @@ class DisasterService(
                 .map { it.id!! }
             addressIds.addAll(parentAddressIds + address.id!!)
         }
-        return disasterRepository.findByAddressIdIn(addressIds)
+        return disasterRepository.findByAddressIdInOrderByGeneratedAtDesc(addressIds)
             .filter { disasterTypes.contains(it.disasterType.type) }
     }
 
