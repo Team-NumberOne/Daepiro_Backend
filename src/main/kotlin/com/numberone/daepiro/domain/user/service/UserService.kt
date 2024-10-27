@@ -146,7 +146,7 @@ class UserService(
 
         result.add(
             DisasterWithRegionResponse.of(
-                "전국",
+                "전체",
                 disasterService.getDisasterByAddressAndType(allAddresses, desiredDisasterTypes)
             )
         )
