@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Configuration
 import org.springframework.core.io.ClassPathResource
 
-
 @Configuration
 class FcmConfig(
     @Value("\${fcm.key-path}") private val keyPath: String,

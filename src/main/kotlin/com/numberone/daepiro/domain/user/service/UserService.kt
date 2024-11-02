@@ -56,6 +56,7 @@ class UserService(
     ): ApiResult<Unit> {
         val user = userRepository.findByIdOrThrow(userId)
         user.initName(request.realname, request.nickname)
+        user.initFcmToken(request.fcmToken)
         handleOnboardingAddress(request.addresses, user)
         handleOnboardingDisasterType(request.disasterTypes, user)
         user.completeOnboarding()
