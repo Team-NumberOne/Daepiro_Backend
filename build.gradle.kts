@@ -89,6 +89,9 @@ dependencies {
 
     // open feign
     implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
+
+    // fcm
+    implementation("com.google.firebase:firebase-admin:8.1.0")
 }
 
 kotlin {

@@ -35,6 +35,8 @@ kakao:
 naver:
   base-url: ${NAVER_BASE_URL}
   token-info-url: ${NAVER_TOKEN_INFO_URL}
+fcm:
+  key-path: ${FCM_KEY_PATH}
 
 
 
