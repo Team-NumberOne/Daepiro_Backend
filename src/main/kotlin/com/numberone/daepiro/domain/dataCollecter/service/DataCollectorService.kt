@@ -1,6 +1,7 @@
 package com.numberone.daepiro.domain.dataCollecter.service
 
 import com.numberone.daepiro.domain.address.repository.AddressRepository
+import com.numberone.daepiro.domain.address.repository.UserAddressRepository
 import com.numberone.daepiro.domain.address.vo.AddressInfo
 import com.numberone.daepiro.domain.dataCollecter.dto.request.SaveDisastersRequest
 import com.numberone.daepiro.domain.dataCollecter.dto.request.SaveNewsRequest
@@ -16,6 +17,7 @@ import com.numberone.daepiro.global.dto.ApiResult
 import com.numberone.daepiro.global.exception.CustomErrorContext.INVALID_ADDRESS_FORMAT
 import com.numberone.daepiro.global.exception.CustomErrorContext.NOT_FOUND_DISASTER_TYPE
 import com.numberone.daepiro.global.exception.CustomException
+import com.numberone.daepiro.global.utils.FcmUtils
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
@@ -26,7 +28,8 @@ class DataCollectorService(
     private val newsRepository: NewsRepository,
     private val disasterRepository: DisasterRepository,
     private val addressRepository: AddressRepository,
-    private val disasterTypeRepository: DisasterTypeRepository
+    private val disasterTypeRepository: DisasterTypeRepository,
+    private val userAddressRepository: UserAddressRepository,
 ) {
     fun getLatestNews(): ApiResult<GetLatestNewsResponse> {
         val news = newsRepository.findLatestNews().firstOrNull()
@@ -83,5 +86,24 @@ class DataCollectorService(
         }
 
         disasterRepository.saveAll(disasters)
+        sendDisasterNotification(disasters)
+    }
+
+    private fun sendDisasterNotification(disasters: List<Disaster>) {
+        for (disaster in disasters) {
+            val addressInfo = AddressInfo.from(disaster.address)
+            val currentAddress = addressRepository.findByAddressInfo(addressInfo)
+                ?: throw CustomException(INVALID_ADDRESS_FORMAT)
+            val addresses = addressRepository.findChildAddress(addressInfo) + currentAddress
+            val fcmTokens = userAddressRepository
+                .findByAddressIdIn(addresses.map { it.id!! })
+                .mapNotNull { it.user.fcmToken }
+
+            FcmUtils.sendFcm(
+                fcmTokens,
+                "${disaster.address.toAddress()} ${disaster.disasterType.type.korean} 발생",
+                disaster.message
+            )
+        }
     }
 }

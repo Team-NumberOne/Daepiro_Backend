@@ -48,6 +48,8 @@ class UserEntity(
 
     @OneToMany(mappedBy = "user", cascade = [CascadeType.ALL])
     val userDisasterTypes: List<UserDisasterType> = emptyList(),
+
+    var fcmToken: String? = null,
 ) : PrimaryKeyEntity() {
     companion object {
         fun of(
@@ -70,6 +72,10 @@ class UserEntity(
     ) {
         this.realname = realname
         this.nickname = nickname
+    }
+
+    fun initFcmToken(fcmToken: String) {
+        this.fcmToken = fcmToken
     }
 
     fun completeOnboarding() {

@@ -6,4 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository
 
 interface UserAddressRepository : JpaRepository<UserAddress, Long> {
     fun deleteAllByUser(user: UserEntity)
+    fun findByAddressIdIn(addressId: List<Long>): List<UserAddress>
 }
