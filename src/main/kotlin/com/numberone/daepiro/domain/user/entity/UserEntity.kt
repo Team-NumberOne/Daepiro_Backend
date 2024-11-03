@@ -1,6 +1,6 @@
 package com.numberone.daepiro.domain.user.entity
 
-import com.numberone.daepiro.domain.address.entity.KoreaLocation
+import com.numberone.daepiro.domain.address.entity.Address
 import com.numberone.daepiro.domain.address.entity.UserAddress
 import com.numberone.daepiro.domain.baseentity.PrimaryKeyEntity
 import com.numberone.daepiro.domain.disaster.entity.UserDisasterType
@@ -40,8 +40,8 @@ class UserEntity(
     var isCompletedOnboarding: Boolean = false,
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "location_id", foreignKey = ForeignKey(ConstraintMode.NO_CONSTRAINT))
-    var location: KoreaLocation? = null,
+    @JoinColumn(name = "address_id", foreignKey = ForeignKey(ConstraintMode.NO_CONSTRAINT))
+    var address: Address? = null,
 
     @OneToMany(mappedBy = "user", cascade = [CascadeType.ALL])
     val userAddresses: List<UserAddress> = emptyList(),
@@ -76,7 +76,7 @@ class UserEntity(
         isCompletedOnboarding = true
     }
 
-    fun updateLocation(location: KoreaLocation) {
-        this.location = location
+    fun updateLocation(location: Address) {
+        this.address = location
     }
 }

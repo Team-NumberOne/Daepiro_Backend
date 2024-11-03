@@ -1,5 +1,6 @@
 package com.numberone.daepiro.domain.address.vo
 
+import com.numberone.daepiro.domain.address.entity.Address
 import com.numberone.daepiro.global.exception.CustomErrorContext
 import com.numberone.daepiro.global.exception.CustomException
 
@@ -59,6 +60,17 @@ data class AddressInfo(
                 gu = gu,
                 dong = dong,
                 depth = if (dong != null) 3 else if (gu != null) 2 else 1
+            )
+        }
+
+        fun from(
+            address: Address
+        ): AddressInfo {
+            return AddressInfo(
+                si = address.siDo,
+                gu = address.siGunGu,
+                dong = address.eupMyeonDong,
+                depth = if (address.eupMyeonDong != null) 3 else if (address.siGunGu != null) 2 else 1
             )
         }
     }

@@ -1,10 +1,10 @@
-package com.numberone.daepiro.domain.user.dto.response
+package com.numberone.daepiro.domain.home.dto.response
 
 import com.numberone.daepiro.domain.disaster.entity.Disaster
 import io.swagger.v3.oas.annotations.media.Schema
 import java.time.LocalDateTime
 
-data class DisasterResponse(
+data class GetWarningResponse(
     @Schema(description = "재난 종류", example = "호우")
     val disasterType: String,
 
@@ -18,8 +18,8 @@ data class DisasterResponse(
     val time: LocalDateTime
 ) {
     companion object {
-        fun of(disaster: Disaster): DisasterResponse {
-            return DisasterResponse(
+        fun from(disaster: Disaster): GetWarningResponse {
+            return GetWarningResponse(
                 disasterType = disaster.disasterType.type.korean,
                 title = "${disaster.address.toAddress()} ${disaster.disasterType.type.korean} 발생",
                 content = disaster.message,
