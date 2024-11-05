@@ -29,6 +29,8 @@ class SwaggerConfig {
             .pathsToMatch(
                 "/v1/auth/**",
                 "/v1/users/**",
+                "/v1/datacollector/**",
+                "/v1/home/**"
             )
             .build()
     }
