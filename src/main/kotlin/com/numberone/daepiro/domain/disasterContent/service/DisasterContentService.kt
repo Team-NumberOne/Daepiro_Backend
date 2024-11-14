@@ -1,7 +1,7 @@
 package com.numberone.daepiro.domain.disasterContent.service
 
 import com.numberone.daepiro.domain.dataCollecter.repository.NewsRepository
-import com.numberone.daepiro.domain.disasterContent.dto.response.GetDisasterContentsResponse
+import com.numberone.daepiro.domain.disasterContent.dto.response.DisasterContentsResponse
 import com.numberone.daepiro.global.dto.ApiResult
 import com.numberone.daepiro.global.exception.CustomErrorContext.INVALID_DISASTER_CONTENT_SORT_TYPE
 import com.numberone.daepiro.global.exception.CustomException
@@ -18,11 +18,11 @@ class DisasterContentService(
         sortType: String,
         cursor: Long?,
         size: Long
-    ): ApiResult<GetDisasterContentsResponse> {
+    ): ApiResult<DisasterContentsResponse> {
         val pageable = PageRequest.of(0, size.toInt())
         val currentCursor = cursor
             ?: newsRepository.findLatestNews().firstOrNull()?.id
-            ?: return ApiResult.ok(GetDisasterContentsResponse.of(emptyList()))
+            ?: return ApiResult.ok(DisasterContentsResponse.of(emptyList()))
 
         val newsList = when (sortType) {
             "latest" -> {
@@ -39,21 +39,21 @@ class DisasterContentService(
             }
         }
 
-        return ApiResult.ok(GetDisasterContentsResponse.of(newsList))
+        return ApiResult.ok(DisasterContentsResponse.of(newsList))
     }
 
     fun searchDisasterContents(
         keyword: String,
         cursor: Long?,
         size: Long
-    ): ApiResult<GetDisasterContentsResponse> {
+    ): ApiResult<DisasterContentsResponse> {
         val pageable = PageRequest.of(0, size.toInt())
         val currentCursor = cursor
             ?: newsRepository.findLatestNews().firstOrNull()?.id
-            ?: return ApiResult.ok(GetDisasterContentsResponse.of(emptyList()))
+            ?: return ApiResult.ok(DisasterContentsResponse.of(emptyList()))
 
         val newsList = newsRepository.searchNews(keyword, currentCursor, pageable)
 
-        return ApiResult.ok(GetDisasterContentsResponse.of(newsList))
+        return ApiResult.ok(DisasterContentsResponse.of(newsList))
     }
 }

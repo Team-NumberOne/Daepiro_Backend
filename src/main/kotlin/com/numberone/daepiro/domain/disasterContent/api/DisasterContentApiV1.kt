@@ -1,6 +1,6 @@
 package com.numberone.daepiro.domain.disasterContent.api
 
-import com.numberone.daepiro.domain.disasterContent.dto.response.GetDisasterContentsResponse
+import com.numberone.daepiro.domain.disasterContent.dto.response.DisasterContentsResponse
 import com.numberone.daepiro.global.dto.ApiResult
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.media.Schema
@@ -24,12 +24,12 @@ interface DisasterContentApiV1 {
 
         @Schema(description = "조회할 콘텐츠 수", example = "20")
         @RequestParam size: Long
-    ): ApiResult<GetDisasterContentsResponse>
+    ): ApiResult<DisasterContentsResponse>
 
     @GetMapping("/search/{keyword}")
     @Operation(summary = "재난 콘텐츠 검색", description = "키워드를 이용해 재난 콘텐츠를 검색합니다.")
     fun searchDisasterContents(
-        @Schema(description = "검색할 키워드", example = "코로나")
+        @Schema(description = "검색할 키워드", example = "기상")
         @PathVariable keyword: String,
 
         @Schema(description = "cursor 값에는 가장 최근에 이 api를 호출했을 때 반환된 nextCursor 값을 입력해주세요. cursor 값이 없을 경우 처음 페이지를 조회합니다.", example = "991")
@@ -37,5 +37,5 @@ interface DisasterContentApiV1 {
 
         @Schema(description = "조회할 콘텐츠 수", example = "20")
         @RequestParam size: Long
-    ): ApiResult<GetDisasterContentsResponse>
+    ): ApiResult<DisasterContentsResponse>
 }
