@@ -17,4 +17,12 @@ class DisasterContentController(
     ): ApiResult<GetDisasterContentsResponse> {
         return disasterContentService.getDisasterContents(sortType, cursor, size)
     }
+
+    override fun searchDisasterContents(
+        keyword: String,
+        cursor: Long?,
+        size: Long
+    ): ApiResult<GetDisasterContentsResponse> {
+        return disasterContentService.searchDisasterContents(keyword, cursor, size)
+    }
 }

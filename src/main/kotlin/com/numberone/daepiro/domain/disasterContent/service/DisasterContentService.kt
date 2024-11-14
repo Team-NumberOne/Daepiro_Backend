@@ -41,4 +41,19 @@ class DisasterContentService(
 
         return ApiResult.ok(GetDisasterContentsResponse.of(newsList))
     }
+
+    fun searchDisasterContents(
+        keyword: String,
+        cursor: Long?,
+        size: Long
+    ): ApiResult<GetDisasterContentsResponse> {
+        val pageable = PageRequest.of(0, size.toInt())
+        val currentCursor = cursor
+            ?: newsRepository.findLatestNews().firstOrNull()?.id
+            ?: return ApiResult.ok(GetDisasterContentsResponse.of(emptyList()))
+
+        val newsList = newsRepository.searchNews(keyword, currentCursor, pageable)
+
+        return ApiResult.ok(GetDisasterContentsResponse.of(newsList))
+    }
 }
