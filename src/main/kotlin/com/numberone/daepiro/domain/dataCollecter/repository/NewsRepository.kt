@@ -1,6 +1,7 @@
 package com.numberone.daepiro.domain.dataCollecter.repository
 
 import com.numberone.daepiro.domain.dataCollecter.entity.News
+import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 
@@ -8,4 +9,7 @@ import org.springframework.data.jpa.repository.Query
 interface NewsRepository : JpaRepository<News, Long> {
     @Query("select n from News n order by n.publishedAt desc")
     fun findLatestNews(): List<News>
+
+    @Query("select n from News n where n.id <= :cursor order by n.publishedAt desc")
+    fun findNewsByCursor(cursor: Long, pageable: Pageable): List<News>
 }
