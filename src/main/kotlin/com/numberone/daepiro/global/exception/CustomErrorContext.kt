@@ -27,6 +27,9 @@ enum class CustomErrorContext(
     INVALID_ADDRESS_FORMAT(HttpStatus.BAD_REQUEST, 2300, "주소 형식이 잘못되었습니다."),
     INVALID_COORDINATES_CONVERTER(HttpStatus.INTERNAL_SERVER_ERROR, 2301, "위도, 경도를 주소로 변환하는데 실패하였습니다."),
 
+    // 24xx: 재난콘텐츠 관련 오류
+    INVALID_DISASTER_CONTENT_SORT_TYPE(HttpStatus.BAD_REQUEST, 2400, "재난 콘텐츠 정렬 형식이 잘못되었습니다."),
+
     // 99xx: 공통 오류
     INVALID_JSON_FORMAT(HttpStatus.BAD_REQUEST, 9001, "JSON 형식이 잘못되었습니다."),
     INVALID_VALUE(HttpStatus.INTERNAL_SERVER_ERROR, 9002, "유효하지 않은 값이 발견되었습니다."),
