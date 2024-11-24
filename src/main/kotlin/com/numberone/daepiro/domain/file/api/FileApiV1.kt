@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.multipart.MultipartFile
 
+@Deprecated("Deprecated. File 관련 엔드포인트를 분리하지 않는다.")
 @Tag(name = "File API", description = "파일 관련 API")
 @RequestMapping("/v1/files")
 interface FileApiV1 {

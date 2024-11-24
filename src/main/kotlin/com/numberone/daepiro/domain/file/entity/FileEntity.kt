@@ -7,6 +7,7 @@ import jakarta.persistence.EnumType
 import jakarta.persistence.Enumerated
 import jakarta.persistence.Table
 
+@Deprecated("Deprecated. File 관련 엔드포인트를 분리하지 않는다.")
 @Entity
 @Table(name = "`file`")
 class FileEntity(

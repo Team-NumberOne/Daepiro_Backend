@@ -3,6 +3,7 @@ package com.numberone.daepiro.domain.file.dto.response
 import com.numberone.daepiro.domain.file.entity.FileEntity
 import java.time.LocalDateTime
 
+@Deprecated("Deprecated. File 관련 엔드포인트를 분리하지 않는다.")
 data class FileSimpleResponse(
     val id: Long,
     val path: String,
