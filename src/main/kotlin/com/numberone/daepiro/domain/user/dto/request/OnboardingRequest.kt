@@ -19,7 +19,6 @@ data class OnboardingRequest(
         description = "재난 유형",
         example = "[\"지진\", \"화재\", \"태풍\"]",
     )
-    @field:Size(min = 1, message = "재난 유형은 1개 이상 선택해주세요.")
     val disasterTypes: List<String>,
 
     @Schema(description = "FCM 토큰", example = "cT9YaTTeTEeGeohmih6qWf:APA91bGoybhRF2sB6JC7mPNaqJi3XjPhwbTyy91iexup7QDB_AXxI5lug_l-4o0y9T4uYKoysdf12Wde5X01fv-dqWck1kk33d4O5TN3oz_4nzuUVa2ffE3S9ELAcZm2a308W7NGD3Sc")
