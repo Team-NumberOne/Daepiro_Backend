@@ -99,9 +99,12 @@ enum class ArticleCategory {
     ;
 }
 
-enum class ArticleType {
-    DONGNE,
-    INFORMATION,
+enum class ArticleType(
+    val description: String
+) {
+    DONGNE("동네생활"),
+    INFORMATION("정보"),
+    DISASTER("재난상황"),
     ;
 }
 
