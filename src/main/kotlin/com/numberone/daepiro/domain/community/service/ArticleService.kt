@@ -1,7 +1,6 @@
 package com.numberone.daepiro.domain.community.service
 
 import com.numberone.daepiro.domain.address.repository.AddressRepository
-import com.numberone.daepiro.domain.address.repository.saveAddressIfNotExists
 import com.numberone.daepiro.domain.community.dto.request.CreateArticleRequest
 import com.numberone.daepiro.domain.community.dto.response.ArticleSimpleResponse
 import com.numberone.daepiro.domain.community.entity.Article
@@ -25,16 +24,6 @@ class ArticleService(
     ): ArticleSimpleResponse {
         val author = userRepository.findByIdOrThrow(userId)
 
-        val address = if (request.isLocationVisible) {
-            addressRepository.saveAddressIfNotExists(
-                si = request.si,
-                gu = request.gu,
-                dong = request.dong,
-            )
-        } else {
-            null
-        }
-
         val article = articleRepository.save(
             Article.of(
                 title = request.title,
@@ -43,7 +32,6 @@ class ArticleService(
                 category = request.articleCategory,
                 isLocationVisible = request.isLocationVisible,
                 authUser = author,
-                address = address,
             )
         )
 
