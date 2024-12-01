@@ -36,6 +36,7 @@ class DisasterType(
         LANDSLIDE("산사태"),
         FOG("안개"),
         EARTHQUAKE("지진"),
+        TSUNAMI("지진해일"),
         TYPHOON("태풍"),
         HEATWAVE("폭염"),
         ROUGH_SEA("풍랑"),
