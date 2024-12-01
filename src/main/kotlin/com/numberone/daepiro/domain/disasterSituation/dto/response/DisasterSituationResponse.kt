@@ -31,7 +31,7 @@ data class DisasterSituationResponse(
     val comments: List<SituationCommentResponse>
 ) {
     companion object {
-        //todo fake api용 코드입니다. 추후 삭제 필요
+        // todo fake api용 코드입니다. 추후 삭제 필요
         fun ofFake(
             id: Long,
             type: String,

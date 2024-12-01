@@ -20,12 +20,12 @@ data class SituationCommentResponse(
     val likeCount: Long,
 
     @Schema(description = "내 댓글 여부", example = "true")
-    val isMine:Boolean,
+    val isMine: Boolean,
 
     val childComments: List<SituationCommentResponse>
 ) {
     companion object {
-        //todo fake api용 코드입니다. 추후 삭제 필요
+        // todo fake api용 코드입니다. 추후 삭제 필요
         fun ofFake(
             id: Long,
             name: String,

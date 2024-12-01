@@ -10,7 +10,7 @@ import java.time.LocalDateTime
 
 @RestController
 class DisasterSituationController : DisasterSituationApiV1 {
-    //todo fake api용 코드입니다. 추후 삭제 필요
+    // todo fake api용 코드입니다. 추후 삭제 필요
     override fun getDisasterSituations(): ApiResult<List<DisasterSituationResponse>> {
         val comments = listOf(
             SituationCommentResponse.ofFake(
