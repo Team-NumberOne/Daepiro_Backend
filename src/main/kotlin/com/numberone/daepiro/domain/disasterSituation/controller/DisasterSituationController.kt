@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestController
 import java.time.LocalDateTime
 
 @RestController
-class DisasterSituationController: DisasterSituationApiV1 {
+class DisasterSituationController : DisasterSituationApiV1 {
     //todo fake api용 코드입니다. 추후 삭제 필요
     override fun getDisasterSituations(): ApiResult<List<DisasterSituationResponse>> {
         val comments = listOf(
@@ -85,5 +85,37 @@ class DisasterSituationController: DisasterSituationApiV1 {
         )
 
         return ApiResult.ok(disasterSituations)
+    }
+
+    override fun getComments(situationId: Long): ApiResult<List<SituationCommentResponse>> {
+        val comments = listOf(
+            SituationCommentResponse.ofFake(
+                id = 1,
+                name = "김연지",
+                time = LocalDateTime.of(2024, 10, 23, 19, 53),
+                content = "이런 상황에서는 이렇게 대처하는 것이 좋아요!",
+                likeCount = 3,
+                childComments = listOf(
+                    SituationCommentResponse.ofFake(
+                        id = 2,
+                        name = "한나영",
+                        time = LocalDateTime.of(2024, 10, 23, 19, 53),
+                        content = "싫은데요?",
+                        likeCount = 1,
+                        childComments = emptyList()
+                    ),
+                    SituationCommentResponse.ofFake(
+                        id = 3,
+                        name = "김서윤",
+                        time = LocalDateTime.of(2024, 10, 23, 19, 53),
+                        content = "절대 안해야지",
+                        likeCount = 2,
+                        childComments = emptyList()
+                    )
+                )
+            )
+        )
+
+        return ApiResult.ok(comments)
     }
 }
