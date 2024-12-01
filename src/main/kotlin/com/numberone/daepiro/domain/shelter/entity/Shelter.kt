@@ -27,8 +27,7 @@ class Shelter(
 
     @Enumerated(EnumType.STRING)
     val type: ShelterType
-) {
-}
+)
 
 enum class ShelterType(
     val word: String

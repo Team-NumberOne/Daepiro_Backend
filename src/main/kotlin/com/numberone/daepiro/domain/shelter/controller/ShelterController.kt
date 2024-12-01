@@ -15,5 +15,4 @@ class ShelterController(
         val userId = SecurityContextUtils.getUserId()
         return shelterService.getNearbyShelters(userId, type)
     }
-
 }

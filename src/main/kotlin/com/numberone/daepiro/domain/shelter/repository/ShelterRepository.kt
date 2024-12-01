@@ -13,7 +13,8 @@ interface ShelterRepository : JpaRepository<Shelter, Long> {
             "ORDER BY (6371 * ACOS(COS(RADIANS(:latitude)) * COS(RADIANS(latitude)) * " +
             "COS(RADIANS(longitude) - RADIANS(:longitude)) + " +
             "SIN(RADIANS(:latitude)) * SIN(RADIANS(latitude)))) " +
-            "LIMIT 10", nativeQuery = true
+            "LIMIT 10",
+        nativeQuery = true
     )
     fun findTop10ClosestShelters(
         @Param("longitude") longitude: Double,

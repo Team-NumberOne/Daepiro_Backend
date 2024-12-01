@@ -14,7 +14,8 @@ import org.springframework.web.bind.annotation.RequestMapping
 interface ShelterApiV1 {
     @GetMapping("/{type}")
     @Operation(
-        summary = "주변 대피소 목록 조회", description = """
+        summary = "주변 대피소 목록 조회",
+        description = """
         사용자의 주변 대피소 목록을 조회합니다.
         쿼리 파라미터로 대피소 유형을 지정해주세요. (temperature: 쉼터, earthquake: 지진, tsunami: 지진해일, civil: 민방위)
         이 api 호출 이전에 gps 정보 업데이트 api를 통해 사용자의 위치 정보를 업데이트 해주세요.
