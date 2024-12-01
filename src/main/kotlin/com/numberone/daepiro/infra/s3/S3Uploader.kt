@@ -16,10 +16,6 @@ class S3Uploader(
     private val s3Client: AmazonS3Client,
 ) {
     fun uploadFile(file: MultipartFile, path: String): String {
-        require(!file.isEmpty) {
-            "빈 파일은 업로드할 수 없습니다. "
-        }
-
         val fileName = "$path/${UUID.randomUUID()}_${file.originalFilename}"
 
         val metadata = ObjectMetadata().apply {
@@ -29,7 +25,6 @@ class S3Uploader(
 
         s3Client.putObject(
             PutObjectRequest(bucket, fileName, file.inputStream, metadata)
-                .withCannedAcl(CannedAccessControlList.PublicRead)
         )
 
         return s3Client.getUrl(bucket, fileName).toString()

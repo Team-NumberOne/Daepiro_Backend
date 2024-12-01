@@ -10,6 +10,7 @@ import com.numberone.daepiro.domain.user.repository.findByIdOrThrow
 import org.springframework.context.ApplicationEventPublisher
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import org.springframework.web.multipart.MultipartFile
 
 @Service
 @Transactional(readOnly = true)
@@ -22,6 +23,7 @@ class ArticleService(
     @Transactional
     fun createOne(
         request: CreateArticleRequest,
+        attachFileList: List<MultipartFile>?,
         userId: Long,
     ): ArticleSimpleResponse {
         val author = userRepository.findByIdOrThrow(userId)
@@ -32,12 +34,12 @@ class ArticleService(
                 body = request.body,
                 type = request.articleType,
                 category = request.articleCategory,
-                isLocationVisible = request.isLocationVisible,
+                visibility = request.visibility,
                 authUser = author,
             )
         )
 
-        request.attachFileList?.let { files ->
+        attachFileList?.let { files ->
             eventPublisher.publishEvent(ArticleFileUploadEvent(article.id!!, files))
         }
 
