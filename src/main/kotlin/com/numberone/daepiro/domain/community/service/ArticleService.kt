@@ -1,12 +1,13 @@
 package com.numberone.daepiro.domain.community.service
 
-import com.numberone.daepiro.domain.address.repository.AddressRepository
 import com.numberone.daepiro.domain.community.dto.request.CreateArticleRequest
 import com.numberone.daepiro.domain.community.dto.response.ArticleSimpleResponse
 import com.numberone.daepiro.domain.community.entity.Article
+import com.numberone.daepiro.domain.community.event.ArticleFileUploadEvent
 import com.numberone.daepiro.domain.community.repository.ArticleRepository
 import com.numberone.daepiro.domain.user.repository.UserRepository
 import com.numberone.daepiro.domain.user.repository.findByIdOrThrow
+import org.springframework.context.ApplicationEventPublisher
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -15,8 +16,9 @@ import org.springframework.transaction.annotation.Transactional
 class ArticleService(
     private val articleRepository: ArticleRepository,
     private val userRepository: UserRepository,
-    private val addressRepository: AddressRepository,
+    private val eventPublisher: ApplicationEventPublisher,
 ) {
+
     @Transactional
     fun createOne(
         request: CreateArticleRequest,
@@ -35,6 +37,12 @@ class ArticleService(
             )
         )
 
-        return ArticleSimpleResponse.from(article)
+        request.attachFileList?.let { files ->
+            eventPublisher.publishEvent(ArticleFileUploadEvent(article.id!!, files))
+        }
+
+        return ArticleSimpleResponse.from(
+            article = article,
+        )
     }
 }

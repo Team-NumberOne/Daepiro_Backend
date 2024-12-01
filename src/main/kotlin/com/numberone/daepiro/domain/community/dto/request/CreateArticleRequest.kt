@@ -3,7 +3,10 @@ package com.numberone.daepiro.domain.community.dto.request
 import com.numberone.daepiro.domain.community.entity.ArticleCategory
 import com.numberone.daepiro.domain.community.entity.ArticleType
 import io.swagger.v3.oas.annotations.media.Schema
+import org.springdoc.core.annotations.ParameterObject
+import org.springframework.web.multipart.MultipartFile
 
+@ParameterObject
 @Schema(description = "게시글 생성 request dto")
 data class CreateArticleRequest(
     @Schema(description = "게시글 타입. <br>-동네생활: DONGNE<br>-정보: INFORMATION ", example = "DONGNE")
@@ -22,5 +25,6 @@ data class CreateArticleRequest(
     val gu: String,
     @Schema(description = "동", example = "천호동")
     val dong: String,
-    // todo: 사진 포함
+    @Schema(description = "첨부파일 리스트")
+    val attachFileList: List<MultipartFile>?
 )
