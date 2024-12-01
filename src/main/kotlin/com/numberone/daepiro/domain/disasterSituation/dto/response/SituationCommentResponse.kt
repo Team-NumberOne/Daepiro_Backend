@@ -19,6 +19,9 @@ data class SituationCommentResponse(
     @Schema(description = "좋아요 수", example = "3")
     val likeCount: Long,
 
+    @Schema(description = "내 댓글 여부", example = "true")
+    val isMine:Boolean,
+
     val childComments: List<SituationCommentResponse>
 ) {
     companion object {
@@ -29,6 +32,7 @@ data class SituationCommentResponse(
             time: LocalDateTime,
             content: String,
             likeCount: Long,
+            isMine: Boolean,
             childComments: List<SituationCommentResponse>
         ): SituationCommentResponse {
             return SituationCommentResponse(
@@ -37,6 +41,7 @@ data class SituationCommentResponse(
                 time = time,
                 content = content,
                 likeCount = likeCount,
+                isMine = isMine,
                 childComments = childComments
             )
         }

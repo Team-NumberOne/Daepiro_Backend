@@ -21,7 +21,7 @@ interface DisasterSituationApiV1 {
     """)
     fun getDisasterSituations(): ApiResult<List<DisasterSituationResponse>>
 
-    @GetMapping("comments/{situationId}")
+    @GetMapping("/comments/{situationId}")
     @Operation(summary = "(fake api) 댓글 목록 조회", description = """
         특정 재난상황 글의 댓글 목록을 조회합니다.
         댓글의 대댓글은 childComments 필드를 이용하여 구현하였습니다.
@@ -30,4 +30,6 @@ interface DisasterSituationApiV1 {
     fun getComments(
         @Schema(description = "재난상황 글 id", example = "1032") @PathVariable situationId: Long
     ): ApiResult<List<SituationCommentResponse>>
+
+
 }
