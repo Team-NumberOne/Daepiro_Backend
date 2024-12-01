@@ -31,6 +31,9 @@ enum class CustomErrorContext(
     // 24xx: 재난콘텐츠 관련 오류
     INVALID_DISASTER_CONTENT_SORT_TYPE(HttpStatus.BAD_REQUEST, 2400, "재난 콘텐츠 정렬 형식이 잘못되었습니다."),
 
+    // 25xx: 대피소 관련 오류
+    NOT_FOUND_SHELTER_TYPE(HttpStatus.NOT_FOUND, 2500, "대피소 유형을 찾을 수 없습니다."),
+
     // 99xx: 공통 오류
     INVALID_JSON_FORMAT(HttpStatus.BAD_REQUEST, 9001, "JSON 형식이 잘못되었습니다."),
     INVALID_VALUE(HttpStatus.INTERNAL_SERVER_ERROR, 9002, "유효하지 않은 값이 발견되었습니다."),

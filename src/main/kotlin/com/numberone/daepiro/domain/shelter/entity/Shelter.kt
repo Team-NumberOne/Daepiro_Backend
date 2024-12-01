@@ -1,6 +1,7 @@
 package com.numberone.daepiro.domain.shelter.entity
 
-import jakarta.persistence.Column
+import com.numberone.daepiro.global.exception.CustomErrorContext
+import com.numberone.daepiro.global.exception.CustomException
 import jakarta.persistence.Entity
 import jakarta.persistence.EnumType
 import jakarta.persistence.Enumerated
@@ -30,10 +31,17 @@ class Shelter(
 }
 
 enum class ShelterType(
-    val korean: String
+    val word: String
 ) {
-    TEMPERATURE("쉼터"),
-    EARTHQUAKE("지진옥외"),
-    TSUNAMI("지진해일"),
-    CIVIL("민방위")
+    TEMPERATURE("temperature"),
+    EARTHQUAKE("earthquake"),
+    TSUNAMI("tsunami"),
+    CIVIL("civil");
+
+    companion object {
+        fun word2code(korean: String): ShelterType {
+            return entries.find { it.word == korean }
+                ?: throw CustomException(CustomErrorContext.NOT_FOUND_SHELTER_TYPE)
+        }
+    }
 }
