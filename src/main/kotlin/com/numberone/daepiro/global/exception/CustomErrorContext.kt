@@ -18,6 +18,7 @@ enum class CustomErrorContext(
 
     // 21xx: 사용자 관련 오류
     NOT_FOUND_USER(HttpStatus.NOT_FOUND, 2100, "사용자를 찾을 수 없습니다."),
+    NOT_FOUND_USER_LOCATION(HttpStatus.BAD_REQUEST, 2101, "사용자의 위치 정보를 찾을 수 없습니다."),
 
     // 22xx: 재난 관련 오류
     NOT_FOUND_DISASTER_TYPE(HttpStatus.NOT_FOUND, 2200, "재난 유형을 찾을 수 없습니다."),
@@ -29,6 +30,9 @@ enum class CustomErrorContext(
 
     // 24xx: 재난콘텐츠 관련 오류
     INVALID_DISASTER_CONTENT_SORT_TYPE(HttpStatus.BAD_REQUEST, 2400, "재난 콘텐츠 정렬 형식이 잘못되었습니다."),
+
+    // 25xx: 대피소 관련 오류
+    NOT_FOUND_SHELTER_TYPE(HttpStatus.NOT_FOUND, 2500, "대피소 유형을 찾을 수 없습니다."),
 
     // 99xx: 공통 오류
     INVALID_JSON_FORMAT(HttpStatus.BAD_REQUEST, 9001, "JSON 형식이 잘못되었습니다."),

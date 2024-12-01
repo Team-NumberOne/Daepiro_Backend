@@ -43,6 +43,10 @@ class UserEntity(
     @JoinColumn(name = "address_id", foreignKey = ForeignKey(ConstraintMode.NO_CONSTRAINT))
     var address: Address? = null,
 
+    var longitude: Double? = null,
+
+    var latitude: Double? = null,
+
     @OneToMany(mappedBy = "user", cascade = [CascadeType.ALL])
     val userAddresses: List<UserAddress> = emptyList(),
 
@@ -82,7 +86,13 @@ class UserEntity(
         isCompletedOnboarding = true
     }
 
-    fun updateLocation(location: Address) {
+    fun updateLocation(
+        location: Address,
+        longitude: Double,
+        latitude: Double
+    ) {
         this.address = location
+        this.longitude = longitude
+        this.latitude = latitude
     }
 }

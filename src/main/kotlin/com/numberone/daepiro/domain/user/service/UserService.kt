@@ -112,7 +112,7 @@ class UserService(
         val address = getAddressFromGPS(request.longitude, request.latitude)
         val user = userRepository.findByIdOrThrow(userId)
 
-        user.updateLocation(address)
+        user.updateLocation(address, request.longitude, request.latitude)
         return ApiResult.ok()
     }
 

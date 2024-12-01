@@ -31,7 +31,8 @@ class SwaggerConfig {
                 "/v1/users/**",
                 "/v1/datacollector/**",
                 "/v1/home/**",
-                "/v1/disastercontents/**"
+                "/v1/disastercontents/**",
+                "/v1/shelters/**",
             )
             .build()
     }
