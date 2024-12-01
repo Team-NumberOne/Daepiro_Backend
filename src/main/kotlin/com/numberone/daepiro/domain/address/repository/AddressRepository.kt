@@ -28,3 +28,4 @@ interface AddressRepository : JpaRepository<Address, Long> {
     )
     fun findChildAddress(ai: AddressInfo): List<Address>
 }
+
