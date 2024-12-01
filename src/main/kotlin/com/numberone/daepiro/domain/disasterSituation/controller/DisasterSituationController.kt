@@ -1,6 +1,7 @@
 package com.numberone.daepiro.domain.disasterSituation.controller
 
 import com.numberone.daepiro.domain.disasterSituation.api.DisasterSituationApiV1
+import com.numberone.daepiro.domain.disasterSituation.dto.request.EditCommentRequest
 import com.numberone.daepiro.domain.disasterSituation.dto.response.DisasterSituationResponse
 import com.numberone.daepiro.domain.disasterSituation.dto.response.SituationCommentResponse
 import com.numberone.daepiro.global.dto.ApiResult
@@ -124,5 +125,13 @@ class DisasterSituationController : DisasterSituationApiV1 {
         )
 
         return ApiResult.ok(comments)
+    }
+
+    override fun editComment(commentId: Long, request: EditCommentRequest): ApiResult<Unit> {
+        return ApiResult.ok()
+    }
+
+    override fun deleteComment(commentId: Long): ApiResult<Unit> {
+        return ApiResult.ok()
     }
 }
