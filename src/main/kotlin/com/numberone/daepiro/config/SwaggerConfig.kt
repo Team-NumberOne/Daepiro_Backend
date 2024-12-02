@@ -44,6 +44,7 @@ class SwaggerConfig {
         return GroupedOpenApi.builder()
             .group("work in progress")
             .pathsToMatch(
+                ""
             )
             .build()
     }
