@@ -29,10 +29,10 @@ data class ArticleDetailResponse(
     @Schema(description = "아티클 ID", example = "1")
     val id: Long,
 
-    @Schema(description = "아티클 제목", example = "Kotlin을 사용한 개발")
+    @Schema(description = "아티클 제목", example = "title")
     val title: String,
 
-    @Schema(description = "아티클 내용", example = "이 아티클은 Kotlin을 사용한 개발에 대한 내용을 담고 있습니다.")
+    @Schema(description = "아티클 내용", example = "body")
     val body: String,
 
     @Schema(description = "아티클 타입 | 동네생활, 정보, 재난상황")
@@ -94,10 +94,10 @@ data class AuthorResponse(
     @Schema(description = "사용자 ID", example = "10")
     val userId: Long,
 
-    @Schema(description = "닉네임", example = "KotlinDev")
+    @Schema(description = "닉네임", example = "abcd")
     val nickname: String? = null,
 
-    @Schema(description = "실명", example = "홍길동")
+    @Schema(description = "실명", example = "abcd")
     val realname: String? = null,
 
     @Schema(description = "온보딩 완료 여부", example = "true")
