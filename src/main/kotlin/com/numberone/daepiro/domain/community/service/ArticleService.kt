@@ -1,11 +1,15 @@
 package com.numberone.daepiro.domain.community.service
 
 import com.numberone.daepiro.domain.community.dto.request.CreateArticleRequest
+import com.numberone.daepiro.domain.community.dto.response.ArticleDetailResponse
 import com.numberone.daepiro.domain.community.dto.response.ArticleSimpleResponse
 import com.numberone.daepiro.domain.community.entity.Article
 import com.numberone.daepiro.domain.community.event.ArticleFileUploadEvent
 import com.numberone.daepiro.domain.community.repository.ArticleRepository
+import com.numberone.daepiro.domain.community.repository.findByIdOrThrow
+import com.numberone.daepiro.domain.file.entity.FileDocumentType
 import com.numberone.daepiro.domain.file.model.RawFile
+import com.numberone.daepiro.domain.file.repository.FileRepository
 import com.numberone.daepiro.domain.user.repository.UserRepository
 import com.numberone.daepiro.domain.user.repository.findByIdOrThrow
 import org.springframework.context.ApplicationEventPublisher
@@ -17,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile
 @Transactional(readOnly = true)
 class ArticleService(
     private val articleRepository: ArticleRepository,
+    private val fileRepository: FileRepository,
     private val userRepository: UserRepository,
     private val eventPublisher: ApplicationEventPublisher,
 ) {
@@ -46,6 +51,18 @@ class ArticleService(
 
         return ArticleSimpleResponse.from(
             article = article,
+        )
+    }
+
+    fun getOne(id: Long): ArticleDetailResponse {
+        val article = articleRepository.findByIdOrThrow(id)
+        val files = fileRepository.findAllByDocumentTypeAndDocumentId(
+            documentType = FileDocumentType.ARTICLE,
+            article.id!!
+        )
+        return ArticleDetailResponse.of(
+            article = article,
+            files = files,
         )
     }
 }

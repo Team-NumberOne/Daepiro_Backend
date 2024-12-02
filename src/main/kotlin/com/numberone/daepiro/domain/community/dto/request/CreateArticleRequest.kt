@@ -23,4 +23,4 @@ data class CreateArticleRequest(
 
     @Schema(description = "게시글 내용", example = "내용")
     val body: String,
-    )
+)

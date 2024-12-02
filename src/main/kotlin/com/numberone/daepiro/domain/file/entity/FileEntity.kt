@@ -35,6 +35,10 @@ class FileEntity(
     }
 }
 
+fun List<FileEntity>.toPaths(): List<String> {
+    return this.map { it.path }
+}
+
 enum class FileDocumentType {
     ARTICLE, DONATION, USER_PROFILE
 }
