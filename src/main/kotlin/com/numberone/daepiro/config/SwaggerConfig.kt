@@ -33,7 +33,8 @@ class SwaggerConfig {
                 "/v1/home/**",
                 "/v1/disastercontents/**",
                 "/v1/shelters/**",
-                "/v1/disastersituations/**"
+                "/v1/disastersituations/**",
+                "/v1/articles/**"
             )
             .build()
     }
@@ -43,7 +44,6 @@ class SwaggerConfig {
         return GroupedOpenApi.builder()
             .group("work in progress")
             .pathsToMatch(
-                "/v1/articles/**"
             )
             .build()
     }
