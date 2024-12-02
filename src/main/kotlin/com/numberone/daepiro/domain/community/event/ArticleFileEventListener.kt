@@ -2,6 +2,7 @@ package com.numberone.daepiro.domain.community.event
 
 import com.numberone.daepiro.domain.file.entity.FileDocumentType
 import com.numberone.daepiro.domain.file.entity.FileEntity
+import com.numberone.daepiro.domain.file.model.RawFile
 import com.numberone.daepiro.domain.file.repository.FileRepository
 import com.numberone.daepiro.global.utils.TransactionUtils
 import com.numberone.daepiro.infra.s3.S3Uploader
@@ -36,5 +37,5 @@ class ArticleFileEventListener(
 
 data class ArticleFileUploadEvent(
     val articleId: Long,
-    val files: List<MultipartFile>,
+    val files: List<RawFile>,
 )

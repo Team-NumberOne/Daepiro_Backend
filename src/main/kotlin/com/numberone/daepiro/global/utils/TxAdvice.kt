@@ -7,11 +7,16 @@ import org.springframework.transaction.annotation.Transactional
 
 @Component
 class TransactionUtils(
-    private val txAdvice: TxAdvice, // 초기화와 함께 불변성 보장
+    _txAdvice: TxAdvice, // 초기화와 함께 불변성 보장
 ) {
+
+    init {
+        txAdvice = _txAdvice
+    }
 
     companion object {
         private lateinit var txAdvice: TxAdvice
+
         fun <T> writable(
             propagation: Propagation = Propagation.REQUIRED,
             function: () -> T,
