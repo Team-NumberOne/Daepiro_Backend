@@ -1,7 +1,7 @@
 package com.numberone.daepiro.domain.community.controller
 
 import com.numberone.daepiro.domain.community.api.ArticleApiV1
-import com.numberone.daepiro.domain.community.dto.request.CreateArticleRequest
+import com.numberone.daepiro.domain.community.dto.request.UpsertArticleRequest
 import com.numberone.daepiro.domain.community.dto.response.ArticleDetailResponse
 import com.numberone.daepiro.domain.community.dto.response.ArticleSimpleResponse
 import com.numberone.daepiro.domain.community.service.ArticleService
@@ -15,7 +15,7 @@ class ArticleController(
     private val articleService: ArticleService,
 ) : ArticleApiV1 {
     override fun createArticle(
-        request: CreateArticleRequest,
+        request: UpsertArticleRequest,
         attachFileList: List<MultipartFile>?
     ): ApiResult<ArticleSimpleResponse> {
         val response = articleService.createOne(
@@ -28,5 +28,18 @@ class ArticleController(
 
     override fun getArticle(id: Long): ApiResult<ArticleDetailResponse> {
         return ApiResult.ok(data = articleService.getOne(id), "/v1/articles" )
+    }
+
+    override fun updateArticle(
+        id: Long,
+        request: UpsertArticleRequest,
+        attachFileList: List<MultipartFile>?
+    ): ApiResult<ArticleSimpleResponse> {
+        val response = articleService.upsertOne(
+            id = id,
+            request = request,
+            attachFileList = attachFileList,
+        )
+        return ApiResult.ok(data = response, path = "/v1/articles/$id")
     }
 }

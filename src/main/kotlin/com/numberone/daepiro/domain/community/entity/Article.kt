@@ -17,47 +17,72 @@ import jakarta.persistence.Table
 @Entity
 @Table(name = "article")
 class Article(
+    title: String = "",
+    body: String = "",
+    type: ArticleType,
+    category: ArticleCategory,
+    isLocationVisible: Boolean = false,
+    likeCount: Int = 0,
+    viewCount: Int = 0,
+    commentCount: Int = 0,
+    reportCount: Int = 0,
+    status: ArticleStatus = ArticleStatus.ACTIVE,
+    authUser: UserEntity? = null,
+    address: Address? = null,
+) : PrimaryKeyEntity() {
     @Column(nullable = false)
-    val title: String = "",
+    var title: String = title
+        protected set
 
     @Column(nullable = false)
-    val body: String = "",
+    var body: String = body
+        protected set
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, columnDefinition = "varchar(255)")
-    val type: ArticleType,
+    var type: ArticleType = type
+        protected set
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, columnDefinition = "varchar(255)")
-    val category: ArticleCategory,
+    var category: ArticleCategory = category
+        protected set
 
     @Column(nullable = false)
-    val isLocationVisible: Boolean = false,
+    var isLocationVisible: Boolean = isLocationVisible
+        protected set
 
     @Column(nullable = false)
-    val likeCount: Int = 0,
+    var likeCount: Int = likeCount
+        protected set
 
     @Column(nullable = false)
-    val viewCount: Int = 0,
+    var viewCount: Int = viewCount
+        protected set
 
     @Column(nullable = false)
-    val commentCount: Int = 0,
+    var commentCount: Int = commentCount
+        protected set
 
     @Column(nullable = false)
-    val reportCount: Int = 0,
+    var reportCount: Int = reportCount
+        protected set
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, columnDefinition = "varchar(255)")
-    val status: ArticleStatus = ArticleStatus.ACTIVE,
+    var status: ArticleStatus = status
+        protected set
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "auth_user_id", foreignKey = ForeignKey(ConstraintMode.NO_CONSTRAINT))
-    val authUser: UserEntity? = null,
+    var authUser: UserEntity? = authUser
+        protected set
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "address_id", foreignKey = ForeignKey(ConstraintMode.NO_CONSTRAINT))
-    val address: Address? = null,
-) : PrimaryKeyEntity() {
+    var address: Address? = address
+        protected set
+
     companion object {
         fun of(
             title: String,
@@ -88,6 +113,18 @@ class Article(
                 address = address,
             )
         }
+    }
+
+    fun update(
+        title: String,
+        body: String,
+        type: ArticleType,
+        category: ArticleCategory,
+    ) {
+        this.title = title
+        this.body = body
+        this.type = type
+        this.category = category
     }
 }
 
