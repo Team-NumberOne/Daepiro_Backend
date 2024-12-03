@@ -1,6 +1,7 @@
 package com.numberone.daepiro.domain.community.controller
 
 import com.numberone.daepiro.domain.community.api.ArticleApiV1
+import com.numberone.daepiro.domain.community.dto.request.UpdateArticleRequest
 import com.numberone.daepiro.domain.community.dto.request.UpsertArticleRequest
 import com.numberone.daepiro.domain.community.dto.response.ArticleDetailResponse
 import com.numberone.daepiro.domain.community.dto.response.ArticleSimpleResponse
@@ -32,7 +33,7 @@ class ArticleController(
 
     override fun updateArticle(
         id: Long,
-        request: UpsertArticleRequest,
+        request: UpdateArticleRequest,
         attachFileList: List<MultipartFile>?
     ): ApiResult<ArticleSimpleResponse> {
         val response = articleService.upsertOne(

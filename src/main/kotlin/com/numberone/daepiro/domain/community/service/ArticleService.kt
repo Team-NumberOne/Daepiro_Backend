@@ -2,6 +2,7 @@ package com.numberone.daepiro.domain.community.service
 
 import com.numberone.daepiro.domain.address.repository.AddressRepository
 import com.numberone.daepiro.domain.address.repository.GeoLocationConverter
+import com.numberone.daepiro.domain.community.dto.request.UpdateArticleRequest
 import com.numberone.daepiro.domain.community.dto.request.UpsertArticleRequest
 import com.numberone.daepiro.domain.community.dto.response.ArticleDetailResponse
 import com.numberone.daepiro.domain.community.dto.response.ArticleSimpleResponse
@@ -61,17 +62,17 @@ class ArticleService(
     @Transactional
     fun upsertOne(
         id: Long,
-        request: UpsertArticleRequest,
+        request: UpdateArticleRequest,
         attachFileList: List<MultipartFile>?,
     ): ArticleSimpleResponse {
         val article = articleRepository.findByIdOrThrow(id)
 
         article.update(
-            title = request.title,
-            body = request.body,
-            type = request.articleType,
-            category = request.articleCategory,
-            isLocationVisible = request.visibility,
+            title = request.title ?: article.title,
+            body = request.body ?: article.body,
+            type = request.articleType ?: article.type,
+            category = request.articleCategory ?: article.category,
+            isLocationVisible = request.visibility ?: article.isLocationVisible,
         )
 
         attachFileList?.let { files ->

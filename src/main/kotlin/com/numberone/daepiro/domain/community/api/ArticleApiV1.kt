@@ -1,5 +1,6 @@
 package com.numberone.daepiro.domain.community.api
 
+import com.numberone.daepiro.domain.community.dto.request.UpdateArticleRequest
 import com.numberone.daepiro.domain.community.dto.request.UpsertArticleRequest
 import com.numberone.daepiro.domain.community.dto.response.ArticleDetailResponse
 import com.numberone.daepiro.domain.community.dto.response.ArticleSimpleResponse
@@ -48,12 +49,12 @@ interface ArticleApiV1 {
 
     @Operation(
         summary = "게시글 수정(Upsert)",
-        description = "요청한 request spec 대로 게시글 데이터를 덮어씌웁니다."
+        description = "요청한 request spec 에서, null 이 아닌 데이터 요청에 대해서는 게시글 데이터를 update 합니다."
     )
     @PostMapping(path = ["/{id}"], consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
     fun updateArticle(
         @PathVariable(value = "id", required = true) id: Long,
-        @ModelAttribute request: UpsertArticleRequest,
+        @ModelAttribute request: UpdateArticleRequest,
         @Parameter(
             description = "첨부파일 리스트 (이미지). 해당 아티클에 대해서 이미 첨부파일이 존재한다면, 모두 제거 후 새로 요청온 파일을 등록합니다.",
             content = [Content(
