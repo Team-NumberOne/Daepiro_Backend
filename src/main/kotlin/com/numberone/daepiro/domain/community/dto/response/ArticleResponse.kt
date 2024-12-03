@@ -7,6 +7,7 @@ import com.numberone.daepiro.domain.file.entity.FileEntity
 import com.numberone.daepiro.domain.file.entity.toPaths
 import com.numberone.daepiro.domain.user.entity.UserEntity
 import io.swagger.v3.oas.annotations.media.Schema
+import java.time.LocalDateTime
 
 @Schema(description = "간단한 아티클 응답 모델")
 data class ArticleSimpleResponse(
@@ -63,7 +64,13 @@ data class ArticleDetailResponse(
     val authorUser: AuthorResponse? = null,
 
     @Schema(description = "파일 목록", example = "[\"https://path/to/file1\", \"https://path/to/file2\"]")
-    val files: List<String>?
+    val files: List<String>?,
+
+    @Schema(description = "생성일시")
+    val createdAt: LocalDateTime? = null,
+
+    @Schema(description = "수정일시")
+    val lastModifiedAt: LocalDateTime? = null,
 ) {
     companion object {
         fun of(
@@ -83,7 +90,9 @@ data class ArticleDetailResponse(
                 reportCount = article.reportCount,
                 status = article.status,
                 authorUser = article.authUser?.let { AuthorResponse.from(it) },
-                files = files?.toPaths()
+                files = files?.toPaths(),
+                createdAt = article.createdAt,
+                lastModifiedAt = article.lastModifiedAt,
             )
         }
     }
