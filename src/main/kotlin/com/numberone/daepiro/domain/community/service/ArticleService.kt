@@ -54,6 +54,35 @@ class ArticleService(
         )
     }
 
+    @Transactional
+    fun upsertOne(
+        id: Long,
+        request: UpsertArticleRequest,
+        attachFileList: List<MultipartFile>?,
+    ): ArticleSimpleResponse {
+        val article = articleRepository.findByIdOrThrow(id)
+            .apply {
+                update(
+                    title = title,
+                    body = body,
+                    type = type,
+                    category = category,
+                )
+            }
+
+        attachFileList?.let { files ->
+            // 해당 아티클에 매핑된 파일을 모두 제거하고
+            fileRepository.deleteAllByDocumentTypeAndDocumentId(
+                documentType = FileDocumentType.ARTICLE,
+                documentId = article.id!!,
+            )
+            // 새로 요청온 파일을 적용함
+            eventPublisher.publishEvent(ArticleFileUploadEvent(article.id!!, files.map { RawFile.of(it) }))
+        }
+
+        return ArticleSimpleResponse.from(article)
+    }
+
     fun getOne(id: Long): ArticleDetailResponse {
         val article = articleRepository.findByIdOrThrow(id)
         val files = fileRepository.findAllByDocumentTypeAndDocumentId(

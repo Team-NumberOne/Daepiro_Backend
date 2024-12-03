@@ -29,4 +29,17 @@ class ArticleController(
     override fun getArticle(id: Long): ApiResult<ArticleDetailResponse> {
         return ApiResult.ok(data = articleService.getOne(id), "/v1/articles" )
     }
+
+    override fun updateArticle(
+        id: Long,
+        request: UpsertArticleRequest,
+        attachFileList: List<MultipartFile>?
+    ): ApiResult<ArticleSimpleResponse> {
+        val response = articleService.upsertOne(
+            id = id,
+            request = request,
+            attachFileList = attachFileList,
+        )
+        return ApiResult.ok(data = response, path = "/v1/articles")
+    }
 }
