@@ -1,5 +1,7 @@
 package com.numberone.daepiro.domain.community.service
 
+import com.numberone.daepiro.domain.address.repository.AddressRepository
+import com.numberone.daepiro.domain.address.repository.GeoLocationConverter
 import com.numberone.daepiro.domain.community.dto.request.UpsertArticleRequest
 import com.numberone.daepiro.domain.community.dto.response.ArticleDetailResponse
 import com.numberone.daepiro.domain.community.dto.response.ArticleSimpleResponse
@@ -24,6 +26,8 @@ class ArticleService(
     private val fileRepository: FileRepository,
     private val userRepository: UserRepository,
     private val eventPublisher: ApplicationEventPublisher,
+    private val addressRepository: AddressRepository,
+    private val geoLocationConverter: GeoLocationConverter,
 ) {
 
     @Transactional
@@ -67,6 +71,7 @@ class ArticleService(
             body = request.body,
             type = request.articleType,
             category = request.articleCategory,
+            isLocationVisible = request.visibility,
         )
 
         attachFileList?.let { files ->
