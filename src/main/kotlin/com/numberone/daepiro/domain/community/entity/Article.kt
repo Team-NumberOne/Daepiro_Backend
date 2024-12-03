@@ -120,11 +120,13 @@ class Article(
         body: String,
         type: ArticleType,
         category: ArticleCategory,
+        isLocationVisible: Boolean,
     ) {
         this.title = title
         this.body = body
         this.type = type
         this.category = category
+        this.isLocationVisible = isLocationVisible
     }
 }
 
