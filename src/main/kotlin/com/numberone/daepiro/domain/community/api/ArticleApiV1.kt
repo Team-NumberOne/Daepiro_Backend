@@ -1,6 +1,6 @@
 package com.numberone.daepiro.domain.community.api
 
-import com.numberone.daepiro.domain.community.dto.request.CreateArticleRequest
+import com.numberone.daepiro.domain.community.dto.request.UpsertArticleRequest
 import com.numberone.daepiro.domain.community.dto.response.ArticleDetailResponse
 import com.numberone.daepiro.domain.community.dto.response.ArticleSimpleResponse
 import com.numberone.daepiro.global.dto.ApiResult
@@ -28,7 +28,7 @@ interface ArticleApiV1 {
     )
     @PostMapping(consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
     fun createArticle(
-        @ModelAttribute request: CreateArticleRequest,
+        @ModelAttribute request: UpsertArticleRequest,
         @Parameter(
             description = "첨부파일 리스트 (이미지)",
             content = [Content(

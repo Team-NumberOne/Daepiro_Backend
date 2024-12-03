@@ -1,6 +1,6 @@
 package com.numberone.daepiro.domain.community.service
 
-import com.numberone.daepiro.domain.community.dto.request.CreateArticleRequest
+import com.numberone.daepiro.domain.community.dto.request.UpsertArticleRequest
 import com.numberone.daepiro.domain.community.dto.response.ArticleDetailResponse
 import com.numberone.daepiro.domain.community.dto.response.ArticleSimpleResponse
 import com.numberone.daepiro.domain.community.entity.Article
@@ -28,7 +28,7 @@ class ArticleService(
 
     @Transactional
     fun createOne(
-        request: CreateArticleRequest,
+        request: UpsertArticleRequest,
         attachFileList: List<MultipartFile>?,
         userId: Long,
     ): ArticleSimpleResponse {

@@ -7,7 +7,7 @@ import org.springdoc.core.annotations.ParameterObject
 
 @ParameterObject
 @Schema(description = "게시글 생성 request dto")
-data class CreateArticleRequest(
+data class UpsertArticleRequest(
 
     @Schema(description = "게시글 타입. <br>-동네생활: DONGNE<br>-정보: INFORMATION ", example = "DONGNE")
     val articleType: ArticleType,
