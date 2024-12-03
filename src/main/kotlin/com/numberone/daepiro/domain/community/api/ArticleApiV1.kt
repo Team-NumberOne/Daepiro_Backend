@@ -50,7 +50,7 @@ interface ArticleApiV1 {
         summary = "게시글 수정(Upsert)",
         description = "요청한 request spec 대로 게시글 데이터를 덮어씌웁니다."
     )
-    @PutMapping(path = ["/{id}"], consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
+    @PostMapping(path = ["/{id}"], consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
     fun updateArticle(
         @PathVariable(value = "id", required = true) id: Long,
         @ModelAttribute request: UpsertArticleRequest,
