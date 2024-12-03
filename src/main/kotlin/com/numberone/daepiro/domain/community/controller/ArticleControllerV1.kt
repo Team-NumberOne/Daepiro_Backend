@@ -40,6 +40,6 @@ class ArticleController(
             request = request,
             attachFileList = attachFileList,
         )
-        return ApiResult.ok(data = response, path = "/v1/articles")
+        return ApiResult.ok(data = response, path = "/v1/articles/$id")
     }
 }

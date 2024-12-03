@@ -61,14 +61,13 @@ class ArticleService(
         attachFileList: List<MultipartFile>?,
     ): ArticleSimpleResponse {
         val article = articleRepository.findByIdOrThrow(id)
-            .apply {
-                update(
-                    title = title,
-                    body = body,
-                    type = type,
-                    category = category,
-                )
-            }
+
+        article.update(
+            title = request.title,
+            body = request.body,
+            type = request.articleType,
+            category = request.articleCategory,
+        )
 
         attachFileList?.let { files ->
             // 해당 아티클에 매핑된 파일을 모두 제거하고
