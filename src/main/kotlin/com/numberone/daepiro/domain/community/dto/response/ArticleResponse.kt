@@ -66,10 +66,10 @@ data class ArticleDetailResponse(
     @Schema(description = "파일 목록", example = "[\"https://path/to/file1\", \"https://path/to/file2\"]")
     val files: List<String>?,
 
-    @Schema(description = "생성일시")
+    @Schema(description = "생성일시", example = "2024-12-02T21:48:14.929554")
     val createdAt: LocalDateTime? = null,
 
-    @Schema(description = "수정일시")
+    @Schema(description = "수정일시", example = "2024-12-02T21:48:14.929554")
     val lastModifiedAt: LocalDateTime? = null,
 ) {
     companion object {
