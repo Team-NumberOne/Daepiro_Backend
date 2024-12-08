@@ -2,9 +2,13 @@ package com.numberone.daepiro.domain.community.service
 
 import com.numberone.daepiro.domain.address.repository.AddressRepository
 import com.numberone.daepiro.domain.address.repository.GeoLocationConverter
+import com.numberone.daepiro.domain.address.repository.findByAddressInfoOrThrow
+import com.numberone.daepiro.domain.address.vo.AddressInfo
+import com.numberone.daepiro.domain.community.dto.request.GetArticleRequest
 import com.numberone.daepiro.domain.community.dto.request.UpdateArticleRequest
 import com.numberone.daepiro.domain.community.dto.request.UpsertArticleRequest
 import com.numberone.daepiro.domain.community.dto.response.ArticleDetailResponse
+import com.numberone.daepiro.domain.community.dto.response.ArticleListResponse
 import com.numberone.daepiro.domain.community.dto.response.ArticleSimpleResponse
 import com.numberone.daepiro.domain.community.entity.Article
 import com.numberone.daepiro.domain.community.event.ArticleFileUploadEvent
@@ -16,12 +20,12 @@ import com.numberone.daepiro.domain.file.repository.FileRepository
 import com.numberone.daepiro.domain.user.repository.UserRepository
 import com.numberone.daepiro.domain.user.repository.findByIdOrThrow
 import org.springframework.context.ApplicationEventPublisher
+import org.springframework.data.domain.Slice
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.multipart.MultipartFile
 
 @Service
-@Transactional(readOnly = true)
 class ArticleService(
     private val articleRepository: ArticleRepository,
     private val fileRepository: FileRepository,
@@ -88,6 +92,7 @@ class ArticleService(
         return ArticleSimpleResponse.from(article)
     }
 
+    @Transactional(readOnly = true)
     fun getOne(id: Long): ArticleDetailResponse {
         val article = articleRepository.findByIdOrThrow(id)
         val files = fileRepository.findAllByDocumentTypeAndDocumentId(
@@ -98,5 +103,34 @@ class ArticleService(
             article = article,
             files = files,
         )
+    }
+
+    @Transactional(readOnly = true)
+    fun getMulti(
+        request: GetArticleRequest,
+    ): Slice<ArticleListResponse> {
+        val address = request.address?.let {
+            addressRepository.findByAddressInfoOrThrow(AddressInfo.from(it))
+        }
+
+        val slice = articleRepository.getArticles(
+            request = request,
+            siDo = address?.siDo,
+            siGunGu = address?.siGunGu,
+        )
+
+        val files = fileRepository.findAllByDocumentTypeAndDocumentIdIn(
+            documentType = FileDocumentType.ARTICLE,
+            documentIds = slice.map { it.id }.distinct(),
+        )
+
+        slice.forEach { articleResponse ->
+            val relatedFile = files.find { it.documentId == articleResponse.id }
+            relatedFile?.let {
+                articleResponse.updatePreviewImageUrl(it.path)
+            }
+        }
+
+        return slice
     }
 }

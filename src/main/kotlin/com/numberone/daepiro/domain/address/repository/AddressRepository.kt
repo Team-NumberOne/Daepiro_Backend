@@ -29,3 +29,7 @@ interface AddressRepository : JpaRepository<Address, Long> {
     fun findChildAddress(ai: AddressInfo): List<Address>
 }
 
+fun AddressRepository.findByAddressInfoOrThrow(ai: AddressInfo): Address {
+    return findByAddressInfo(ai)
+        ?: throw IllegalArgumentException("올바르지 않은 주소 요청입니다.")
+}
