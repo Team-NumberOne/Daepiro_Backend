@@ -36,10 +36,4 @@ interface AuthApiV1 {
     fun refreshToken(
         @RequestBody request: RefreshTokenRequest
     ): ApiResult<TokenResponse>
-
-    @GetMapping("/test")
-    @Operation(summary = "테스트", description = "테스트")
-    fun test(): ApiResult<String> {
-        return ApiResult.ok("test")
-    }
 }
