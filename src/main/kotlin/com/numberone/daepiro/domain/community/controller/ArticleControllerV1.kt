@@ -1,13 +1,16 @@
 package com.numberone.daepiro.domain.community.controller
 
 import com.numberone.daepiro.domain.community.api.ArticleApiV1
+import com.numberone.daepiro.domain.community.dto.request.GetArticleRequest
 import com.numberone.daepiro.domain.community.dto.request.UpdateArticleRequest
 import com.numberone.daepiro.domain.community.dto.request.UpsertArticleRequest
 import com.numberone.daepiro.domain.community.dto.response.ArticleDetailResponse
+import com.numberone.daepiro.domain.community.dto.response.ArticleListResponse
 import com.numberone.daepiro.domain.community.dto.response.ArticleSimpleResponse
 import com.numberone.daepiro.domain.community.service.ArticleService
 import com.numberone.daepiro.global.dto.ApiResult
 import com.numberone.daepiro.global.utils.SecurityContextUtils
+import org.springframework.data.domain.Slice
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.multipart.MultipartFile
 
@@ -28,7 +31,7 @@ class ArticleController(
     }
 
     override fun getArticle(id: Long): ApiResult<ArticleDetailResponse> {
-        return ApiResult.ok(data = articleService.getOne(id), "/v1/articles" )
+        return ApiResult.ok(data = articleService.getOne(id), "/v1/articles")
     }
 
     override fun updateArticle(
@@ -42,5 +45,14 @@ class ArticleController(
             attachFileList = attachFileList,
         )
         return ApiResult.ok(data = response, path = "/v1/articles/$id")
+    }
+
+    override fun getArticles(
+        request: GetArticleRequest,
+    ): ApiResult<Slice<ArticleListResponse>> {
+        val response = articleService.getMulti(
+            request = request,
+        )
+        return ApiResult.ok(data = response, path = "/v1/articles")
     }
 }
