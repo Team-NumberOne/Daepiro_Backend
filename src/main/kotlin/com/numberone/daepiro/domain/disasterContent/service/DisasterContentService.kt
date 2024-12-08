@@ -2,6 +2,7 @@ package com.numberone.daepiro.domain.disasterContent.service
 
 import com.numberone.daepiro.domain.dataCollecter.repository.NewsRepository
 import com.numberone.daepiro.domain.disasterContent.dto.response.DisasterContentsResponse
+import com.numberone.daepiro.domain.disasterContent.dto.response.GetHomeDisasterContentsResponse
 import com.numberone.daepiro.global.dto.ApiResult
 import com.numberone.daepiro.global.exception.CustomErrorContext.INVALID_DISASTER_CONTENT_SORT_TYPE
 import com.numberone.daepiro.global.exception.CustomException
@@ -56,4 +57,10 @@ class DisasterContentService(
 
         return ApiResult.ok(DisasterContentsResponse.of(newsList))
     }
+
+    fun getHomeDisasterContents(): ApiResult<GetHomeDisasterContentsResponse> {
+        val newsList = newsRepository.findTop3ByOrderByPublishedAtDesc()
+        return ApiResult.ok(GetHomeDisasterContentsResponse.of(newsList))
+    }
+
 }
