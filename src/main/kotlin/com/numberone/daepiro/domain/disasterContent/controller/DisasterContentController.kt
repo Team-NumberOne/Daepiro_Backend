@@ -2,6 +2,7 @@ package com.numberone.daepiro.domain.disasterContent.controller
 
 import com.numberone.daepiro.domain.disasterContent.api.DisasterContentApiV1
 import com.numberone.daepiro.domain.disasterContent.dto.response.DisasterContentsResponse
+import com.numberone.daepiro.domain.disasterContent.dto.response.GetHomeDisasterContentsResponse
 import com.numberone.daepiro.domain.disasterContent.service.DisasterContentService
 import com.numberone.daepiro.global.dto.ApiResult
 import org.springframework.web.bind.annotation.RestController
@@ -24,5 +25,9 @@ class DisasterContentController(
         size: Long
     ): ApiResult<DisasterContentsResponse> {
         return disasterContentService.searchDisasterContents(keyword, cursor, size)
+    }
+
+    override fun getHomeDisasterContents(): ApiResult<GetHomeDisasterContentsResponse> {
+        return disasterContentService.getHomeDisasterContents()
     }
 }
