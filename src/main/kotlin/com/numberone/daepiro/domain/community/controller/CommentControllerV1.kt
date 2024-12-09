@@ -24,4 +24,9 @@ class CommentControllerV1(
             path = "/v1/comments"
         )
     }
+
+    override fun deleteComment(id: Long): ApiResult<Unit> {
+        commentService.deleteComment(id)
+        return ApiResult.ok(path = "/v1/comments/$id")
+    }
 }

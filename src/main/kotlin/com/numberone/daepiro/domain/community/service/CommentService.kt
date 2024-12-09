@@ -9,6 +9,7 @@ import com.numberone.daepiro.domain.community.repository.comment.CommentReposito
 import com.numberone.daepiro.domain.community.repository.comment.findByIdOrThrow
 import com.numberone.daepiro.domain.user.repository.UserRepository
 import com.numberone.daepiro.domain.user.repository.findByIdOrThrow
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -34,5 +35,13 @@ class CommentService(
         )
 
         return CommentSimpleResponse.from(comment)
+    }
+
+    @Transactional
+    fun deleteComment(commentId: Long) {
+        val comment = commentRepository.findByIdOrThrow(commentId)
+            .also { commentRepository.delete(it) }
+        articleRepository.findByIdOrNull(comment.documentId)
+            ?.also { it.decreaseCommentCount() }
     }
 }
