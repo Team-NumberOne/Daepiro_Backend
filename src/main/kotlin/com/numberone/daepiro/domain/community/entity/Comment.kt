@@ -16,8 +16,7 @@ import jakarta.persistence.Table
 @Entity
 @Table(name = "`comment`")
 class Comment(
-    @Column(nullable = false)
-    val body: String = "",
+    body: String = "",
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "author_user_id", foreignKey = ForeignKey(ConstraintMode.NO_CONSTRAINT))
@@ -37,6 +36,17 @@ class Comment(
     @Column(nullable = false)
     val likeCount: Int = 0
 ) : PrimaryKeyEntity() {
+
+    @Column(nullable = false)
+    var body: String = body
+        protected set
+
+    fun modifyComment(body: String): Comment {
+        return this.apply {
+            this.body = body
+        }
+    }
+
     companion object {
         fun of(
             body: String,

@@ -6,6 +6,7 @@ import com.numberone.daepiro.domain.community.entity.Comment
 import com.numberone.daepiro.domain.community.repository.article.ArticleRepository
 import com.numberone.daepiro.domain.community.repository.article.findByIdOrThrow
 import com.numberone.daepiro.domain.community.repository.comment.CommentRepository
+import com.numberone.daepiro.domain.community.repository.comment.ModifyCommentRequest
 import com.numberone.daepiro.domain.community.repository.comment.findByIdOrThrow
 import com.numberone.daepiro.domain.user.repository.UserRepository
 import com.numberone.daepiro.domain.user.repository.findByIdOrThrow
@@ -43,5 +44,13 @@ class CommentService(
             .also { commentRepository.delete(it) }
         articleRepository.findByIdOrNull(comment.documentId)
             ?.also { it.decreaseCommentCount() }
+    }
+
+    @Transactional
+    fun modifyComment(commentId: Long, request: ModifyCommentRequest): CommentSimpleResponse {
+        val comment = commentRepository.findByIdOrThrow(commentId)
+        return CommentSimpleResponse.from(
+            comment = comment.modifyComment(request.body)
+        )
     }
 }
