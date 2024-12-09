@@ -115,6 +115,21 @@ class Article(
         }
     }
 
+    fun increaseCommentCount(): Article {
+        return this.apply {
+            commentCount++
+        }
+    }
+
+
+    fun decreaseCommentCount(): Article {
+        return this.apply {
+            commentCount = (commentCount - 1)
+                .coerceAtLeast(0) // 0 이상은 보장
+        }
+    }
+
+
     fun update(
         title: String,
         body: String,

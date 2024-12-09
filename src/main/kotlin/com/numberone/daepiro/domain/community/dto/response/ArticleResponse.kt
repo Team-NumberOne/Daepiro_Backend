@@ -112,6 +112,9 @@ data class ArticleDetailResponse(
     @Schema(description = "파일 목록", example = "[\"https://path/to/file1\", \"https://path/to/file2\"]")
     val files: List<String>?,
 
+    @Schema(description = "해당 게시글에 작성된 댓글 목록 (계층형)")
+    val comments: List<CommentResponse> = emptyList(),
+
     @Schema(description = "생성일시", example = "2024-12-02T21:48:14.929554")
     val createdAt: LocalDateTime? = null,
 
@@ -121,7 +124,8 @@ data class ArticleDetailResponse(
     companion object {
         fun of(
             article: Article,
-            files: List<FileEntity>? = emptyList()
+            files: List<FileEntity>? = emptyList(),
+            comments: List<CommentResponse> = emptyList()
         ): ArticleDetailResponse {
             return ArticleDetailResponse(
                 id = article.id!!,
@@ -137,6 +141,7 @@ data class ArticleDetailResponse(
                 status = article.status,
                 authorUser = article.authUser?.let { AuthorResponse.from(it) },
                 files = files?.toPaths(),
+                comments = comments,
                 createdAt = article.createdAt,
                 lastModifiedAt = article.lastModifiedAt,
             )
@@ -168,4 +173,25 @@ data class AuthorResponse @QueryProjection constructor(
             )
         }
     }
+}
+
+@Schema(description = "댓글 응답 모델")
+data class CommentResponse @QueryProjection constructor(
+    @Schema(description = "댓글 아이디(PK)")
+    val id: Long,
+    @Schema(description = "댓글 본문")
+    val body: String,
+    @Schema(description = "작성자 정보")
+    val author: AuthorResponse? = null,
+    @Schema(description = "좋아요 개수")
+    val likeCount: Int = 0,
+    @Schema(description = "부모 댓글 Id")
+    val parentCommentId: Long? = null,
+    @Schema(description = "생성일시", example = "2024-12-02T21:48:14.929554")
+    val createdAt: LocalDateTime? = null,
+    @Schema(description = "수정일시", example = "2024-12-02T21:48:14.929554")
+    val lastModifiedAt: LocalDateTime? = null,
+) {
+    @Schema(description = "해당 댓글에 자식으로 포함된 댓글들")
+    var children: MutableList<CommentResponse> = mutableListOf()
 }

@@ -16,8 +16,7 @@ import jakarta.persistence.Table
 @Entity
 @Table(name = "`comment`")
 class Comment(
-    @Column(nullable = false)
-    val body: String = "",
+    body: String = "",
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "author_user_id", foreignKey = ForeignKey(ConstraintMode.NO_CONSTRAINT))
@@ -29,15 +28,41 @@ class Comment(
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, columnDefinition = "varchar(255)")
-    val documentType: CommentDocumentType,
+    val documentType: ArticleType? = null,
 
     @Column(nullable = false)
     val documentId: Long? = null,
 
     @Column(nullable = false)
     val likeCount: Int = 0
-) : PrimaryKeyEntity()
+) : PrimaryKeyEntity() {
 
-enum class CommentDocumentType {
-    ARTICLE, DISASTER
+    @Column(nullable = false)
+    var body: String = body
+        protected set
+
+    fun modifyComment(body: String): Comment {
+        return this.apply {
+            this.body = body
+        }
+    }
+
+    companion object {
+        fun of(
+            body: String,
+            authUser: UserEntity,
+            parentComment: Comment? = null,
+            article: Article,
+        ): Comment {
+            article.increaseCommentCount()
+            return Comment(
+                body = body,
+                authUser = authUser,
+                parentComment = parentComment,
+                documentType = article.type,
+                documentId = article.id,
+                likeCount = 0,
+            )
+        }
+    }
 }

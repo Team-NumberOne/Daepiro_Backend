@@ -28,7 +28,6 @@ import org.springframework.web.multipart.MultipartFile
 interface ArticleApiV1 {
     @Operation(
         summary = "게시글 작성",
-        description = ""
     )
     @PostMapping(consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
     fun createArticle(
@@ -50,7 +49,6 @@ interface ArticleApiV1 {
 
     @Operation(
         summary = "게시글 단건 조회",
-        description = ""
     )
     @GetMapping("{id}")
     fun getArticle(@PathVariable("id") id: Long): ApiResult<ArticleDetailResponse>
@@ -81,7 +79,6 @@ interface ArticleApiV1 {
 
     @Operation(
         summary = "게시글 리스트 조회 (무한 스크롤) @see Figma. 2.1",
-        description = ""
     )
     @GetMapping
     fun getArticles(
