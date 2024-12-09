@@ -115,6 +115,12 @@ class Article(
         }
     }
 
+    fun increaseCommentCount(): Article {
+        return this.apply {
+            commentCount++
+        }
+    }
+
     fun update(
         title: String,
         body: String,

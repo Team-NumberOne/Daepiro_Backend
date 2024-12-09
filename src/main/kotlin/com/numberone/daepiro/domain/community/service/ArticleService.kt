@@ -12,8 +12,8 @@ import com.numberone.daepiro.domain.community.dto.response.ArticleListResponse
 import com.numberone.daepiro.domain.community.dto.response.ArticleSimpleResponse
 import com.numberone.daepiro.domain.community.entity.Article
 import com.numberone.daepiro.domain.community.event.ArticleFileUploadEvent
-import com.numberone.daepiro.domain.community.repository.ArticleRepository
-import com.numberone.daepiro.domain.community.repository.findByIdOrThrow
+import com.numberone.daepiro.domain.community.repository.article.ArticleRepository
+import com.numberone.daepiro.domain.community.repository.article.findByIdOrThrow
 import com.numberone.daepiro.domain.file.entity.FileDocumentType
 import com.numberone.daepiro.domain.file.model.RawFile
 import com.numberone.daepiro.domain.file.repository.FileRepository

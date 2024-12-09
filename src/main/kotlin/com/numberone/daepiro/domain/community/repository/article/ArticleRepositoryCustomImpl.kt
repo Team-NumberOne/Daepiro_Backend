@@ -1,4 +1,4 @@
-package com.numberone.daepiro.domain.community.repository
+package com.numberone.daepiro.domain.community.repository.article
 
 import com.numberone.daepiro.domain.address.entity.QAddress.address
 import com.numberone.daepiro.domain.community.dto.request.GetArticleRequest

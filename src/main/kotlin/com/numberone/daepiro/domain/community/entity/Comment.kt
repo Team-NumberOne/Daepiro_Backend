@@ -29,15 +29,30 @@ class Comment(
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, columnDefinition = "varchar(255)")
-    val documentType: CommentDocumentType,
+    val documentType: ArticleType? = null,
 
     @Column(nullable = false)
     val documentId: Long? = null,
 
     @Column(nullable = false)
     val likeCount: Int = 0
-) : PrimaryKeyEntity()
-
-enum class CommentDocumentType {
-    ARTICLE, DISASTER
+) : PrimaryKeyEntity() {
+    companion object {
+        fun of(
+            body: String,
+            authUser: UserEntity,
+            parentComment: Comment? = null,
+            article: Article,
+        ): Comment {
+            article.increaseCommentCount()
+            return Comment(
+                body = body,
+                authUser = authUser,
+                parentComment = parentComment,
+                documentType = article.type,
+                documentId = article.id,
+                likeCount = 0,
+            )
+        }
+    }
 }
