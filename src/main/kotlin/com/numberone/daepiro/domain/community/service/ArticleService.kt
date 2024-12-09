@@ -1,7 +1,6 @@
 package com.numberone.daepiro.domain.community.service
 
 import com.numberone.daepiro.domain.address.repository.AddressRepository
-import com.numberone.daepiro.domain.address.repository.GeoLocationConverter
 import com.numberone.daepiro.domain.address.repository.findByAddressInfoOrThrow
 import com.numberone.daepiro.domain.address.vo.AddressInfo
 import com.numberone.daepiro.domain.community.dto.request.GetArticleRequest
@@ -10,10 +9,12 @@ import com.numberone.daepiro.domain.community.dto.request.UpsertArticleRequest
 import com.numberone.daepiro.domain.community.dto.response.ArticleDetailResponse
 import com.numberone.daepiro.domain.community.dto.response.ArticleListResponse
 import com.numberone.daepiro.domain.community.dto.response.ArticleSimpleResponse
+import com.numberone.daepiro.domain.community.dto.response.CommentResponse
 import com.numberone.daepiro.domain.community.entity.Article
 import com.numberone.daepiro.domain.community.event.ArticleFileUploadEvent
 import com.numberone.daepiro.domain.community.repository.article.ArticleRepository
 import com.numberone.daepiro.domain.community.repository.article.findByIdOrThrow
+import com.numberone.daepiro.domain.community.repository.comment.CommentRepository
 import com.numberone.daepiro.domain.file.entity.FileDocumentType
 import com.numberone.daepiro.domain.file.model.RawFile
 import com.numberone.daepiro.domain.file.repository.FileRepository
@@ -32,7 +33,7 @@ class ArticleService(
     private val userRepository: UserRepository,
     private val eventPublisher: ApplicationEventPublisher,
     private val addressRepository: AddressRepository,
-    private val geoLocationConverter: GeoLocationConverter,
+    private val commentRepository: CommentRepository,
 ) {
 
     @Transactional
@@ -99,9 +100,27 @@ class ArticleService(
             documentType = FileDocumentType.ARTICLE,
             article.id!!
         )
+
+        val comments = commentRepository.findCommentsByDocumentId(article.id!!)
+
+        val roots = mutableListOf<CommentResponse>()
+        val commentById = comments.associateBy { it.id }
+
+        comments.forEach { it ->
+            val comment = commentById[it.id] ?: return@forEach
+            if (comment.parentCommentId != null) {
+                val parentComment = commentById[comment.parentCommentId]
+                parentComment?.children?.add(comment)
+                return@forEach
+            }
+            roots.add(comment)
+        }
+
+
         return ArticleDetailResponse.of(
             article = article,
             files = files,
+            comments = roots,
         )
     }
 
