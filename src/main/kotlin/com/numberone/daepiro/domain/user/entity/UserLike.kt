@@ -1,6 +1,7 @@
 package com.numberone.daepiro.domain.user.entity
 
 import com.numberone.daepiro.domain.baseentity.PrimaryKeyEntity
+import com.numberone.daepiro.domain.community.entity.ArticleType
 import jakarta.persistence.Column
 import jakarta.persistence.ConstraintMode
 import jakarta.persistence.Entity
@@ -28,5 +29,15 @@ class UserLike(
 ) : PrimaryKeyEntity()
 
 enum class UserLikeDocumentType {
-    ARTICLE, DISASTER, COMMENT
+    DONGNE, DISASTER, INFORMATION, COMMENT;
+
+    companion object {
+        fun from(articleType: ArticleType): UserLikeDocumentType {
+            return when (articleType) {
+                ArticleType.DONGNE -> DONGNE;
+                ArticleType.DISASTER -> DISASTER;
+                ArticleType.INFORMATION -> INFORMATION;
+            }
+        }
+    }
 }

@@ -4,6 +4,7 @@ import com.numberone.daepiro.domain.community.dto.request.GetArticleRequest
 import com.numberone.daepiro.domain.community.dto.request.UpdateArticleRequest
 import com.numberone.daepiro.domain.community.dto.request.UpsertArticleRequest
 import com.numberone.daepiro.domain.community.dto.response.ArticleDetailResponse
+import com.numberone.daepiro.domain.community.dto.response.ArticleLikeResponse
 import com.numberone.daepiro.domain.community.dto.response.ArticleListResponse
 import com.numberone.daepiro.domain.community.dto.response.ArticleSimpleResponse
 import com.numberone.daepiro.global.dto.ApiResult
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.ModelAttribute
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestPart
 import org.springframework.web.multipart.MultipartFile
@@ -84,4 +86,13 @@ interface ArticleApiV1 {
     fun getArticles(
         @ModelAttribute request: GetArticleRequest,
     ): ApiResult<Slice<ArticleListResponse>>
+
+    @Operation(
+        summary = "게시글 좋아요 추가/취소"
+    )
+    @PutMapping("/{id}/like")
+    fun like(
+        @PathVariable("id") id: Long,
+    ): ApiResult<ArticleLikeResponse>
+
 }
