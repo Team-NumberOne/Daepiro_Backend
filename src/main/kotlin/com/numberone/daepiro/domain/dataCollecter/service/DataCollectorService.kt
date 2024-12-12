@@ -86,7 +86,8 @@ class DataCollectorService(
         }
 
         disasterRepository.saveAll(disasters)
-        sendDisasterNotification(disasters)
+        //sendDisasterNotification(disasters)
+        // todo fcm 적용시 주석해제
     }
 
     private fun sendDisasterNotification(disasters: List<Disaster>) {
