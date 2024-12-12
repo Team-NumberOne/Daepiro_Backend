@@ -195,3 +195,17 @@ data class CommentResponse @QueryProjection constructor(
     @Schema(description = "해당 댓글에 자식으로 포함된 댓글들")
     var children: MutableList<CommentResponse> = mutableListOf()
 }
+
+data class ArticleLikeResponse(
+    val articleId: Long,
+    val likeCount: Int,
+) {
+    companion object {
+        fun from(article: Article): ArticleLikeResponse {
+            return ArticleLikeResponse(
+                articleId = article.id!!,
+                likeCount = article.likeCount,
+            )
+        }
+    }
+}

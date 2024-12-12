@@ -5,6 +5,7 @@ import com.numberone.daepiro.domain.community.dto.request.GetArticleRequest
 import com.numberone.daepiro.domain.community.dto.request.UpdateArticleRequest
 import com.numberone.daepiro.domain.community.dto.request.UpsertArticleRequest
 import com.numberone.daepiro.domain.community.dto.response.ArticleDetailResponse
+import com.numberone.daepiro.domain.community.dto.response.ArticleLikeResponse
 import com.numberone.daepiro.domain.community.dto.response.ArticleListResponse
 import com.numberone.daepiro.domain.community.dto.response.ArticleSimpleResponse
 import com.numberone.daepiro.domain.community.service.ArticleService
@@ -54,5 +55,13 @@ class ArticleController(
             request = request,
         )
         return ApiResult.ok(data = response, path = "/v1/articles")
+    }
+
+    override fun like(id: Long): ApiResult<ArticleLikeResponse> {
+        val response = articleService.like(
+            userId = SecurityContextUtils.getUserId(),
+            articleId = id,
+        )
+        return ApiResult.ok(data = response, path = "/v1/articles/$id/like")
     }
 }

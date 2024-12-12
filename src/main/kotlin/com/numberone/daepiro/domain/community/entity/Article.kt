@@ -121,6 +121,19 @@ class Article(
         }
     }
 
+    fun increaseLikeCount(): Article {
+        return this.apply {
+            likeCount++;
+        }
+    }
+
+    fun decreaseLikeCount(): Article {
+        return this.apply {
+            likeCount = (likeCount - 1)
+                .coerceAtLeast(0)
+        }
+    }
+
 
     fun decreaseCommentCount(): Article {
         return this.apply {
