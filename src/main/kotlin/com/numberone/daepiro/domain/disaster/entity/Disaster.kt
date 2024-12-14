@@ -65,4 +65,8 @@ class Disaster(
             )
         }
     }
+
+    fun getTitle(): String {
+        return "${address.toAddress()} ${disasterType.type.korean} 발생"
+    }
 }

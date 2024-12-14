@@ -2,6 +2,8 @@ package com.numberone.daepiro.domain.community.entity
 
 import com.numberone.daepiro.domain.address.entity.Address
 import com.numberone.daepiro.domain.baseentity.PrimaryKeyEntity
+import com.numberone.daepiro.domain.disaster.entity.DisasterType
+import com.numberone.daepiro.domain.disaster.entity.DisasterType.DisasterValue
 import com.numberone.daepiro.domain.user.entity.UserEntity
 import jakarta.persistence.Column
 import jakarta.persistence.ConstraintMode
@@ -29,6 +31,7 @@ class Article(
     status: ArticleStatus = ArticleStatus.ACTIVE,
     authUser: UserEntity? = null,
     address: Address? = null,
+    disasterType:DisasterType? = null,
 ) : PrimaryKeyEntity() {
     @Column(nullable = false)
     var title: String = title
@@ -83,6 +86,11 @@ class Article(
     var address: Address? = address
         protected set
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "disaster_type_id", foreignKey = ForeignKey(ConstraintMode.NO_CONSTRAINT))
+    var disasterType: DisasterType? = disasterType
+        protected set
+
     companion object {
         fun of(
             title: String,
@@ -95,8 +103,9 @@ class Article(
             commentCount: Int = 0,
             reportCount: Int = 0,
             status: ArticleStatus = ArticleStatus.ACTIVE,
-            authUser: UserEntity,
-            address: Address? = null
+            authUser: UserEntity? = null,
+            address: Address? = null,
+            disasterType: DisasterType? = null,
         ): Article {
             return Article(
                 title = title,
@@ -111,6 +120,7 @@ class Article(
                 status = status,
                 authUser = authUser,
                 address = address,
+                disasterType = disasterType,
             )
         }
     }

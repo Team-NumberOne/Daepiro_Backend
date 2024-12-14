@@ -1,5 +1,7 @@
 package com.numberone.daepiro.domain.disasterSituation.dto.response
 
+import com.numberone.daepiro.domain.community.entity.Comment
+import com.numberone.daepiro.domain.user.entity.UserEntity
 import io.swagger.v3.oas.annotations.media.Schema
 import java.time.LocalDateTime
 
@@ -22,6 +24,17 @@ data class SituationCommentResponse(
     @Schema(description = "내 댓글 여부", example = "true")
     val isMine: Boolean,
 
+    @Schema(description = "자식 댓글 목록", example= "[\n" +
+        "        {\n" +
+        "          \"id\": 326,\n" +
+        "          \"name\": \"짱구\",\n" +
+        "          \"time\": \"2024-12-14T12:13:55.883Z\",\n" +
+        "          \"content\": \"싫어요!\",\n" +
+        "          \"likeCount\": 3,\n" +
+        "          \"isMine\": true,\n" +
+        "          \"childComments\": []" +
+        "        }\n" +
+        "      ]")
     val childComments: List<SituationCommentResponse>
 ) {
     companion object {
@@ -43,6 +56,22 @@ data class SituationCommentResponse(
                 likeCount = likeCount,
                 isMine = isMine,
                 childComments = childComments
+            )
+        }
+
+        fun of(
+            comment: Comment,
+            user: UserEntity,
+            childComments: List<Comment>
+        ): SituationCommentResponse {
+            return SituationCommentResponse(
+                id = comment.id!!,
+                name = comment.authUser!!.nickname!!,
+                time = comment.createdAt,
+                content = comment.body,
+                likeCount = comment.likeCount.toLong(),
+                isMine = comment.authUser!!.id == user.id,
+                childComments = childComments.map { of(it, user, listOf()) }
             )
         }
     }

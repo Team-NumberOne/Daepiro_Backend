@@ -1,0 +1,96 @@
+package com.numberone.daepiro.domain.disasterSituation.service
+
+import com.numberone.daepiro.domain.address.repository.AddressRepository
+import com.numberone.daepiro.domain.address.vo.AddressInfo
+import com.numberone.daepiro.domain.community.entity.Article
+import com.numberone.daepiro.domain.community.entity.ArticleCategory
+import com.numberone.daepiro.domain.community.entity.ArticleType
+import com.numberone.daepiro.domain.community.entity.Comment
+import com.numberone.daepiro.domain.community.repository.article.ArticleRepository
+import com.numberone.daepiro.domain.community.repository.article.findByIdOrThrow
+import com.numberone.daepiro.domain.community.repository.comment.CommentRepository
+import com.numberone.daepiro.domain.disaster.entity.Disaster
+import com.numberone.daepiro.domain.disasterSituation.dto.request.CreateSituationCommentRequest
+import com.numberone.daepiro.domain.disasterSituation.dto.response.DisasterSituationResponse
+import com.numberone.daepiro.domain.disasterSituation.dto.response.SituationCommentResponse
+import com.numberone.daepiro.domain.user.repository.UserRepository
+import com.numberone.daepiro.domain.user.repository.findByIdOrThrow
+import com.numberone.daepiro.global.dto.ApiResult
+import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
+import java.time.LocalDateTime
+
+@Service
+@Transactional(readOnly = true)
+class DisasterSituationService(
+    val articleRepository: ArticleRepository,
+    val addressRepository: AddressRepository,
+    val userRepository: UserRepository,
+    val commentRepository: CommentRepository
+) {
+    @Transactional
+    fun createDisasterSituation(disasters: List<Disaster>) {
+        val articles: List<Article> = disasters.map {
+            Article.of(
+                title = it.getTitle(),
+                body = it.message,
+                type = ArticleType.DISASTER,
+                category = ArticleCategory.OTHER,
+                visibility = false,
+                disasterType = it.disasterType,
+                address = it.address
+            )
+        }
+        articleRepository.saveAll(articles)
+    }
+
+    fun getDisasterSituations(
+        userId: Long
+    ): ApiResult<List<DisasterSituationResponse>> {
+        val user = userRepository.findByIdOrThrow(userId)
+        val userAddresses = user.userAddresses.map { it.address }
+        val addressIds = mutableSetOf<Long>()
+        val typeIds = user.userDisasterTypes.map { it.disasterType.id!! }.toSet()
+
+        for (address in userAddresses) {
+            val addressInfo = AddressInfo.from(address)
+            val parentAddressIds = addressRepository.findParentAddress(addressInfo)
+                .map { it.id!! }
+            addressIds.addAll(parentAddressIds + address.id!!)
+        }
+
+        val articles = articleRepository.findDisasterSituation(LocalDateTime.now().minusDays(1))
+
+        return ApiResult.ok(articles.map {
+            val commentEntities = commentRepository.findPopularComments(it.id!!)
+            val comments = commentEntities.map { comment ->
+                Pair(comment, listOf<Comment>())
+            }
+
+            DisasterSituationResponse.of(
+                it,
+                isReceivedForUser(it, addressIds, typeIds),
+                comments,
+                user
+            )
+        })
+    }
+
+    private fun isReceivedForUser(
+        situation: Article,
+        addressIds: Set<Long>,
+        typeIds: Set<Long>
+    ): Boolean {
+        return addressIds.contains(situation.address!!.id) && typeIds.contains(situation.disasterType!!.id)
+    }
+
+    fun getComments(userId: Long, situationId: Long): ApiResult<List<SituationCommentResponse>> {
+        val user = userRepository.findByIdOrThrow(userId)
+        val comments = commentRepository.findParentComments(situationId)
+            .map { Pair(it, commentRepository.findChildComments(it.id!!)) }
+
+        return ApiResult.ok(comments.map {
+            SituationCommentResponse.of(it.first, user, it.second)
+        })
+    }
+}
