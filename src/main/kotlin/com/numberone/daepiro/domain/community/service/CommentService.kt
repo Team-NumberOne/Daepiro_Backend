@@ -1,6 +1,7 @@
 package com.numberone.daepiro.domain.community.service
 
 import com.numberone.daepiro.domain.community.dto.request.CreateCommentRequest
+import com.numberone.daepiro.domain.community.dto.response.CommentLikeResponse
 import com.numberone.daepiro.domain.community.dto.response.CommentSimpleResponse
 import com.numberone.daepiro.domain.community.entity.Comment
 import com.numberone.daepiro.domain.community.repository.article.ArticleRepository
@@ -8,8 +9,12 @@ import com.numberone.daepiro.domain.community.repository.article.findByIdOrThrow
 import com.numberone.daepiro.domain.community.repository.comment.CommentRepository
 import com.numberone.daepiro.domain.community.repository.comment.ModifyCommentRequest
 import com.numberone.daepiro.domain.community.repository.comment.findByIdOrThrow
+import com.numberone.daepiro.domain.user.entity.UserLike
+import com.numberone.daepiro.domain.user.entity.UserLikeDocumentType
+import com.numberone.daepiro.domain.user.repository.UserLikeRepository
 import com.numberone.daepiro.domain.user.repository.UserRepository
 import com.numberone.daepiro.domain.user.repository.findByIdOrThrow
+import com.numberone.daepiro.domain.user.repository.isLikedComment
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -19,6 +24,7 @@ class CommentService(
     private val commentRepository: CommentRepository,
     private val articleRepository: ArticleRepository,
     private val userRepository: UserRepository,
+    private val userLikeRepository: UserLikeRepository,
 ) {
     @Transactional
     fun createComment(userId: Long, request: CreateCommentRequest): CommentSimpleResponse {
@@ -52,5 +58,33 @@ class CommentService(
         return CommentSimpleResponse.from(
             comment = comment.modifyComment(request.body)
         )
+    }
+
+    @Transactional
+    fun like(commentId: Long, userId: Long): CommentLikeResponse {
+        val comment = commentRepository.findByIdOrThrow(commentId)
+
+        when (userLikeRepository.isLikedComment(userId, comment)) {
+            true -> {
+                comment.decreaseLikeCount()
+                userLikeRepository.deleteByUserIdAndDocumentTypeAndDocumentId(
+                    userId = userId,
+                    documentType = UserLikeDocumentType.COMMENT,
+                    documentId = comment.id!!,
+                )
+            }
+            false -> {
+                comment.increaseLikeCount()
+                userLikeRepository.save(
+                    UserLike(
+                        user = userRepository.findByIdOrThrow(userId),
+                        documentType = UserLikeDocumentType.COMMENT,
+                        documentId = comment.id!!,
+                    )
+                )
+            }
+        }
+
+        return CommentLikeResponse.from(comment)
     }
 }
