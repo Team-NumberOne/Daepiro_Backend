@@ -2,6 +2,7 @@ package com.numberone.daepiro.domain.community.controller
 
 import com.numberone.daepiro.domain.community.api.CommentApiV1
 import com.numberone.daepiro.domain.community.dto.request.CreateCommentRequest
+import com.numberone.daepiro.domain.community.dto.response.CommentLikeResponse
 import com.numberone.daepiro.domain.community.dto.response.CommentSimpleResponse
 import com.numberone.daepiro.domain.community.repository.comment.ModifyCommentRequest
 import com.numberone.daepiro.domain.community.service.CommentService
@@ -41,6 +42,19 @@ class CommentControllerV1(
         return ApiResult.ok(
             data = response,
             path = "/v1/comments/$id"
+        )
+    }
+
+    override fun like(id: Long): ApiResult<CommentLikeResponse> {
+
+        val response = commentService.like(
+            commentId = id,
+            userId = SecurityContextUtils.getUserId()
+        )
+
+        return ApiResult.ok(
+            data = response,
+            path = "/v1/comments/$id/like",
         )
     }
 }

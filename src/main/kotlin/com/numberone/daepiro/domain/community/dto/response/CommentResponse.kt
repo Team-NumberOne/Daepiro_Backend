@@ -9,3 +9,14 @@ data class CommentSimpleResponse(val id: Long) {
         }
     }
 }
+
+data class CommentLikeResponse(
+    val id: Long,
+    val likeCount: Int,
+) {
+    companion object {
+        fun from(comment: Comment): CommentLikeResponse {
+            return CommentLikeResponse(comment.id!!, comment.likeCount)
+        }
+    }
+}
