@@ -21,7 +21,7 @@ class GlobalExceptionHandler {
     fun handleCustomException(
         exception: CustomException
     ): ApiResult<Unit> {
-        return handle(exception.context, exception, extractEndpoint())
+        return handle(exception.context, exception, extractEndpoint(), exception.additionalDetail ?: "")
     }
 
     @ExceptionHandler(HttpMessageNotReadableException::class)

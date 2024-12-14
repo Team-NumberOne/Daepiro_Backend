@@ -15,6 +15,7 @@ enum class CustomErrorContext(
     INVALID_SOCIAL_TOKEN(HttpStatus.BAD_REQUEST, 2003, "유효하지 않은 소셜 토큰입니다."),
     NOT_AUTHENTICATED(HttpStatus.UNAUTHORIZED, 2004, "인증이 필요합니다."),
     NOT_AUTHORIZED(HttpStatus.FORBIDDEN, 2005, "관리자 권한이 필요합니다."),
+    DONGNE_VERIFIED_IS_FAILED(HttpStatus.BAD_REQUEST, 2006, "현재 위치 기반 주소가, 동네인증 요청하기 위한 주소와 일치하지 않습니다."),
 
     // 21xx: 사용자 관련 오류
     NOT_FOUND_USER(HttpStatus.NOT_FOUND, 2100, "사용자를 찾을 수 없습니다."),

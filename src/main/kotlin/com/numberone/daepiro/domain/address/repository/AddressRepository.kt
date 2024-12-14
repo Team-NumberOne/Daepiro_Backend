@@ -27,9 +27,17 @@ interface AddressRepository : JpaRepository<Address, Long> {
             "(:#{#ai.depth} = 2 and k.siDo = :#{#ai.si} and k.siGunGu = :#{#ai.gu})"
     )
     fun findChildAddress(ai: AddressInfo): List<Address>
+
+    fun findAllByIdIn(ids: List<Long>): List<Address>
 }
 
 fun AddressRepository.findByAddressInfoOrThrow(ai: AddressInfo): Address {
     return findByAddressInfo(ai)
         ?: throw IllegalArgumentException("올바르지 않은 주소 요청입니다.")
+}
+
+fun AddressRepository.findAllRelatedAddressBy(address: Address): Set<Address> {
+    val parents = findParentAddress(AddressInfo.from(address))
+    val children = findChildAddress(AddressInfo.from(address))
+    return (parents + children + address).toSet()
 }
