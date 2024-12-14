@@ -207,7 +207,7 @@ data class CommentResponse @QueryProjection constructor(
     @Schema(description = "해당 댓글에 자식으로 포함된 댓글들")
     var children: MutableList<CommentResponse> = mutableListOf()
 
-    @Schema(description = "좋아요를 누른 게시글인지?", example = "true")
+    @Schema(description = "좋아요를 누른 댓글인지??", example = "true")
     var isLiked: Boolean = false
 }
 
