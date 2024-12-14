@@ -42,43 +42,4 @@ interface DisasterSituationApiV1 {
     fun getComments(
         @Schema(description = "재난상황 글 id", example = "1032") @PathVariable situationId: Long
     ): ApiResult<List<SituationCommentResponse>>
-
-    @PostMapping("/comments/{situationId}")
-    @Operation(
-        summary = "댓글 작성",
-        description = """
-        댓글을 작성합니다.
-    """
-    )
-    fun createComment(
-        @Schema(description = "재난상황 글 id", example = "1032") @PathVariable situationId: Long,
-        @RequestBody @Valid request: CreateSituationCommentRequest
-    ): ApiResult<Unit>
-
-    @PutMapping("/comments/{commentId}")
-    @Operation(
-        summary = "(fake api) 댓글 수정",
-        description = """
-        댓글을 수정합니다.
-        댓글 작성자만 수정할 수 있습니다.
-        (fake api는 미구현 기능에 대해서 프론트 테스트를 위해 어떤 요청값이든 고정된 응답값만 반환하도록 설계되어 있습니다.)
-    """
-    )
-    fun editComment(
-        @Schema(description = "댓글 id", example = "325") @PathVariable commentId: Long,
-        @RequestBody @Valid request: EditSituationCommentRequest
-    ): ApiResult<Unit>
-
-    @DeleteMapping("/comments/{commentId}")
-    @Operation(
-        summary = "(fake api) 댓글 삭제",
-        description = """
-        댓글을 삭제합니다.
-        댓글 작성자만 삭제할 수 있습니다.
-        (fake api는 미구현 기능에 대해서 프론트 테스트를 위해 어떤 요청값이든 고정된 응답값만 반환하도록 설계되어 있습니다.)
-    """
-    )
-    fun deleteComment(
-        @Schema(description = "댓글 id", example = "325") @PathVariable commentId: Long
-    ): ApiResult<Unit>
 }
