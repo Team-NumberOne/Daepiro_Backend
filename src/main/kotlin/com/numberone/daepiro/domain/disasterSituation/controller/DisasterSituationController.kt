@@ -1,7 +1,8 @@
 package com.numberone.daepiro.domain.disasterSituation.controller
 
 import com.numberone.daepiro.domain.disasterSituation.api.DisasterSituationApiV1
-import com.numberone.daepiro.domain.disasterSituation.dto.request.EditCommentRequest
+import com.numberone.daepiro.domain.disasterSituation.dto.request.CreateSituationCommentRequest
+import com.numberone.daepiro.domain.disasterSituation.dto.request.EditSituationCommentRequest
 import com.numberone.daepiro.domain.disasterSituation.dto.response.DisasterSituationResponse
 import com.numberone.daepiro.domain.disasterSituation.dto.response.SituationCommentResponse
 import com.numberone.daepiro.domain.disasterSituation.service.DisasterSituationService
@@ -54,7 +55,13 @@ class DisasterSituationController(
         return ApiResult.ok(comments)
     }
 
-    override fun editComment(commentId: Long, request: EditCommentRequest): ApiResult<Unit> {
+    override fun createComment(situationId: Long, request: CreateSituationCommentRequest): ApiResult<Unit> {
+        val userId = SecurityContextUtils.getUserId()
+        disasterSituationService.createComment(situationId, userId, request)
+        return ApiResult.ok()
+    }
+
+    override fun editComment(commentId: Long, request: EditSituationCommentRequest): ApiResult<Unit> {
         return ApiResult.ok()
     }
 

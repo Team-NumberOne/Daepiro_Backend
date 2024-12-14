@@ -16,5 +16,5 @@ interface ArticleRepository : JpaRepository<Article, Long>, ArticleRepositoryCus
 }
 
 fun ArticleRepository.findByIdOrThrow(id: Long): Article {
-    return findByIdOrNull(id) ?: throw IllegalArgumentException("Article with id $id not found")
+    return findByIdOrNull(id) ?: throw CustomException(CustomErrorContext.NOT_FOUND_ARTICLE)
 }

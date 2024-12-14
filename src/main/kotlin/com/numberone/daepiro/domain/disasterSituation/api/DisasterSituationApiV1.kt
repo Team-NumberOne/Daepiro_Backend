@@ -1,6 +1,7 @@
 package com.numberone.daepiro.domain.disasterSituation.api
 
-import com.numberone.daepiro.domain.disasterSituation.dto.request.EditCommentRequest
+import com.numberone.daepiro.domain.disasterSituation.dto.request.CreateSituationCommentRequest
+import com.numberone.daepiro.domain.disasterSituation.dto.request.EditSituationCommentRequest
 import com.numberone.daepiro.domain.disasterSituation.dto.response.DisasterSituationResponse
 import com.numberone.daepiro.domain.disasterSituation.dto.response.SituationCommentResponse
 import com.numberone.daepiro.global.dto.ApiResult
@@ -11,6 +12,7 @@ import jakarta.validation.Valid
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
@@ -41,6 +43,18 @@ interface DisasterSituationApiV1 {
         @Schema(description = "재난상황 글 id", example = "1032") @PathVariable situationId: Long
     ): ApiResult<List<SituationCommentResponse>>
 
+    @PostMapping("/comments/{situationId}")
+    @Operation(
+        summary = "댓글 작성",
+        description = """
+        댓글을 작성합니다.
+    """
+    )
+    fun createComment(
+        @Schema(description = "재난상황 글 id", example = "1032") @PathVariable situationId: Long,
+        @RequestBody @Valid request: CreateSituationCommentRequest
+    ): ApiResult<Unit>
+
     @PutMapping("/comments/{commentId}")
     @Operation(
         summary = "(fake api) 댓글 수정",
@@ -52,7 +66,7 @@ interface DisasterSituationApiV1 {
     )
     fun editComment(
         @Schema(description = "댓글 id", example = "325") @PathVariable commentId: Long,
-        @RequestBody @Valid request: EditCommentRequest
+        @RequestBody @Valid request: EditSituationCommentRequest
     ): ApiResult<Unit>
 
     @DeleteMapping("/comments/{commentId}")

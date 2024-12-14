@@ -5,8 +5,12 @@ import com.numberone.daepiro.domain.address.vo.AddressInfo
 import com.numberone.daepiro.domain.community.entity.Article
 import com.numberone.daepiro.domain.community.entity.ArticleCategory
 import com.numberone.daepiro.domain.community.entity.ArticleType
+import com.numberone.daepiro.domain.community.entity.Comment
 import com.numberone.daepiro.domain.community.repository.article.ArticleRepository
+import com.numberone.daepiro.domain.community.repository.article.findByIdOrThrow
+import com.numberone.daepiro.domain.community.repository.comment.CommentRepository
 import com.numberone.daepiro.domain.disaster.entity.Disaster
+import com.numberone.daepiro.domain.disasterSituation.dto.request.CreateSituationCommentRequest
 import com.numberone.daepiro.domain.disasterSituation.dto.response.DisasterSituationResponse
 import com.numberone.daepiro.domain.user.repository.UserRepository
 import com.numberone.daepiro.domain.user.repository.findByIdOrThrow
@@ -21,6 +25,7 @@ class DisasterSituationService(
     val articleRepository: ArticleRepository,
     val addressRepository: AddressRepository,
     val userRepository: UserRepository,
+    val commentRepository: CommentRepository
 ) {
     @Transactional
     fun createDisasterSituation(disasters: List<Disaster>) {
@@ -71,5 +76,19 @@ class DisasterSituationService(
         typeIds: Set<Long>
     ): Boolean {
         return addressIds.contains(situation.address!!.id) && typeIds.contains(situation.disasterType!!.id)
+    }
+
+    @Transactional
+    fun createComment(situationId: Long, userId: Long, request: CreateSituationCommentRequest) {
+        val user = userRepository.findByIdOrThrow(userId)
+        val article = articleRepository.findByIdOrThrow(situationId)
+        val comment = Comment.of(
+            body = request.content,
+            authUser = user,
+            parentComment = null,
+            article = article
+        )
+
+        commentRepository.save(comment)
     }
 }
