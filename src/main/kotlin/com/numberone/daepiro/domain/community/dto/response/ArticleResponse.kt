@@ -44,8 +44,15 @@ data class ArticleListResponse @QueryProjection constructor(
     @Schema(description = "미리보기 이미지", example = "[\"https://path/to/file1\", \"https://path/to/file2\"]")
     var previewImageUrl: String? = null
 
+    @Schema(description = "좋아요를 누른 게시글인지?", example = "true")
+    var isLiked: Boolean = false
+
     fun updatePreviewImageUrl(previewImageUrl: String) {
         this.previewImageUrl = previewImageUrl
+    }
+
+    fun updateIsLiked(isLiked: Boolean) {
+        this.isLiked = isLiked
     }
 }
 
@@ -115,6 +122,9 @@ data class ArticleDetailResponse(
     @Schema(description = "해당 게시글에 작성된 댓글 목록 (계층형)")
     val comments: List<CommentResponse> = emptyList(),
 
+    @Schema(description = "좋아요를 누른 게시글인지?", example = "true")
+    val isLiked: Boolean = false,
+
     @Schema(description = "생성일시", example = "2024-12-02T21:48:14.929554")
     val createdAt: LocalDateTime? = null,
 
@@ -124,6 +134,7 @@ data class ArticleDetailResponse(
     companion object {
         fun of(
             article: Article,
+            isLiked: Boolean = false,
             files: List<FileEntity>? = emptyList(),
             comments: List<CommentResponse> = emptyList()
         ): ArticleDetailResponse {
@@ -134,6 +145,7 @@ data class ArticleDetailResponse(
                 type = article.type.description,
                 category = article.category,
                 isLocationVisible = article.isLocationVisible,
+                isLiked = isLiked,
                 likeCount = article.likeCount,
                 viewCount = article.viewCount,
                 commentCount = article.commentCount,
@@ -161,7 +173,7 @@ data class AuthorResponse @QueryProjection constructor(
     val realname: String? = null,
 
     @Schema(description = "온보딩 완료 여부", example = "true")
-    val isCompletedOnboarding: Boolean
+    val isCompletedOnboarding: Boolean,
 ) {
     companion object {
         fun from(user: UserEntity): AuthorResponse {
@@ -194,6 +206,9 @@ data class CommentResponse @QueryProjection constructor(
 ) {
     @Schema(description = "해당 댓글에 자식으로 포함된 댓글들")
     var children: MutableList<CommentResponse> = mutableListOf()
+
+    @Schema(description = "좋아요를 누른 게시글인지?", example = "true")
+    var isLiked: Boolean = false
 }
 
 data class ArticleLikeResponse(

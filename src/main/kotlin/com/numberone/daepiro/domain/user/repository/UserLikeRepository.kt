@@ -18,7 +18,37 @@ interface UserLikeRepository : JpaRepository<UserLike, Long> {
         documentType: UserLikeDocumentType,
         documentId: Long,
     )
+
+    fun findAllByUserIdAndDocumentTypeIn(
+        userId: Long,
+        documentTypes: List<UserLikeDocumentType>,
+    ): List<UserLike>
 }
+
+fun UserLikeRepository.findAllLikedArticleId(
+    userId: Long
+): Set<Long> {
+    return findAllByUserIdAndDocumentTypeIn(
+        userId = userId,
+        documentTypes = listOf(
+            UserLikeDocumentType.DONGNE,
+            UserLikeDocumentType.DISASTER,
+            UserLikeDocumentType.INFORMATION
+        )
+    ).map { it.documentId }.toSet()
+}
+
+fun UserLikeRepository.findAllLikedCommentId(
+    userId: Long
+): Set<Long> {
+    return findAllByUserIdAndDocumentTypeIn(
+        userId = userId,
+        documentTypes = listOf(
+            UserLikeDocumentType.COMMENT,
+        )
+    ).map { it.documentId }.toSet()
+}
+
 
 fun UserLikeRepository.isLikedArticle(
     userId: Long,

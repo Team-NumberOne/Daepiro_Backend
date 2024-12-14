@@ -31,8 +31,13 @@ class ArticleController(
         return ApiResult.ok(data = response, path = "/v1/articles")
     }
 
-    override fun getArticle(id: Long): ApiResult<ArticleDetailResponse> {
-        return ApiResult.ok(data = articleService.getOne(id), "/v1/articles")
+    override fun getArticle(articleId: Long): ApiResult<ArticleDetailResponse> {
+        return ApiResult.ok(
+            data = articleService.getOne(
+                articleId = articleId,
+                userId = SecurityContextUtils.getUserId()
+            ), "/v1/articles"
+        )
     }
 
     override fun updateArticle(
@@ -53,6 +58,7 @@ class ArticleController(
     ): ApiResult<Slice<ArticleListResponse>> {
         val response = articleService.getMulti(
             request = request,
+            userId = SecurityContextUtils.getUserId()
         )
         return ApiResult.ok(data = response, path = "/v1/articles")
     }

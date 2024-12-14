@@ -23,6 +23,8 @@ import com.numberone.daepiro.domain.user.entity.UserLike
 import com.numberone.daepiro.domain.user.entity.UserLikeDocumentType
 import com.numberone.daepiro.domain.user.repository.UserLikeRepository
 import com.numberone.daepiro.domain.user.repository.UserRepository
+import com.numberone.daepiro.domain.user.repository.findAllLikedArticleId
+import com.numberone.daepiro.domain.user.repository.findAllLikedCommentId
 import com.numberone.daepiro.domain.user.repository.findByIdOrThrow
 import com.numberone.daepiro.domain.user.repository.isLikedArticle
 import org.springframework.context.ApplicationEventPublisher
@@ -100,8 +102,11 @@ class ArticleService(
     }
 
     @Transactional(readOnly = true)
-    fun getOne(id: Long): ArticleDetailResponse {
-        val article = articleRepository.findByIdOrThrow(id)
+    fun getOne(
+        articleId: Long,
+        userId: Long,
+    ): ArticleDetailResponse {
+        val article = articleRepository.findByIdOrThrow(articleId)
         val files = fileRepository.findAllByDocumentTypeAndDocumentId(
             documentType = FileDocumentType.ARTICLE,
             article.id!!
@@ -112,6 +117,7 @@ class ArticleService(
         val roots = mutableListOf<CommentResponse>()
         val commentById = comments.associateBy { it.id }
 
+        val likedCommentIdSet = userLikeRepository.findAllLikedCommentId(userId)
         comments.forEach { it ->
             val comment = commentById[it.id] ?: return@forEach
             if (comment.parentCommentId != null) {
@@ -119,12 +125,21 @@ class ArticleService(
                 parentComment?.children?.add(comment)
                 return@forEach
             }
+            if (likedCommentIdSet.contains(comment.id)) {
+                comment.isLiked = true
+            }
             roots.add(comment)
         }
 
+        val isLikedArticle = userLikeRepository.existsByUserIdAndDocumentTypeAndDocumentId(
+            userId = userId,
+            documentType = UserLikeDocumentType.from(article.type),
+            documentId = article.id!!,
+        )
 
         return ArticleDetailResponse.of(
             article = article,
+            isLiked = isLikedArticle,
             files = files,
             comments = roots,
         )
@@ -133,6 +148,7 @@ class ArticleService(
     @Transactional(readOnly = true)
     fun getMulti(
         request: GetArticleRequest,
+        userId: Long,
     ): Slice<ArticleListResponse> {
         val address = request.address?.let {
             addressRepository.findByAddressInfoOrThrow(AddressInfo.from(it))
@@ -149,10 +165,15 @@ class ArticleService(
             documentIds = slice.map { it.id }.distinct(),
         )
 
-        slice.forEach { articleResponse ->
-            val relatedFile = files.find { it.documentId == articleResponse.id }
+        val likedArticleIdSet = userLikeRepository.findAllLikedArticleId(userId)
+
+        slice.forEach { article ->
+            val relatedFile = files.find { it.documentId == article.id }
             relatedFile?.let {
-                articleResponse.updatePreviewImageUrl(it.path)
+                article.updatePreviewImageUrl(it.path)
+            }
+            if (likedArticleIdSet.contains(article.id)) {
+                article.updateIsLiked(true)
             }
         }
 
