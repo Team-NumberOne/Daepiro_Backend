@@ -32,7 +32,7 @@ data class SituationCommentResponse(
         "          \"content\": \"싫어요!\",\n" +
         "          \"likeCount\": 3,\n" +
         "          \"isMine\": true,\n" +
-        "          \"childComments\": null" +
+        "          \"childComments\": []" +
         "        }\n" +
         "      ]")
     val childComments: List<SituationCommentResponse>

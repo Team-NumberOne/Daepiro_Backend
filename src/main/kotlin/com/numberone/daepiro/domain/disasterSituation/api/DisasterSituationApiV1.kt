@@ -33,11 +33,10 @@ interface DisasterSituationApiV1 {
 
     @GetMapping("/comments/{situationId}")
     @Operation(
-        summary = "(fake api) 댓글 목록 조회",
+        summary = "댓글 목록 조회",
         description = """
         특정 재난상황 글의 댓글 목록을 조회합니다.
         댓글의 대댓글은 childComments 필드를 이용하여 구현하였습니다.
-        (fake api는 미구현 기능에 대해서 프론트 테스트를 위해 어떤 요청값이든 고정된 응답값만 반환하도록 설계되어 있습니다.)
     """
     )
     fun getComments(

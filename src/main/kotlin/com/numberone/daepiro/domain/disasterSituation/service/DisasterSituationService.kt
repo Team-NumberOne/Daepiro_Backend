@@ -12,6 +12,7 @@ import com.numberone.daepiro.domain.community.repository.comment.CommentReposito
 import com.numberone.daepiro.domain.disaster.entity.Disaster
 import com.numberone.daepiro.domain.disasterSituation.dto.request.CreateSituationCommentRequest
 import com.numberone.daepiro.domain.disasterSituation.dto.response.DisasterSituationResponse
+import com.numberone.daepiro.domain.disasterSituation.dto.response.SituationCommentResponse
 import com.numberone.daepiro.domain.user.repository.UserRepository
 import com.numberone.daepiro.domain.user.repository.findByIdOrThrow
 import com.numberone.daepiro.global.dto.ApiResult
@@ -81,5 +82,15 @@ class DisasterSituationService(
         typeIds: Set<Long>
     ): Boolean {
         return addressIds.contains(situation.address!!.id) && typeIds.contains(situation.disasterType!!.id)
+    }
+
+    fun getComments(userId: Long, situationId: Long): ApiResult<List<SituationCommentResponse>> {
+        val user = userRepository.findByIdOrThrow(userId)
+        val comments = commentRepository.findParentComments(situationId)
+            .map { Pair(it, commentRepository.findChildComments(it.id!!)) }
+
+        return ApiResult.ok(comments.map {
+            SituationCommentResponse.of(it.first, user, it.second)
+        })
     }
 }

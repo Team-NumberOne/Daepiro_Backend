@@ -7,6 +7,12 @@ import org.springframework.data.jpa.repository.Query
 interface CommentRepository : JpaRepository<Comment, Long>, CommentRepositoryCustom {
     @Query("SELECT c FROM Comment c WHERE c.documentId = :documentId ORDER BY c.likeCount DESC LIMIT 2")
     fun findPopularComments(documentId: Long): List<Comment>
+
+    @Query("SELECT c FROM Comment c WHERE c.documentId = :documentId AND c.parentComment.id IS NULL ORDER BY c.createdAt ASC")
+    fun findParentComments(documentId: Long): List<Comment>
+
+    @Query("SELECT c FROM Comment c WHERE c.parentComment.id = :parentCommentId ORDER BY c.createdAt ASC")
+    fun findChildComments(parentCommentId: Long): List<Comment>
 }
 
 fun CommentRepository.findByIdOrThrow(id: Long): Comment {
