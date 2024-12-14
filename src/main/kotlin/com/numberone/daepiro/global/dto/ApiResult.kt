@@ -28,6 +28,17 @@ data class ApiResult<T>(
                 path = path
             )
 
+        fun noContent(
+            path: String = "",
+            message: String = "No Content"
+        ) =
+            ApiResult<Unit>(
+                httpStatus = HttpStatus.NO_CONTENT,
+                code = 204,
+                message = message,
+                path = path
+            )
+
         fun error(
             context: CustomErrorContext,
             path: String = "",

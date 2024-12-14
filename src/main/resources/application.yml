@@ -1,4 +1,10 @@
 # todo: 프로파일 별 분리 필요 prod/dev/local
+
+logging:
+  level:
+    # 동네 인증 기반 디버깅을 위해 해당 서비스 로직에 대해서만 임시로 Logging level 을 debug 로 적용. 추후 원복 필요
+    com.numberone.daepiro.domain.community.service.UserAddressVerifiedService: DEBUG
+
 spring:
   jpa:
     hibernate:
