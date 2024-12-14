@@ -1,5 +1,8 @@
 package com.numberone.daepiro.domain.disasterSituation.dto.response
 
+import com.numberone.daepiro.domain.community.entity.Article
+import com.numberone.daepiro.domain.community.entity.Comment
+import com.numberone.daepiro.domain.user.entity.UserEntity
 import io.swagger.v3.oas.annotations.media.Schema
 import java.time.LocalDateTime
 
@@ -28,31 +31,26 @@ data class DisasterSituationResponse(
     @Schema(description = "수신 여부", example = "true")
     val isReceived: Boolean,
 
+    @Schema(description = "댓글 목록")
     val comments: List<SituationCommentResponse>
 ) {
     companion object {
-        // todo fake api용 코드입니다. 추후 삭제 필요
-        fun ofFake(
-            id: Long,
-            type: String,
-            title: String,
-            content: String,
-            location: String,
-            time: LocalDateTime,
-            commentCount: Long,
+        fun of(
+            article: Article,
             isReceived: Boolean,
-            comments: List<SituationCommentResponse>
+            comments: List<Pair<Comment, List<Comment>>>,
+            user: UserEntity
         ): DisasterSituationResponse {
             return DisasterSituationResponse(
-                id = id,
-                type = type,
-                title = title,
-                content = content,
-                location = location,
-                time = time,
-                commentCount = commentCount,
+                id = article.id!!,
+                type = article.disasterType!!.type.korean,
+                title = article.title,
+                content = article.body,
+                location = article.address!!.toAddress(),
+                time = article.createdAt,
+                commentCount = comments.size.toLong(),
                 isReceived = isReceived,
-                comments = comments
+                comments = comments.map { SituationCommentResponse.of(it.first, user, it.second) }
             )
         }
     }

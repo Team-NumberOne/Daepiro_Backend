@@ -20,11 +20,10 @@ import org.springframework.web.bind.annotation.RequestMapping
 interface DisasterSituationApiV1 {
     @GetMapping
     @Operation(
-        summary = "(fake api) 재난상황 글 목록 조회",
+        summary = "재난상황 글 목록 조회",
         description = """
         재난상황 글 목록을 조회합니다.
         프론트에서 수신/전체 필터링은 반환된 리스트 안에 각 데이터의 isReceived 필드를 이용하여 구분하도록 구현하였습니다.
-        (fake api는 미구현 기능에 대해서 프론트 테스트를 위해 어떤 요청값이든 고정된 응답값만 반환하도록 설계되어 있습니다.)
     """
     )
     fun getDisasterSituations(): ApiResult<List<DisasterSituationResponse>>
