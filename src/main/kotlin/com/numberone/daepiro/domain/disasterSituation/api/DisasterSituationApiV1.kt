@@ -26,6 +26,7 @@ interface DisasterSituationApiV1 {
         description = """
         재난상황 글 목록을 조회합니다.
         프론트에서 수신/전체 필터링은 반환된 리스트 안에 각 데이터의 isReceived 필드를 이용하여 구분하도록 구현하였습니다.
+        재난상황 글 목록에서 보여지는 각 게시글의 인기 댓글데이터들은 대댓글 데이터를 제공하지 않기에, 항상 빈 리스트 형태입니다.
     """
     )
     fun getDisasterSituations(): ApiResult<List<DisasterSituationResponse>>

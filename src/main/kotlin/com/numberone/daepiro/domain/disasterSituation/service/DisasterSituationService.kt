@@ -61,10 +61,15 @@ class DisasterSituationService(
         val articles = articleRepository.findDisasterSituation(LocalDateTime.now().minusDays(1))
 
         return ApiResult.ok(articles.map {
+            val commentEntities = commentRepository.findPopularComments(it.id!!)
+            val comments = commentEntities.map { comment ->
+                Pair(comment, listOf<Comment>())
+            }
+
             DisasterSituationResponse.of(
                 it,
                 isReceivedForUser(it, addressIds, typeIds),
-                listOf(),
+                comments,
                 user
             )
         })
@@ -76,19 +81,5 @@ class DisasterSituationService(
         typeIds: Set<Long>
     ): Boolean {
         return addressIds.contains(situation.address!!.id) && typeIds.contains(situation.disasterType!!.id)
-    }
-
-    @Transactional
-    fun createComment(situationId: Long, userId: Long, request: CreateSituationCommentRequest) {
-        val user = userRepository.findByIdOrThrow(userId)
-        val article = articleRepository.findByIdOrThrow(situationId)
-        val comment = Comment.of(
-            body = request.content,
-            authUser = user,
-            parentComment = null,
-            article = article
-        )
-
-        commentRepository.save(comment)
     }
 }

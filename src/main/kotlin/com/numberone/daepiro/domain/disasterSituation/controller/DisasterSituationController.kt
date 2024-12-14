@@ -54,18 +54,4 @@ class DisasterSituationController(
 
         return ApiResult.ok(comments)
     }
-
-    override fun createComment(situationId: Long, request: CreateSituationCommentRequest): ApiResult<Unit> {
-        val userId = SecurityContextUtils.getUserId()
-        disasterSituationService.createComment(situationId, userId, request)
-        return ApiResult.ok()
-    }
-
-    override fun editComment(commentId: Long, request: EditSituationCommentRequest): ApiResult<Unit> {
-        return ApiResult.ok()
-    }
-
-    override fun deleteComment(commentId: Long): ApiResult<Unit> {
-        return ApiResult.ok()
-    }
 }
