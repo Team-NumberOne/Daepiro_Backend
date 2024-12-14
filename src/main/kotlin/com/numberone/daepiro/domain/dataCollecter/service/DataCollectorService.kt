@@ -13,6 +13,7 @@ import com.numberone.daepiro.domain.disaster.entity.Disaster
 import com.numberone.daepiro.domain.disaster.entity.DisasterType.DisasterValue
 import com.numberone.daepiro.domain.disaster.repository.DisasterRepository
 import com.numberone.daepiro.domain.disaster.repository.DisasterTypeRepository
+import com.numberone.daepiro.domain.disasterSituation.service.DisasterSituationService
 import com.numberone.daepiro.global.dto.ApiResult
 import com.numberone.daepiro.global.exception.CustomErrorContext.INVALID_ADDRESS_FORMAT
 import com.numberone.daepiro.global.exception.CustomErrorContext.NOT_FOUND_DISASTER_TYPE
@@ -30,6 +31,7 @@ class DataCollectorService(
     private val addressRepository: AddressRepository,
     private val disasterTypeRepository: DisasterTypeRepository,
     private val userAddressRepository: UserAddressRepository,
+    private val disasterSituationService: DisasterSituationService
 ) {
     fun getLatestNews(): ApiResult<GetLatestNewsResponse> {
         val news = newsRepository.findLatestNews().firstOrNull()
@@ -86,6 +88,7 @@ class DataCollectorService(
         }
 
         disasterRepository.saveAll(disasters)
+        disasterSituationService.createDisasterSituation(disasters)
         //sendDisasterNotification(disasters)
         // todo fcm 적용시 주석해제
     }

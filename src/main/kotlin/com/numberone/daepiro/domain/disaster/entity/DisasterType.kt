@@ -1,6 +1,7 @@
 package com.numberone.daepiro.domain.disaster.entity
 
 import com.numberone.daepiro.domain.baseentity.PrimaryKeyEntity
+import com.numberone.daepiro.domain.community.entity.Article
 import com.numberone.daepiro.global.exception.CustomErrorContext.NOT_FOUND_DISASTER_TYPE
 import com.numberone.daepiro.global.exception.CustomException
 import jakarta.persistence.CascadeType
@@ -20,7 +21,10 @@ class DisasterType(
     val userDisasterTypes: List<UserDisasterType>,
 
     @OneToMany(mappedBy = "disasterType", cascade = [CascadeType.ALL])
-    val disasters: List<Disaster>
+    val disasters: List<Disaster>,
+
+    @OneToMany(mappedBy = "disasterType", cascade = [CascadeType.ALL])
+    val article: List<Article>
 ) : PrimaryKeyEntity() {
     enum class DisasterValue(
         val korean: String
