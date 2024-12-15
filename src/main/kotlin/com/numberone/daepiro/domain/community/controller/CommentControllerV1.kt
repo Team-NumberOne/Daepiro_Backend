@@ -8,6 +8,8 @@ import com.numberone.daepiro.domain.community.dto.response.CommentSimpleResponse
 import com.numberone.daepiro.domain.community.repository.comment.ModifyCommentRequest
 import com.numberone.daepiro.domain.community.service.CommentService
 import com.numberone.daepiro.global.dto.ApiResult
+import com.numberone.daepiro.global.exception.CustomErrorContext
+import com.numberone.daepiro.global.exception.CustomException
 import com.numberone.daepiro.global.utils.SecurityContextUtils
 import org.springframework.web.bind.annotation.RestController
 
@@ -32,6 +34,12 @@ class CommentControllerV1(
         id: Long,
         request: ReportRequest
     ): ApiResult<Unit> {
+
+        val emailRegex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$".toRegex()
+        if (!emailRegex.matches(request.email)) {
+            throw CustomException(CustomErrorContext.INVALID_VALUE, "올바르지 않은 이메일 형식입니다: ${request.email}")
+        }
+
         commentService.report(
             userId = SecurityContextUtils.getUserId(),
             commentId = id,
