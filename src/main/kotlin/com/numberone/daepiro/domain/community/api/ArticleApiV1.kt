@@ -1,6 +1,7 @@
 package com.numberone.daepiro.domain.community.api
 
 import com.numberone.daepiro.domain.community.dto.request.GetArticleRequest
+import com.numberone.daepiro.domain.community.dto.request.ReportRequest
 import com.numberone.daepiro.domain.community.dto.request.UpdateArticleRequest
 import com.numberone.daepiro.domain.community.dto.request.UpsertArticleRequest
 import com.numberone.daepiro.domain.community.dto.response.ArticleDetailResponse
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.ModelAttribute
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
+import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestPart
 import org.springframework.web.multipart.MultipartFile
@@ -94,5 +96,14 @@ interface ArticleApiV1 {
     fun like(
         @PathVariable("id") id: Long,
     ): ApiResult<ArticleLikeResponse>
+
+    @Operation(
+        summary = "신고하기"
+    )
+    @PutMapping("/{id}/report")
+    fun report(
+        @PathVariable("id") id: Long,
+        @RequestBody request: ReportRequest,
+    ): ApiResult<Unit>
 
 }

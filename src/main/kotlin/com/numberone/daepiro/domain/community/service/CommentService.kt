@@ -1,20 +1,26 @@
 package com.numberone.daepiro.domain.community.service
 
 import com.numberone.daepiro.domain.community.dto.request.CreateCommentRequest
+import com.numberone.daepiro.domain.community.dto.request.ReportRequest
 import com.numberone.daepiro.domain.community.dto.response.CommentLikeResponse
 import com.numberone.daepiro.domain.community.dto.response.CommentSimpleResponse
 import com.numberone.daepiro.domain.community.entity.Comment
+import com.numberone.daepiro.domain.community.entity.ReportedDocument
 import com.numberone.daepiro.domain.community.repository.article.ArticleRepository
 import com.numberone.daepiro.domain.community.repository.article.findByIdOrThrow
 import com.numberone.daepiro.domain.community.repository.comment.CommentRepository
 import com.numberone.daepiro.domain.community.repository.comment.ModifyCommentRequest
 import com.numberone.daepiro.domain.community.repository.comment.findByIdOrThrow
+import com.numberone.daepiro.domain.community.repository.reported.ReportedDocumentRepository
+import com.numberone.daepiro.domain.community.repository.reported.isAlreadyReportedComment
 import com.numberone.daepiro.domain.user.entity.UserLike
 import com.numberone.daepiro.domain.user.entity.UserLikeDocumentType
 import com.numberone.daepiro.domain.user.repository.UserLikeRepository
 import com.numberone.daepiro.domain.user.repository.UserRepository
 import com.numberone.daepiro.domain.user.repository.findByIdOrThrow
 import com.numberone.daepiro.domain.user.repository.isLikedComment
+import com.numberone.daepiro.global.exception.CustomErrorContext
+import com.numberone.daepiro.global.exception.CustomException
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -25,6 +31,7 @@ class CommentService(
     private val articleRepository: ArticleRepository,
     private val userRepository: UserRepository,
     private val userLikeRepository: UserLikeRepository,
+    private val reportedDocumentRepository: ReportedDocumentRepository,
 ) {
     @Transactional
     fun createComment(userId: Long, request: CreateCommentRequest): CommentSimpleResponse {
@@ -73,6 +80,7 @@ class CommentService(
                     documentId = comment.id!!,
                 )
             }
+
             false -> {
                 comment.increaseLikeCount()
                 userLikeRepository.save(
@@ -86,5 +94,32 @@ class CommentService(
         }
 
         return CommentLikeResponse.from(comment)
+    }
+
+    @Transactional
+    fun report(
+        userId: Long,
+        commentId: Long,
+        request: ReportRequest,
+    ) {
+        val user = userRepository.findByIdOrThrow(userId)
+        val comment = commentRepository.findByIdOrThrow(commentId)
+
+        if (reportedDocumentRepository.isAlreadyReportedComment(user, comment)) {
+            throw CustomException(CustomErrorContext.INVALID_VALUE, "해당 유저에 의해 이미 신고된 댓글입니다.")
+        }
+
+        reportedDocumentRepository.save(
+            ReportedDocument.from(
+                comment = comment,
+                user = user,
+                type = request.type,
+                detail = request.detail,
+                email = request.email,
+            )
+        )
+        commentRepository.save(
+            comment.increaseReportCount()
+        )
     }
 }

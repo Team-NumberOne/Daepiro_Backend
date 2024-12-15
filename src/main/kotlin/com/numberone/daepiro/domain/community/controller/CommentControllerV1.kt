@@ -2,6 +2,7 @@ package com.numberone.daepiro.domain.community.controller
 
 import com.numberone.daepiro.domain.community.api.CommentApiV1
 import com.numberone.daepiro.domain.community.dto.request.CreateCommentRequest
+import com.numberone.daepiro.domain.community.dto.request.ReportRequest
 import com.numberone.daepiro.domain.community.dto.response.CommentLikeResponse
 import com.numberone.daepiro.domain.community.dto.response.CommentSimpleResponse
 import com.numberone.daepiro.domain.community.repository.comment.ModifyCommentRequest
@@ -25,6 +26,18 @@ class CommentControllerV1(
             data = response,
             path = "/v1/comments"
         )
+    }
+
+    override fun report(
+        id: Long,
+        request: ReportRequest
+    ): ApiResult<Unit> {
+        commentService.report(
+            userId = SecurityContextUtils.getUserId(),
+            commentId = id,
+            request = request
+        )
+        return ApiResult.noContent(path = "/v1/comments/$id", message = "reported")
     }
 
     override fun deleteComment(id: Long): ApiResult<Unit> {

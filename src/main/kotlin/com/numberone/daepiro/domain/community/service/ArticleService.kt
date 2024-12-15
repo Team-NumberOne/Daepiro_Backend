@@ -4,6 +4,7 @@ import com.numberone.daepiro.domain.address.repository.AddressRepository
 import com.numberone.daepiro.domain.address.repository.findByAddressInfoOrThrow
 import com.numberone.daepiro.domain.address.vo.AddressInfo
 import com.numberone.daepiro.domain.community.dto.request.GetArticleRequest
+import com.numberone.daepiro.domain.community.dto.request.ReportRequest
 import com.numberone.daepiro.domain.community.dto.request.UpdateArticleRequest
 import com.numberone.daepiro.domain.community.dto.request.UpsertArticleRequest
 import com.numberone.daepiro.domain.community.dto.response.ArticleDetailResponse
@@ -12,11 +13,14 @@ import com.numberone.daepiro.domain.community.dto.response.ArticleListResponse
 import com.numberone.daepiro.domain.community.dto.response.ArticleSimpleResponse
 import com.numberone.daepiro.domain.community.dto.response.CommentResponse
 import com.numberone.daepiro.domain.community.entity.Article
+import com.numberone.daepiro.domain.community.entity.ReportedDocument
 import com.numberone.daepiro.domain.community.event.ArticleAddressMappingEvent
 import com.numberone.daepiro.domain.community.event.ArticleFileUploadEvent
 import com.numberone.daepiro.domain.community.repository.article.ArticleRepository
 import com.numberone.daepiro.domain.community.repository.article.findByIdOrThrow
 import com.numberone.daepiro.domain.community.repository.comment.CommentRepository
+import com.numberone.daepiro.domain.community.repository.reported.ReportedDocumentRepository
+import com.numberone.daepiro.domain.community.repository.reported.isAlreadyReportedArticle
 import com.numberone.daepiro.domain.community.repository.verified.UserAddressVerifiedRepository
 import com.numberone.daepiro.domain.file.entity.FileDocumentType
 import com.numberone.daepiro.domain.file.model.RawFile
@@ -47,6 +51,7 @@ class ArticleService(
     private val commentRepository: CommentRepository,
     private val userLikeRepository: UserLikeRepository,
     private val userAddressVerifyRepository: UserAddressVerifiedRepository,
+    private val reportedDocumentRepository: ReportedDocumentRepository,
 ) {
 
     @Transactional
@@ -265,5 +270,33 @@ class ArticleService(
             };
         }
         return ArticleLikeResponse.from(article)
+    }
+
+    @Transactional
+    fun report(
+        userId: Long,
+        articleId: Long,
+        request: ReportRequest,
+    ) {
+        val user = userRepository.findByIdOrThrow(userId)
+        val article = articleRepository.findByIdOrThrow(articleId)
+
+        if (reportedDocumentRepository.isAlreadyReportedArticle(user, article)) {
+            throw CustomException(CustomErrorContext.INVALID_VALUE, "해당 유저에 의해 이미 신고된 게시물입니다.")
+        }
+
+        reportedDocumentRepository.save(
+            ReportedDocument.from(
+                article = article,
+                user = user,
+                type = request.type,
+                detail = request.detail,
+                email = request.email,
+            )
+        )
+
+        articleRepository.save(
+            article.increaseReportCount()
+        )
     }
 }

@@ -2,6 +2,7 @@ package com.numberone.daepiro.domain.community.controller
 
 import com.numberone.daepiro.domain.community.api.ArticleApiV1
 import com.numberone.daepiro.domain.community.dto.request.GetArticleRequest
+import com.numberone.daepiro.domain.community.dto.request.ReportRequest
 import com.numberone.daepiro.domain.community.dto.request.UpdateArticleRequest
 import com.numberone.daepiro.domain.community.dto.request.UpsertArticleRequest
 import com.numberone.daepiro.domain.community.dto.response.ArticleDetailResponse
@@ -69,5 +70,14 @@ class ArticleController(
             articleId = id,
         )
         return ApiResult.ok(data = response, path = "/v1/articles/$id/like")
+    }
+
+    override fun report(id: Long, request: ReportRequest): ApiResult<Unit> {
+        articleService.report(
+            userId = SecurityContextUtils.getUserId(),
+            articleId = id,
+            request = request,
+        )
+        return ApiResult.noContent(path = "/v1/articles/$id/report")
     }
 }
