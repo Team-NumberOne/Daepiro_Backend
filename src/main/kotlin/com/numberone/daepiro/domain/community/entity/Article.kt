@@ -3,7 +3,6 @@ package com.numberone.daepiro.domain.community.entity
 import com.numberone.daepiro.domain.address.entity.Address
 import com.numberone.daepiro.domain.baseentity.PrimaryKeyEntity
 import com.numberone.daepiro.domain.disaster.entity.DisasterType
-import com.numberone.daepiro.domain.disaster.entity.DisasterType.DisasterValue
 import com.numberone.daepiro.domain.user.entity.UserEntity
 import jakarta.persistence.Column
 import jakarta.persistence.ConstraintMode
@@ -31,7 +30,7 @@ class Article(
     status: ArticleStatus = ArticleStatus.ACTIVE,
     authUser: UserEntity? = null,
     address: Address? = null,
-    disasterType:DisasterType? = null,
+    disasterType: DisasterType? = null,
 ) : PrimaryKeyEntity() {
     @Column(nullable = false)
     var title: String = title
@@ -122,6 +121,12 @@ class Article(
                 address = address,
                 disasterType = disasterType,
             )
+        }
+    }
+
+    fun updateAddress(address: Address): Article {
+        return this.apply {
+            this.address = address
         }
     }
 

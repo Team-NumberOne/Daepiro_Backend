@@ -12,6 +12,7 @@ import com.numberone.daepiro.domain.community.dto.response.ArticleListResponse
 import com.numberone.daepiro.domain.community.dto.response.ArticleSimpleResponse
 import com.numberone.daepiro.domain.community.dto.response.CommentResponse
 import com.numberone.daepiro.domain.community.entity.Article
+import com.numberone.daepiro.domain.community.event.ArticleAddressMappingEvent
 import com.numberone.daepiro.domain.community.event.ArticleFileUploadEvent
 import com.numberone.daepiro.domain.community.repository.article.ArticleRepository
 import com.numberone.daepiro.domain.community.repository.article.findByIdOrThrow
@@ -27,6 +28,8 @@ import com.numberone.daepiro.domain.user.repository.findAllLikedArticleId
 import com.numberone.daepiro.domain.user.repository.findAllLikedCommentId
 import com.numberone.daepiro.domain.user.repository.findByIdOrThrow
 import com.numberone.daepiro.domain.user.repository.isLikedArticle
+import com.numberone.daepiro.global.exception.CustomErrorContext
+import com.numberone.daepiro.global.exception.CustomException
 import org.springframework.context.ApplicationEventPublisher
 import org.springframework.data.domain.Slice
 import org.springframework.stereotype.Service
@@ -67,9 +70,29 @@ class ArticleService(
             eventPublisher.publishEvent(ArticleFileUploadEvent(article.id!!, files.map { RawFile.of(it) }))
         }
 
+        if (request.visibility) {
+            validateLocationInfo(request)
+            eventPublisher.publishEvent(
+                ArticleAddressMappingEvent(
+                    article.id!!,
+                    request.longitude!!,
+                    request.latitude!!,
+                )
+            )
+        }
+
         return ArticleSimpleResponse.from(
             article = article,
         )
+    }
+
+    private fun validateLocationInfo(request: UpsertArticleRequest) {
+        if (request.latitude == null && request.longitude == null) {
+            throw CustomException(
+                CustomErrorContext.INVALID_VALUE,
+                additionalDetail = "visibility 가 true 이면 위경도를 nulㅣ 이 아닌 값으로 요청해주세요."
+            )
+        }
     }
 
     @Transactional
