@@ -7,6 +7,8 @@ import com.numberone.daepiro.domain.community.dto.response.QAddressResponse
 import com.numberone.daepiro.domain.community.dto.response.QArticleListResponse
 import com.numberone.daepiro.domain.community.dto.response.QAuthorResponse
 import com.numberone.daepiro.domain.community.entity.QArticle.article
+import com.querydsl.core.types.Expression
+import com.querydsl.core.types.dsl.CaseBuilder
 import com.querydsl.jpa.impl.JPAQueryFactory
 import org.springframework.data.domain.Slice
 import org.springframework.data.domain.SliceImpl
@@ -34,9 +36,9 @@ class ArticleRepositoryCustomImpl(
                 article.commentCount,
                 article.reportCount,
                 QAddressResponse(
-                    address.id,
-                    address.siDo,
-                    address.siGunGu,
+                    caseWhenLocationVisible(address.id, null),
+                    caseWhenLocationVisible(address.siDo, null),
+                    caseWhenLocationVisible(address.siGunGu, null)
                 ),
                 article.createdAt,
                 article.lastModifiedAt,
@@ -77,4 +79,12 @@ class ArticleRepositoryCustomImpl(
             false
         }
     }
+
+    private fun <T> caseWhenLocationVisible(then: Expression<T>, otherwise: T?): Expression<T> {
+        return CaseBuilder()
+            .`when`(article.isLocationVisible.isTrue)
+            .then(then)
+            .otherwise(otherwise)
+    }
+
 }
