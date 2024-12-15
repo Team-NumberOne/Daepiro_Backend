@@ -16,7 +16,7 @@ import java.time.LocalDateTime
 abstract class PrimaryKeyEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long? = null
+    var id: Long? = null
 
     @CreatedDate
     @Column(nullable = false, updatable = false)

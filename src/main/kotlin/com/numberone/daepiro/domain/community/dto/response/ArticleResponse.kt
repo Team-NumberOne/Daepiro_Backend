@@ -113,6 +113,9 @@ data class ArticleDetailResponse(
     @Schema(description = "아티클 상태")
     val status: ArticleStatus,
 
+    @Schema(description = "주소")
+    val address: String? = null,
+
     @Schema(description = "작성자 정보")
     val authorUser: AuthorResponse? = null,
 
@@ -135,12 +138,14 @@ data class ArticleDetailResponse(
         fun of(
             article: Article,
             isLiked: Boolean = false,
+            isVerified: Boolean,
             files: List<FileEntity>? = emptyList(),
             comments: List<CommentResponse> = emptyList()
         ): ArticleDetailResponse {
             return ArticleDetailResponse(
                 id = article.id!!,
                 title = article.title,
+                address = article.address?.toAddress(),
                 body = article.body,
                 type = article.type.description,
                 category = article.category,
@@ -151,7 +156,12 @@ data class ArticleDetailResponse(
                 commentCount = article.commentCount,
                 reportCount = article.reportCount,
                 status = article.status,
-                authorUser = article.authUser?.let { AuthorResponse.from(it) },
+                authorUser = article.authUser?.let {
+                    AuthorResponse.from(
+                        user = it,
+                        isVerified = isVerified,
+                    )
+                },
                 files = files?.toPaths(),
                 comments = comments,
                 createdAt = article.createdAt,
@@ -175,14 +185,17 @@ data class AuthorResponse @QueryProjection constructor(
     @Schema(description = "온보딩 완료 여부", example = "true")
     val isCompletedOnboarding: Boolean,
 ) {
+    @Schema(description = "동네인증 완료 여부", example = "true")
+    var isVerified: Boolean = false
+
     companion object {
-        fun from(user: UserEntity): AuthorResponse {
+        fun from(user: UserEntity, isVerified: Boolean = false): AuthorResponse {
             return AuthorResponse(
                 userId = user.id!!,
                 nickname = user.nickname,
                 realname = user.realname,
-                isCompletedOnboarding = user.isCompletedOnboarding
-            )
+                isCompletedOnboarding = user.isCompletedOnboarding,
+            ).apply { this.isVerified = isVerified }
         }
     }
 }
