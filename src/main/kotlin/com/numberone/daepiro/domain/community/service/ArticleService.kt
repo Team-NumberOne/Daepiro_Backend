@@ -17,6 +17,7 @@ import com.numberone.daepiro.domain.community.event.ArticleFileUploadEvent
 import com.numberone.daepiro.domain.community.repository.article.ArticleRepository
 import com.numberone.daepiro.domain.community.repository.article.findByIdOrThrow
 import com.numberone.daepiro.domain.community.repository.comment.CommentRepository
+import com.numberone.daepiro.domain.community.repository.verified.UserAddressVerifiedRepository
 import com.numberone.daepiro.domain.file.entity.FileDocumentType
 import com.numberone.daepiro.domain.file.model.RawFile
 import com.numberone.daepiro.domain.file.repository.FileRepository
@@ -45,6 +46,7 @@ class ArticleService(
     private val addressRepository: AddressRepository,
     private val commentRepository: CommentRepository,
     private val userLikeRepository: UserLikeRepository,
+    private val userAddressVerifyRepository: UserAddressVerifiedRepository,
 ) {
 
     @Transactional
@@ -137,11 +139,17 @@ class ArticleService(
 
         val comments = commentRepository.findCommentsByDocumentId(article.id!!)
 
+        val verifiedAddressIdMapOfAuthorId =
+            userAddressVerifyRepository.findAllByUserIdIn(comments.mapNotNull { it.author?.userId })
+                .groupBy { it.userId }
+                .mapValues { it -> it.value.map { it.addressId } }
+
         val roots = mutableListOf<CommentResponse>()
         val commentById = comments.associateBy { it.id }
 
         val likedCommentIdSet = userLikeRepository.findAllLikedCommentId(userId)
-        comments.forEach { it ->
+        val articleAddress = article.address
+        comments.forEach {
             val comment = commentById[it.id] ?: return@forEach
             if (comment.parentCommentId != null) {
                 val parentComment = commentById[comment.parentCommentId]
@@ -150,6 +158,11 @@ class ArticleService(
             }
             if (likedCommentIdSet.contains(comment.id)) {
                 comment.isLiked = true
+            }
+            val commentAuthor = comment.author
+            if (articleAddress != null && commentAuthor != null) {
+                val verifiedAddresses = verifiedAddressIdMapOfAuthorId[commentAuthor.userId]
+                commentAuthor.isVerified = verifiedAddresses?.contains(articleAddress.id) ?: false
             }
             roots.add(comment)
         }
@@ -160,11 +173,18 @@ class ArticleService(
             documentId = article.id!!,
         )
 
+        val isVerifiedAuthor = article.authUser?.let { author ->
+            val authorVerifiedAddressIds = userAddressVerifyRepository.findAllByUserId(author.id!!)
+                .map { it.addressId }
+            return@let authorVerifiedAddressIds.contains(article.address?.id)
+        } ?: false
+
         return ArticleDetailResponse.of(
             article = article,
             isLiked = isLikedArticle,
             files = files,
             comments = roots,
+            isVerified = isVerifiedAuthor,
         )
     }
 
@@ -183,6 +203,13 @@ class ArticleService(
             siGunGu = address?.siGunGu,
         )
 
+        val authorMapOfArticleId = slice.content.associate { it.id to it.authorUser }
+        val verifiedAddressIdMapOfAuthorId =
+            userAddressVerifyRepository.findAllByUserIdIn(authorMapOfArticleId.mapNotNull { it.value?.userId })
+                .groupBy { it.userId }
+                .mapValues { it -> it.value.map { it.addressId } }
+
+
         val files = fileRepository.findAllByDocumentTypeAndDocumentIdIn(
             documentType = FileDocumentType.ARTICLE,
             documentIds = slice.map { it.id }.distinct(),
@@ -197,6 +224,13 @@ class ArticleService(
             }
             if (likedArticleIdSet.contains(article.id)) {
                 article.updateIsLiked(true)
+            }
+            val author = article.authorUser
+            val articleAddress = article.address
+
+            if (author != null && articleAddress != null) {
+                val verifiedAuthorAddresses = verifiedAddressIdMapOfAuthorId[author.userId]
+                author.isVerified = verifiedAuthorAddresses?.contains(articleAddress.addressId) ?: false
             }
         }
 

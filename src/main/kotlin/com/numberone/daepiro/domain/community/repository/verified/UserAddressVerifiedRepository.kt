@@ -5,5 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository
 
 interface UserAddressVerifiedRepository : JpaRepository<UserAddressVerified, Long> {
     fun findAllByUserId(userId: Long): List<UserAddressVerified>
+    fun findAllByUserIdIn(userIds: List<Long>): List<UserAddressVerified>
     fun existsByUserIdAndAddressId(userId: Long, addressId: Long): Boolean
 }
