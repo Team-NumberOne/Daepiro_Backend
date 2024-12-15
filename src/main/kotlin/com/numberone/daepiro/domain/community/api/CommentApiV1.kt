@@ -1,6 +1,7 @@
 package com.numberone.daepiro.domain.community.api
 
 import com.numberone.daepiro.domain.community.dto.request.CreateCommentRequest
+import com.numberone.daepiro.domain.community.dto.request.ReportRequest
 import com.numberone.daepiro.domain.community.dto.response.CommentLikeResponse
 import com.numberone.daepiro.domain.community.dto.response.CommentSimpleResponse
 import com.numberone.daepiro.domain.community.repository.comment.ModifyCommentRequest
@@ -50,4 +51,12 @@ interface CommentApiV1 {
         @PathVariable id: Long,
     ): ApiResult<CommentLikeResponse>
 
+    @Operation(
+        summary = "신고하기"
+    )
+    @PutMapping("/{id}/report")
+    fun report(
+        @PathVariable("id") id: Long,
+        @RequestBody request: ReportRequest,
+    ): ApiResult<Unit>
 }

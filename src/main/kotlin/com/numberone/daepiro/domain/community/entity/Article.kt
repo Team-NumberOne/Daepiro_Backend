@@ -142,6 +142,12 @@ class Article(
         }
     }
 
+    fun increaseReportCount(): Article {
+        return this.apply {
+            reportCount++;
+        }
+    }
+
     fun decreaseLikeCount(): Article {
         return this.apply {
             likeCount = (likeCount - 1)

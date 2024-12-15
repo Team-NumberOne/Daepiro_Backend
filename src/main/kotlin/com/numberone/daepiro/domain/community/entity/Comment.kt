@@ -21,7 +21,8 @@ class Comment(
     parentComment: Comment? = null,
     documentType: ArticleType? = null,
     documentId: Long? = null,
-    likeCount: Int = 0
+    likeCount: Int = 0,
+    reportCount: Int = 0
 ) : PrimaryKeyEntity() {
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -51,6 +52,10 @@ class Comment(
     var likeCount: Int = likeCount
         protected set
 
+    @Column(nullable = false)
+    var reportCount: Int = reportCount
+        protected set
+
     fun modifyComment(body: String): Comment {
         return this.apply {
             this.body = body
@@ -60,6 +65,12 @@ class Comment(
     fun increaseLikeCount(): Comment {
         return this.apply {
             likeCount++;
+        }
+    }
+
+    fun increaseReportCount(): Comment {
+        return this.apply {
+            reportCount++
         }
     }
 
