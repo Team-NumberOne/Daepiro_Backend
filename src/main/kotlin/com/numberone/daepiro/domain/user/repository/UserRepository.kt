@@ -12,7 +12,8 @@ interface UserRepository : JpaRepository<UserEntity, Long> {
     @Query(
         "select u " +
             "from UserEntity u " +
-            "where u.passwordLoginInformation.username = :username"
+            "where u.passwordLoginInformation.username = :username " +
+            "and u.deletedAt is null"
     )
     fun findByUsername(username: String): UserEntity?
 
@@ -20,13 +21,16 @@ interface UserRepository : JpaRepository<UserEntity, Long> {
         "select u " +
             "from UserEntity u " +
             "where u.socialLoginInformation.socialId = :socialId " +
-            "and u.socialLoginInformation.platform = :platform"
+            "and u.socialLoginInformation.platform = :platform " +
+            "and u.deletedAt is null"
     )
     fun findBySocialIdAndPlatform(socialId: String, platform: SocialPlatform): UserEntity?
 
-    fun findByNickname(nickname: String): UserEntity?
+    fun findByNicknameAndDeletedAtIsNull(nickname: String): UserEntity?
 }
 
 fun UserRepository.findByIdOrThrow(id: Long): UserEntity {
-    return this.findByIdOrNull(id) ?: throw CustomException(CustomErrorContext.NOT_FOUND_USER)
+    return this.findByIdOrNull(id)
+        ?.takeIf { it.deletedAt == null }
+        ?: throw CustomException(CustomErrorContext.NOT_FOUND_USER)
 }
