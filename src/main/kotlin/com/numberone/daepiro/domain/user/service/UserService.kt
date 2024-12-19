@@ -39,7 +39,7 @@ class UserService(
     fun checkNickname(
         nickname: String,
     ): ApiResult<CheckNicknameResponse> {
-        val user = userRepository.findByNickname(nickname)
+        val user = userRepository.findByNicknameAndDeletedAtIsNull(nickname)
         return ApiResult.ok(CheckNicknameResponse.from(user == null))
     }
 
