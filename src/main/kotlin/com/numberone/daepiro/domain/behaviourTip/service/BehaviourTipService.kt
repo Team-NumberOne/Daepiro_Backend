@@ -36,4 +36,37 @@ class BehaviourTipService(
     private fun sortTypesByKorean(tips: List<DisasterType>): List<DisasterType> {
         return tips.sortedBy { it.type.korean }
     }
+
+    fun searchTips(keyword: String): ApiResult<List<BehaviourTipDisasterResponse>> {
+        val disasterTypes = disasterTypeRepository.findAll()
+        val filteredTypes = disasterTypes.filter { containsChosung(it.type.korean, keyword) }
+
+        return ApiResult.ok(
+            sortTypesByKorean(filteredTypes)
+                .map { BehaviourTipDisasterResponse.of(it) }
+        )
+    }
+
+    private fun containsChosung(text: String, keyword: String): Boolean {
+        val chosungText = extractChosung(text)
+        val chosungKeyword = extractChosung(keyword)
+        return chosungText.contains(chosungKeyword)
+    }
+
+    private fun extractChosung(text: String): String {
+        val chosung = listOf(
+            'ㄱ', 'ㄲ', 'ㄴ', 'ㄷ', 'ㄸ', 'ㄹ', 'ㅁ', 'ㅂ', 'ㅃ', 'ㅅ', 'ㅆ', 'ㅇ', 'ㅈ', 'ㅉ', 'ㅊ', 'ㅋ', 'ㅌ', 'ㅍ', 'ㅎ'
+        )
+        val result = StringBuilder()
+        for (char in text) {
+            if (char in '가'..'힣') {
+                val unicode = char - '가'
+                val chosungIndex = unicode / (21 * 28)
+                result.append(chosung[chosungIndex])
+            } else {
+                result.append(char)
+            }
+        }
+        return result.toString()
+    }
 }

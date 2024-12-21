@@ -16,4 +16,10 @@ interface BehaviourTipApiV1 {
     fun getBehaviourTips(
         @Schema(description = "행동요령 유형 (emergency | common)", example = "emergency") type: String
     ): ApiResult<List<BehaviourTipDisasterResponse>>
+
+    @GetMapping("/search/{keyword}")
+    @Operation(summary = "행동요령 검색", description = "행동요령 페이지에서 제공하는 재난 유형을 검색합니다.")
+    fun searchBehaviourTips(
+        @Schema(description = "검색어", example = "가") keyword: String
+    ): ApiResult<List<BehaviourTipDisasterResponse>>
 }

@@ -22,4 +22,8 @@ class BehaviourTipController(
             else -> throw CustomException(CustomErrorContext.NOT_FOUND_TIP_TYPE)
         }
     }
+
+    override fun searchBehaviourTips(keyword: String): ApiResult<List<BehaviourTipDisasterResponse>> {
+        return behaviourTipService.searchTips(keyword)
+    }
 }
