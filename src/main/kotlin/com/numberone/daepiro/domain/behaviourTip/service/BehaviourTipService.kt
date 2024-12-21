@@ -2,6 +2,8 @@ package com.numberone.daepiro.domain.behaviourTip.service
 
 import com.numberone.daepiro.domain.behaviourTip.dto.request.CreateTipRequest
 import com.numberone.daepiro.domain.behaviourTip.dto.response.BehaviourTipDisasterResponse
+import com.numberone.daepiro.domain.behaviourTip.dto.response.FilterResponse
+import com.numberone.daepiro.domain.behaviourTip.dto.response.GetBehaviourTipResponse
 import com.numberone.daepiro.domain.behaviourTip.entity.BehaviourTip
 import com.numberone.daepiro.domain.behaviourTip.repository.BehaviourTipRepository
 import com.numberone.daepiro.domain.disaster.entity.DisasterType
@@ -10,6 +12,10 @@ import com.numberone.daepiro.domain.disaster.enums.DisasterLevel
 import com.numberone.daepiro.domain.disaster.repository.DisasterTypeRepository
 import com.numberone.daepiro.domain.disaster.repository.findByTypeOrThrow
 import com.numberone.daepiro.global.dto.ApiResult
+import com.numberone.daepiro.global.exception.CustomErrorContext
+import com.numberone.daepiro.global.exception.CustomErrorContext.NOT_FOUND_DISASTER_TYPE
+import com.numberone.daepiro.global.exception.CustomException
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -85,5 +91,22 @@ class BehaviourTipService(
         )
 
         behaviourTipRepository.save(behaviourTip)
+    }
+
+    fun getBehaviourTip(disasterTypeId: Long): ApiResult<GetBehaviourTipResponse> {
+        val disasterType = disasterTypeRepository.findByIdOrNull(disasterTypeId)
+            ?: throw CustomException(NOT_FOUND_DISASTER_TYPE)
+        val filters = behaviourTipRepository.findTipFilters(disasterType.id!!)
+
+        return ApiResult.ok(
+            GetBehaviourTipResponse(
+                disasterType.type.korean,
+                filters.map { filter ->
+                    FilterResponse(filter, behaviourTipRepository.findByDisasterTypeAndFilter(disasterType, filter)
+                        .map { it.tip }
+                    )
+                }
+            )
+        )
     }
 }

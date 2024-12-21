@@ -3,6 +3,7 @@ package com.numberone.daepiro.domain.behaviourTip.controller
 import com.numberone.daepiro.domain.behaviourTip.api.BehaviourTipApiV1
 import com.numberone.daepiro.domain.behaviourTip.dto.request.CreateTipRequest
 import com.numberone.daepiro.domain.behaviourTip.dto.response.BehaviourTipDisasterResponse
+import com.numberone.daepiro.domain.behaviourTip.dto.response.GetBehaviourTipResponse
 import com.numberone.daepiro.domain.disaster.enums.DisasterLevel
 import com.numberone.daepiro.domain.behaviourTip.service.BehaviourTipService
 import com.numberone.daepiro.global.dto.ApiResult
@@ -28,7 +29,12 @@ class BehaviourTipController(
         return behaviourTipService.searchTips(keyword)
     }
 
-    override fun createBehaviourTip(request: CreateTipRequest) {
+    override fun createBehaviourTip(request: CreateTipRequest): ApiResult<Unit>{
         behaviourTipService.createTip(request)
+        return ApiResult.ok()
+    }
+
+    override fun getBehaviourTip(disasterTypeId: Long): ApiResult<GetBehaviourTipResponse> {
+        return behaviourTipService.getBehaviourTip(disasterTypeId)
     }
 }

@@ -2,6 +2,7 @@ package com.numberone.daepiro.domain.behaviourTip.api
 
 import com.numberone.daepiro.domain.behaviourTip.dto.request.CreateTipRequest
 import com.numberone.daepiro.domain.behaviourTip.dto.response.BehaviourTipDisasterResponse
+import com.numberone.daepiro.domain.behaviourTip.dto.response.GetBehaviourTipResponse
 import com.numberone.daepiro.global.dto.ApiResult
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.media.Schema
@@ -20,7 +21,7 @@ interface BehaviourTipApiV1 {
     ): ApiResult<List<BehaviourTipDisasterResponse>>
 
     @GetMapping("/search/{keyword}")
-    @Operation(summary = "행동요령 검색", description = "행동요령 페이지에서 제공하는 재난 유형을 검색합니다.")
+    @Operation(summary = "재난유형 검색", description = "행동요령 페이지에서 제공하는 재난 유형을 검색합니다.")
     fun searchBehaviourTips(
         @Schema(description = "검색어", example = "가") keyword: String
     ): ApiResult<List<BehaviourTipDisasterResponse>>
@@ -29,5 +30,11 @@ interface BehaviourTipApiV1 {
     @Operation(summary = "행동요령 생성", description = "행동요령을 생성합니다.")
     fun createBehaviourTip(
         request: CreateTipRequest
-    )
+    ):ApiResult<Unit>
+
+    @GetMapping("/{disasterId}")
+    @Operation(summary = "재난유형에 대한 행동요령 조회", description = "재난유형에 대한 행동요령 조회합니다.")
+    fun getBehaviourTip(
+        @Schema(description = "재난유형 id", example = "26") disasterTypeId: Long
+    ): ApiResult<GetBehaviourTipResponse>
 }
