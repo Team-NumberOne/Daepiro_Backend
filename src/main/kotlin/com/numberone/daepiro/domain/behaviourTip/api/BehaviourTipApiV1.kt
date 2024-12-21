@@ -1,11 +1,13 @@
 package com.numberone.daepiro.domain.behaviourTip.api
 
+import com.numberone.daepiro.domain.behaviourTip.dto.request.CreateTipRequest
 import com.numberone.daepiro.domain.behaviourTip.dto.response.BehaviourTipDisasterResponse
 import com.numberone.daepiro.global.dto.ApiResult
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
 
 @Tag(name = "BehaviourTip API", description = "행동요령 관련 API")
@@ -22,4 +24,10 @@ interface BehaviourTipApiV1 {
     fun searchBehaviourTips(
         @Schema(description = "검색어", example = "가") keyword: String
     ): ApiResult<List<BehaviourTipDisasterResponse>>
+
+    @PostMapping
+    @Operation(summary = "행동요령 생성", description = "행동요령을 생성합니다.")
+    fun createBehaviourTip(
+        request: CreateTipRequest
+    )
 }

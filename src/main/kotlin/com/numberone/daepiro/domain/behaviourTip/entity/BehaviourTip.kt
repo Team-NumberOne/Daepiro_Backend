@@ -20,4 +20,18 @@ class BehaviourTip(
     val filter: String,
 
     val tip: String
-) : PrimaryKeyEntity()
+) : PrimaryKeyEntity(){
+    companion object {
+        fun of(
+            disasterType: DisasterType,
+            filter: String,
+            tip: String
+        ): BehaviourTip {
+            return BehaviourTip(
+                disasterType = disasterType,
+                filter = filter,
+                tip = tip
+            )
+        }
+    }
+}

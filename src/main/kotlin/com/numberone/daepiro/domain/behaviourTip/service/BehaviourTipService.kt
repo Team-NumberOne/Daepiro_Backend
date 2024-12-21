@@ -1,10 +1,14 @@
 package com.numberone.daepiro.domain.behaviourTip.service
 
+import com.numberone.daepiro.domain.behaviourTip.dto.request.CreateTipRequest
 import com.numberone.daepiro.domain.behaviourTip.dto.response.BehaviourTipDisasterResponse
+import com.numberone.daepiro.domain.behaviourTip.entity.BehaviourTip
 import com.numberone.daepiro.domain.behaviourTip.repository.BehaviourTipRepository
 import com.numberone.daepiro.domain.disaster.entity.DisasterType
+import com.numberone.daepiro.domain.disaster.entity.DisasterType.DisasterValue.Companion
 import com.numberone.daepiro.domain.disaster.enums.DisasterLevel
 import com.numberone.daepiro.domain.disaster.repository.DisasterTypeRepository
+import com.numberone.daepiro.domain.disaster.repository.findByTypeOrThrow
 import com.numberone.daepiro.global.dto.ApiResult
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -68,5 +72,18 @@ class BehaviourTipService(
             }
         }
         return result.toString()
+    }
+
+    @Transactional
+    fun createTip(request: CreateTipRequest) {
+        val disasterType =
+            disasterTypeRepository.findByTypeOrThrow(DisasterType.DisasterValue.kor2code(request.disasterType))
+        val behaviourTip = BehaviourTip.of(
+            disasterType,
+            request.filter,
+            request.tip
+        )
+
+        behaviourTipRepository.save(behaviourTip)
     }
 }

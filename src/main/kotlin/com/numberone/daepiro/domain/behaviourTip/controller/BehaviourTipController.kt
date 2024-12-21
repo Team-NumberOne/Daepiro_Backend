@@ -1,6 +1,7 @@
 package com.numberone.daepiro.domain.behaviourTip.controller
 
 import com.numberone.daepiro.domain.behaviourTip.api.BehaviourTipApiV1
+import com.numberone.daepiro.domain.behaviourTip.dto.request.CreateTipRequest
 import com.numberone.daepiro.domain.behaviourTip.dto.response.BehaviourTipDisasterResponse
 import com.numberone.daepiro.domain.disaster.enums.DisasterLevel
 import com.numberone.daepiro.domain.behaviourTip.service.BehaviourTipService
@@ -25,5 +26,9 @@ class BehaviourTipController(
 
     override fun searchBehaviourTips(keyword: String): ApiResult<List<BehaviourTipDisasterResponse>> {
         return behaviourTipService.searchTips(keyword)
+    }
+
+    override fun createBehaviourTip(request: CreateTipRequest) {
+        behaviourTipService.createTip(request)
     }
 }

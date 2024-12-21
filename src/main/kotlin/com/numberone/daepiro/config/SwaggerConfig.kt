@@ -25,11 +25,10 @@ class SwaggerConfig {
     @Bean
     fun readyToUseGroup(): GroupedOpenApi {
         return GroupedOpenApi.builder()
-            .group("ready to use")
+            .group("1) ready to use")
             .pathsToMatch(
                 "/v1/auth/**",
                 "/v1/users/**",
-                "/v1/datacollector/**",
                 "/v1/home/**",
                 "/v1/disastercontents/**",
                 "/v1/shelters/**",
@@ -39,13 +38,25 @@ class SwaggerConfig {
                 "/v1/user-address-verified",
                 "/v1/behaviourtips/**",
             )
+            .pathsToExclude("/v1/behaviourtips")
+            .build()
+    }
+
+    @Bean
+    fun readyForAdminGroup(): GroupedOpenApi {
+        return GroupedOpenApi.builder()
+            .group("2) ready for admin")
+            .pathsToMatch(
+                "/v1/datacollector/**",
+                "/v1/behaviourtips"
+            )
             .build()
     }
 
     @Bean
     fun workInProgressGroup(): GroupedOpenApi {
         return GroupedOpenApi.builder()
-            .group("work in progress")
+            .group("3) work in progress")
             .pathsToMatch(
                 ""
             )
