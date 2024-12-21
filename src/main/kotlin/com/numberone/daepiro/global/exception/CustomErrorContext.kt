@@ -38,6 +38,9 @@ enum class CustomErrorContext(
     // 26xx: 게시글 관련 오류
     NOT_FOUND_ARTICLE(HttpStatus.NOT_FOUND, 2600, "게시글을 찾을 수 없습니다."),
 
+    // 27xx: 행동요령 관련 오류
+    NOT_FOUND_TIP_TYPE(HttpStatus.NOT_FOUND, 2700, "행동요령 유형을 찾을 수 없습니다."),
+
     // 99xx: 공통 오류
     INVALID_JSON_FORMAT(HttpStatus.BAD_REQUEST, 9001, "JSON 형식이 잘못되었습니다."),
     INVALID_VALUE(HttpStatus.INTERNAL_SERVER_ERROR, 9002, "유효하지 않은 값이 발견되었습니다."),
