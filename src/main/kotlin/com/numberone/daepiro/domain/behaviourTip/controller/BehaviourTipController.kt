@@ -34,7 +34,7 @@ class BehaviourTipController(
         return ApiResult.ok()
     }
 
-    override fun getBehaviourTip(disasterTypeId: Long): ApiResult<GetBehaviourTipResponse> {
-        return behaviourTipService.getBehaviourTip(disasterTypeId)
+    override fun getBehaviourTip(disasterId: Long): ApiResult<GetBehaviourTipResponse> {
+        return behaviourTipService.getBehaviourTip(disasterId)
     }
 }
