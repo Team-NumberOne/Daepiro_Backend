@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
 
@@ -17,13 +18,13 @@ interface BehaviourTipApiV1 {
     @GetMapping("/list/{type}")
     @Operation(summary = "행동요령 재난유형 목록 조회", description = "행동요령 페이지에서 제공하는 재난 유형 목록을 가나다 순으로 제공합니다.")
     fun getBehaviourTips(
-        @Schema(description = "행동요령 유형 (emergency | common)", example = "emergency") type: String
+        @Schema(description = "행동요령 유형 (emergency | common)", example = "emergency") @PathVariable type: String
     ): ApiResult<List<BehaviourTipDisasterResponse>>
 
     @GetMapping("/search/{keyword}")
     @Operation(summary = "재난유형 검색", description = "행동요령 페이지에서 제공하는 재난 유형을 검색합니다.")
     fun searchBehaviourTips(
-        @Schema(description = "검색어", example = "가") keyword: String
+        @Schema(description = "검색어", example = "가") @PathVariable keyword: String
     ): ApiResult<List<BehaviourTipDisasterResponse>>
 
     @PostMapping
@@ -32,9 +33,9 @@ interface BehaviourTipApiV1 {
         request: CreateTipRequest
     ):ApiResult<Unit>
 
-    @GetMapping("/{disasterId}")
+    @GetMapping("/tip/{disasterId}")
     @Operation(summary = "재난유형에 대한 행동요령 조회", description = "재난유형에 대한 행동요령 조회합니다.")
     fun getBehaviourTip(
-        @Schema(description = "재난유형 id", example = "26") disasterTypeId: Long
+        @Schema(description = "재난유형 id", example = "26") @PathVariable disasterId: Long
     ): ApiResult<GetBehaviourTipResponse>
 }
