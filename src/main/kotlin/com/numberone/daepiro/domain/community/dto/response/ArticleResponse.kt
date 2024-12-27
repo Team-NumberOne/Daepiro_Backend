@@ -145,7 +145,7 @@ data class ArticleDetailResponse(
             return ArticleDetailResponse(
                 id = article.id!!,
                 title = article.title,
-                address = article.address?.toAddress(),
+                address = article.address?.toFullAddress(),
                 body = article.body,
                 type = article.type.description,
                 category = article.category,

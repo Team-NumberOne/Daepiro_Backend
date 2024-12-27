@@ -14,7 +14,7 @@ data class UserAddressVerifiedResponse(
         ): UserAddressVerifiedResponse {
             return UserAddressVerifiedResponse(
                 addressId = address.id!!,
-                fullAddress = address.toAddress(),
+                fullAddress = address.toFullAddress(),
                 isVerified = isVerified,
             )
         }

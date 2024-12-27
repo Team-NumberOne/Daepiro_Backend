@@ -16,6 +16,7 @@ import com.numberone.daepiro.domain.user.dto.request.OnboardingRequest
 import com.numberone.daepiro.domain.user.dto.request.UpdateGpsRequest
 import com.numberone.daepiro.domain.user.dto.response.CheckNicknameResponse
 import com.numberone.daepiro.domain.user.dto.response.DisasterWithRegionResponse
+import com.numberone.daepiro.domain.user.dto.response.UserAddressResponse
 import com.numberone.daepiro.domain.user.entity.UserEntity
 import com.numberone.daepiro.domain.user.repository.UserRepository
 import com.numberone.daepiro.domain.user.repository.findByIdOrThrow
@@ -47,14 +48,14 @@ class UserService(
     fun setOnboardingData(
         request: OnboardingRequest,
         userId: Long,
-    ): ApiResult<Unit> {
+    ): ApiResult<List<UserAddressResponse>> {
         val user = userRepository.findByIdOrThrow(userId)
         user.initName(request.realname, request.nickname)
         user.initFcmToken(request.fcmToken)
         handleOnboardingAddress(request.addresses, user)
         handleOnboardingDisasterType(request.disasterTypes, user)
         user.completeOnboarding()
-        return ApiResult.ok()
+        return ApiResult.ok(getUserAddress(user))
     }
 
     private fun handleOnboardingDisasterType(
@@ -132,5 +133,16 @@ class UserService(
             )
         }
         return ApiResult.ok(result)
+    }
+
+    fun getAddresses(
+        userId: Long
+    ): ApiResult<List<UserAddressResponse>> {
+        val user = userRepository.findByIdOrThrow(userId)
+        return ApiResult.ok(getUserAddress(user))
+    }
+
+    private fun getUserAddress(user: UserEntity) = user.userAddresses.map {
+        UserAddressResponse.of(it.address)
     }
 }

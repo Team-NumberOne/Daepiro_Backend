@@ -18,7 +18,7 @@ data class HomeDisasterFeed(
         fun from(disaster: Disaster): HomeDisasterFeed {
             return HomeDisasterFeed(
                 disasterType = disaster.disasterType.type.korean,
-                title = "${disaster.address.toAddress()} ${disaster.disasterType.type.korean} 발생",
+                title = "${disaster.address.toFullAddress()} ${disaster.disasterType.type.korean} 발생",
                 time = disaster.generatedAt
             )
         }

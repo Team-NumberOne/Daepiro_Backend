@@ -5,6 +5,7 @@ import com.numberone.daepiro.domain.user.dto.request.UpdateGpsRequest
 import com.numberone.daepiro.domain.user.dto.response.CheckNicknameResponse
 import com.numberone.daepiro.domain.user.dto.response.DisasterWithRegionResponse
 import com.numberone.daepiro.domain.user.dto.response.GetUserResponse
+import com.numberone.daepiro.domain.user.dto.response.UserAddressResponse
 import com.numberone.daepiro.global.dto.ApiResult
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.media.Schema
@@ -34,7 +35,7 @@ interface UserApiV1 {
     @Operation(summary = "온보딩 정보 입력", description = "사용자의 온보딩 정보를 등록합니다.")
     fun setOnboardingData(
         @RequestBody @Valid request: OnboardingRequest
-    ): ApiResult<Unit>
+    ): ApiResult<List<UserAddressResponse>>
 
     @PostMapping("/gps")
     @Operation(summary = "GPS 정보 업데이트", description = "사용자의 GPS 정보를 업데이트합니다.")
@@ -45,4 +46,12 @@ interface UserApiV1 {
     @GetMapping("/disasters")
     @Operation(summary = "최근 재난문자 내역 조회", description = "사용자의 최근 재난문자 내역을 조회합니다.")
     fun getRecentDisasters(): ApiResult<List<DisasterWithRegionResponse>>
+
+    @GetMapping("/addresses")
+    @Operation(summary = "사용자 수신 설정 주소 조회", description = """
+        사용자가 수신 설정한 주소들을 조회합니다.
+        응답 값중 fullAddress는 동네생활 게시글 조회 api 호출시 입력 값으로 사용됩니다.
+        shortAddress는 동네생활 프론트 UI에서 사용됩니다.
+    """)
+    fun getAddresses(): ApiResult<List<UserAddressResponse>>
 }

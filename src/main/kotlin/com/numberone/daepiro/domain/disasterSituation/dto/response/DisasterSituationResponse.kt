@@ -46,7 +46,7 @@ data class DisasterSituationResponse(
                 type = article.disasterType!!.type.korean,
                 title = article.title,
                 content = article.body,
-                location = article.address!!.toAddress(),
+                location = article.address!!.toFullAddress(),
                 time = article.createdAt,
                 commentCount = comments.size.toLong(),
                 isReceived = isReceived,
