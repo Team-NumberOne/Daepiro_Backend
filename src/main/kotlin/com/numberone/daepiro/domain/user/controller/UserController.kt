@@ -51,4 +51,9 @@ class UserController(
     override fun getAddresses(): ApiResult<List<UserAddressResponse>> {
         return userService.getAddresses(SecurityContextUtils.getUserId())
     }
+
+    override fun deleteUser(): ApiResult<Unit> {
+        userService.deleteUser(SecurityContextUtils.getUserId())
+        return ApiResult.ok()
+    }
 }
