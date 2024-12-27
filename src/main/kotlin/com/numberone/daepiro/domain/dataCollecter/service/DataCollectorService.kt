@@ -105,7 +105,7 @@ class DataCollectorService(
 
             FcmUtils.sendFcm(
                 fcmTokens,
-                "${disaster.address.toAddress()} ${disaster.disasterType.type.korean} 발생",
+                "${disaster.address.toFullAddress()} ${disaster.disasterType.type.korean} 발생",
                 disaster.message
             )
         }

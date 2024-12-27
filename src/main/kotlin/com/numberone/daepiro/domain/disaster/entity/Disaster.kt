@@ -67,6 +67,6 @@ class Disaster(
     }
 
     fun getTitle(): String {
-        return "${address.toAddress()} ${disasterType.type.korean} 발생"
+        return "${address.toFullAddress()} ${disasterType.type.korean} 발생"
     }
 }

@@ -32,8 +32,14 @@ class Address(
     @OneToMany(mappedBy = "address", cascade = [CascadeType.ALL])
     val userAddresses: List<UserAddress> = emptyList()
 ) {
-    fun toAddress(): String {
+    fun toFullAddress(): String {
         val ret = "$siDo $siGunGu $eupMyeonDong"
         return ret.replace(" null", "")
+    }
+
+    fun toShortAddress(): String {
+        if (siGunGu == null) return siDo
+        val parts = siGunGu!!.split(" ")
+        return if (parts.size > 1) parts[1] else parts[0]
     }
 }

@@ -29,7 +29,7 @@ class ShelterService(
         val shelters = shelterRepository.findTop10ClosestShelters(longitude, latitude, ShelterType.word2code(type).name)
         return ApiResult.ok(
             GetNearbySheltersResponse.of(
-                address.toAddress(),
+                address.toFullAddress(),
                 shelters,
                 longitude,
                 latitude

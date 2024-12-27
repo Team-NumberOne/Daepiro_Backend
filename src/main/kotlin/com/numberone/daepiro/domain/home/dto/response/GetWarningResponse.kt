@@ -21,7 +21,7 @@ data class GetWarningResponse(
         fun from(disaster: Disaster): GetWarningResponse {
             return GetWarningResponse(
                 disasterType = disaster.disasterType.type.korean,
-                title = "${disaster.address.toAddress()} ${disaster.disasterType.type.korean} 발생",
+                title = "${disaster.address.toFullAddress()} ${disaster.disasterType.type.korean} 발생",
                 content = disaster.message,
                 time = disaster.generatedAt
             )

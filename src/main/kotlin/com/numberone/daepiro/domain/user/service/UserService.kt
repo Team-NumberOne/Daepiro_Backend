@@ -16,6 +16,7 @@ import com.numberone.daepiro.domain.user.dto.request.OnboardingRequest
 import com.numberone.daepiro.domain.user.dto.request.UpdateGpsRequest
 import com.numberone.daepiro.domain.user.dto.response.CheckNicknameResponse
 import com.numberone.daepiro.domain.user.dto.response.DisasterWithRegionResponse
+import com.numberone.daepiro.domain.user.dto.response.UserAddressResponse
 import com.numberone.daepiro.domain.user.entity.UserEntity
 import com.numberone.daepiro.domain.user.repository.UserRepository
 import com.numberone.daepiro.domain.user.repository.findByIdOrThrow
@@ -132,5 +133,14 @@ class UserService(
             )
         }
         return ApiResult.ok(result)
+    }
+
+    fun getAddresses(
+        userId: Long
+    ): ApiResult<List<UserAddressResponse>> {
+        val user = userRepository.findByIdOrThrow(userId)
+        return ApiResult.ok(user.userAddresses.map {
+            UserAddressResponse.of(it.address)
+        })
     }
 }

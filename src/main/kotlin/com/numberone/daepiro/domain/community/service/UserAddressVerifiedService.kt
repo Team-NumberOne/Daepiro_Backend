@@ -121,7 +121,7 @@ class UserAddressVerifiedService(
         addressToVerify: Address,
         request: UserAddressVerifiedRequest
     ): Nothing {
-        val currentLocationAddresses = addressByGeoLocation.map { it.toAddress() }
+        val currentLocationAddresses = addressByGeoLocation.map { it.toFullAddress() }
 
         val message = """
                동네 인증 실패 원인 상세:
@@ -129,7 +129,7 @@ class UserAddressVerifiedService(
              - 현 위치 기반 주소:
                  ${currentLocationAddresses.joinToString(separator = ",")}
              - 인증받고자 하는 주소:
-                 ${addressToVerify.toAddress()}
+                 ${addressToVerify.toFullAddress()}
              : 현 위치 기반 주소 내에 인증받고자 하는 주소가 포함되어야 성공 처리 됩니다.
              """.trimIndent()
 
