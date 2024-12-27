@@ -48,14 +48,14 @@ class UserService(
     fun setOnboardingData(
         request: OnboardingRequest,
         userId: Long,
-    ): ApiResult<Unit> {
+    ): ApiResult<List<UserAddressResponse>> {
         val user = userRepository.findByIdOrThrow(userId)
         user.initName(request.realname, request.nickname)
         user.initFcmToken(request.fcmToken)
         handleOnboardingAddress(request.addresses, user)
         handleOnboardingDisasterType(request.disasterTypes, user)
         user.completeOnboarding()
-        return ApiResult.ok()
+        return ApiResult.ok(getUserAddress(user))
     }
 
     private fun handleOnboardingDisasterType(
@@ -139,8 +139,10 @@ class UserService(
         userId: Long
     ): ApiResult<List<UserAddressResponse>> {
         val user = userRepository.findByIdOrThrow(userId)
-        return ApiResult.ok(user.userAddresses.map {
-            UserAddressResponse.of(it.address)
-        })
+        return ApiResult.ok(getUserAddress(user))
+    }
+
+    private fun getUserAddress(user: UserEntity) = user.userAddresses.map {
+        UserAddressResponse.of(it.address)
     }
 }

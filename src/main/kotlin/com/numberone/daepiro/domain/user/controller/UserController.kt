@@ -28,7 +28,7 @@ class UserController(
 
     override fun setOnboardingData(
         request: OnboardingRequest
-    ): ApiResult<Unit> {
+    ): ApiResult<List<UserAddressResponse>> {
         return userService.setOnboardingData(
             request,
             SecurityContextUtils.getUserId()

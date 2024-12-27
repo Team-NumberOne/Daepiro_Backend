@@ -35,7 +35,7 @@ interface UserApiV1 {
     @Operation(summary = "온보딩 정보 입력", description = "사용자의 온보딩 정보를 등록합니다.")
     fun setOnboardingData(
         @RequestBody @Valid request: OnboardingRequest
-    ): ApiResult<Unit>
+    ): ApiResult<List<UserAddressResponse>>
 
     @PostMapping("/gps")
     @Operation(summary = "GPS 정보 업데이트", description = "사용자의 GPS 정보를 업데이트합니다.")
