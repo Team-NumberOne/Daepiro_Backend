@@ -145,4 +145,10 @@ class UserService(
     private fun getUserAddress(user: UserEntity) = user.userAddresses.map {
         UserAddressResponse.of(it.address)
     }
+
+    @Transactional
+    fun deleteUser(userId: Long) {
+        val user = userRepository.findByIdOrThrow(userId)
+        user.delete()
+    }
 }
