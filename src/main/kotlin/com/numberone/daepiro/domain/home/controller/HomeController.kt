@@ -11,6 +11,8 @@ import com.numberone.daepiro.domain.home.dto.response.GetStatusResponse
 import com.numberone.daepiro.domain.home.dto.response.GetWarningResponse
 import com.numberone.daepiro.domain.home.dto.response.HomeDisasterFeed
 import com.numberone.daepiro.domain.home.service.HomeService
+import com.numberone.daepiro.domain.shelter.dto.response.GetNearbySheltersResponse
+import com.numberone.daepiro.domain.shelter.service.ShelterService
 import com.numberone.daepiro.global.dto.ApiResult
 import com.numberone.daepiro.global.utils.SecurityContextUtils
 import org.springframework.data.domain.Slice
@@ -19,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 class HomeController(
     private val homeService: HomeService,
+    private val shelterService: ShelterService
 ) : HomeApiV1 {
     override fun getHomeDisasters(): ApiResult<List<HomeDisasterFeed>> {
         val userId = SecurityContextUtils.getUserId()
@@ -42,5 +45,10 @@ class HomeController(
     override fun getStatus(): ApiResult<GetStatusResponse> {
         val userId = SecurityContextUtils.getUserId()
         return homeService.getStatus(userId)
+    }
+
+    override fun getShelters(type: String): ApiResult<GetNearbySheltersResponse> {
+        val userId = SecurityContextUtils.getUserId()
+        return shelterService.getNearbyShelters(userId, type)
     }
 }

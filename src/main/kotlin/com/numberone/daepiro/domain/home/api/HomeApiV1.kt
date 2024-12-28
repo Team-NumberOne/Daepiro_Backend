@@ -8,6 +8,7 @@ import com.numberone.daepiro.domain.home.dto.request.GetHomeArticleRequest
 import com.numberone.daepiro.domain.home.dto.response.GetStatusResponse
 import com.numberone.daepiro.domain.home.dto.response.GetWarningResponse
 import com.numberone.daepiro.domain.home.dto.response.HomeDisasterFeed
+import com.numberone.daepiro.domain.shelter.dto.response.GetNearbySheltersResponse
 import com.numberone.daepiro.global.dto.ApiResult
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.media.Schema
@@ -22,7 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 @RequestMapping("/v1/home")
 interface HomeApiV1 {
     @GetMapping("/disasters")
-    @Operation(summary = "(평상 시) 홈 재난문자 내역 피드 조회", description = "홈 화면에 표시할 재난문자 내역을 조회합니다.")
+    @Operation(summary = "홈 재난문자 내역 피드 조회", description = "홈 화면에 표시할 재난문자 내역을 조회합니다.")
     fun getHomeDisasters(): ApiResult<List<HomeDisasterFeed>>
 
     @GetMapping("/news")
@@ -42,4 +43,13 @@ interface HomeApiV1 {
     @GetMapping("/status")
     @Operation(summary = "현재 재난 발생 유무 조회", description = "현재 재난이 발생 중인지 조회합니다.")
     fun getStatus(): ApiResult<GetStatusResponse>
+
+    @GetMapping("/shelters/{type}")
+    @Operation(summary = "(재난 발생 시) 홈 대피소 피드 조회", description = "대피소 목록을 조회합니다.")
+    fun getShelters(
+        @Schema(
+            description = "대피소 유형 (temperature | earthquake | tsunami | civil)",
+            example = "temperature"
+        ) @PathVariable type: String,
+    ): ApiResult<GetNearbySheltersResponse>
 }
