@@ -42,4 +42,19 @@ class Address(
         val parts = siGunGu!!.split(" ")
         return if (parts.size > 1) parts[1] else parts[0]
     }
+
+    fun toHomeAddress(): String {
+        var ret = ""
+        if (eupMyeonDong != null) {
+            ret = "$eupMyeonDong $ret"
+        }
+
+        if (siGunGu != null) {
+            ret = "$siGunGu $ret"
+        }
+        else {
+            ret = "$siDo $ret"
+        }
+        return ret.trim()
+    }
 }

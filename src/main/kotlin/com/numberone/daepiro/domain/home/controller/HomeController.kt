@@ -11,10 +11,12 @@ import com.numberone.daepiro.domain.home.api.HomeApiV1
 import com.numberone.daepiro.domain.home.dto.request.GetHomeArticleRequest
 import com.numberone.daepiro.domain.home.dto.response.GetStatusResponse
 import com.numberone.daepiro.domain.home.dto.response.GetWarningResponse
+import com.numberone.daepiro.domain.home.dto.response.GetWeatherResponse
 import com.numberone.daepiro.domain.home.dto.response.HomeDisasterFeed
 import com.numberone.daepiro.domain.home.service.HomeService
 import com.numberone.daepiro.domain.shelter.dto.response.GetNearbySheltersResponse
 import com.numberone.daepiro.domain.shelter.service.ShelterService
+import com.numberone.daepiro.domain.user.dto.request.UpdateGpsRequest
 import com.numberone.daepiro.global.dto.ApiResult
 import com.numberone.daepiro.global.utils.SecurityContextUtils
 import org.springframework.data.domain.Slice
@@ -57,5 +59,10 @@ class HomeController(
 
     override fun getBehaviourTip(disasterId: Long): ApiResult<GetBehaviourTipResponse> {
         return behaviourTipService.getBehaviourTip(disasterId)
+    }
+
+    override fun getWeather(): ApiResult<GetWeatherResponse> {
+        val userId = SecurityContextUtils.getUserId()
+        return homeService.getWeather(userId)
     }
 }

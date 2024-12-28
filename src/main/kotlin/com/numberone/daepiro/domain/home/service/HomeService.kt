@@ -10,7 +10,9 @@ import com.numberone.daepiro.domain.disasterContent.dto.response.GetHomeDisaster
 import com.numberone.daepiro.domain.home.dto.request.GetHomeArticleRequest
 import com.numberone.daepiro.domain.home.dto.response.GetStatusResponse
 import com.numberone.daepiro.domain.home.dto.response.GetWarningResponse
+import com.numberone.daepiro.domain.home.dto.response.GetWeatherResponse
 import com.numberone.daepiro.domain.home.dto.response.HomeDisasterFeed
+import com.numberone.daepiro.domain.user.dto.request.UpdateGpsRequest
 import com.numberone.daepiro.domain.user.repository.UserRepository
 import com.numberone.daepiro.domain.user.repository.findByIdOrThrow
 import com.numberone.daepiro.global.dto.ApiResult
@@ -76,6 +78,16 @@ class HomeService(
         val user = userRepository.findByIdOrThrow(userId)
         return ApiResult.ok(
             articleService.getHomeFeed(GetArticleRequest.ofHomeFeed(request.category, user), userId)
+        )
+    }
+
+    fun getWeather(userId: Long): ApiResult<GetWeatherResponse> {
+        val user = userRepository.findByIdOrThrow(userId)
+        val address = user.address
+            ?: user.userAddresses.first { it.name == "집" }.address
+        return ApiResult.ok(
+            GetWeatherResponse.of(address.toHomeAddress(), "맑음")
+            //todo 날씨 api 연동
         )
     }
 }
