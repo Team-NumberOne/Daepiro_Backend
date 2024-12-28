@@ -204,8 +204,7 @@ class ArticleService(
 
         val slice = articleRepository.getArticles(
             request = request,
-            siDo = address?.siDo,
-            siGunGu = address?.siGunGu,
+            addressValues = address?.let { listOf(it) } ?: emptyList(),
         )
 
         val authorMapOfArticleId = slice.content.associate { it.id to it.authorUser }
@@ -240,6 +239,57 @@ class ArticleService(
         }
 
         return slice
+    }
+
+    //todo getMulti와 병합?
+    fun getHomeFeed(
+        request: GetArticleRequest,
+        userId: Long,
+    ): List<ArticleListResponse> {
+        val user = userRepository.findByIdOrThrow(userId)
+        val addresses =
+            user.address?.let { user.userAddresses.map { it2 -> it2.address } + it }
+                ?: user.userAddresses.map { it.address }
+
+        val slice = articleRepository.getArticles(
+            request = request,
+            addressValues = addresses,
+        )
+
+        val authorMapOfArticleId = slice.content.associate { it.id to it.authorUser }
+        val verifiedAddressIdMapOfAuthorId =
+            userAddressVerifyRepository.findAllByUserIdIn(authorMapOfArticleId.mapNotNull { it.value?.userId })
+                .groupBy { it.userId }
+                .mapValues { it -> it.value.map { it.addressId } }
+
+
+        val files = fileRepository.findAllByDocumentTypeAndDocumentIdIn(
+            documentType = FileDocumentType.ARTICLE,
+            documentIds = slice.map { it.id }.distinct(),
+        )
+
+        val likedArticleIdSet = userLikeRepository.findAllLikedArticleId(userId)
+
+        slice.forEach { article ->
+            val relatedFile = files.find { it.documentId == article.id }
+            relatedFile?.let {
+                article.updatePreviewImageUrl(it.path)
+            }
+            if (likedArticleIdSet.contains(article.id)) {
+                article.updateIsLiked(true)
+            }
+            val author = article.authorUser
+            val articleAddress = article.address
+
+            if (author != null && articleAddress != null) {
+                val verifiedAuthorAddresses = verifiedAddressIdMapOfAuthorId[author.userId]
+                author.isVerified = verifiedAuthorAddresses?.contains(articleAddress.addressId) ?: false
+            }
+        }
+
+        val sortedContent = slice.content.sortedByDescending { it.likeCount }
+
+        return sortedContent.take(15)
     }
 
     @Transactional

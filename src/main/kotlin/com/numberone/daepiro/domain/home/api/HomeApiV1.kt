@@ -1,15 +1,21 @@
 package com.numberone.daepiro.domain.home.api
 
+import com.numberone.daepiro.domain.community.dto.response.ArticleListResponse
 import com.numberone.daepiro.domain.dataCollecter.dto.response.GetLatestNewsResponse
 import com.numberone.daepiro.domain.disasterContent.dto.response.DisasterContentResponse
 import com.numberone.daepiro.domain.disasterContent.dto.response.GetHomeDisasterContentsResponse
+import com.numberone.daepiro.domain.home.dto.request.GetHomeArticleRequest
 import com.numberone.daepiro.domain.home.dto.response.GetStatusResponse
 import com.numberone.daepiro.domain.home.dto.response.GetWarningResponse
 import com.numberone.daepiro.domain.home.dto.response.HomeDisasterFeed
 import com.numberone.daepiro.global.dto.ApiResult
 import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.tags.Tag
+import org.springframework.data.domain.Slice
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.ModelAttribute
+import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
 
 @Tag(name = "Home API", description = "홈 피드 관련 API")
@@ -22,6 +28,12 @@ interface HomeApiV1 {
     @GetMapping("/news")
     @Operation(summary = "(평상 시) 홈 최신 정보콘텐츠 피드 조회", description = "홈 화면에 표시할 최신 정보콘텐츠를 조회합니다.")
     fun getHomeNews(): ApiResult<GetHomeDisasterContentsResponse>
+
+    @GetMapping("/articles")
+    @Operation(summary = "(평상 시) 홈 동네생활 인기게시글 피드 조회", description = "홈 화면에 표시할 인기 게시글을 조회합니다.")
+    fun getHomeArticles(
+        @ModelAttribute request: GetHomeArticleRequest
+    ): ApiResult<List<ArticleListResponse>>
 
     @GetMapping("/warnings")
     @Operation(summary = "(재난 발생 시) 홈 현재 발생 재난 피드 조회", description = "홈 화면에 표시할 현재 발생 중인 재난을 조회합니다.")

@@ -3,6 +3,7 @@ package com.numberone.daepiro.domain.community.dto.request
 import com.numberone.daepiro.domain.community.entity.ArticleCategory
 import com.numberone.daepiro.domain.community.entity.ArticleStatus
 import com.numberone.daepiro.domain.community.entity.ArticleType
+import com.numberone.daepiro.domain.user.entity.UserEntity
 import io.swagger.v3.oas.annotations.media.Schema
 import org.springdoc.core.annotations.ParameterObject
 import org.springframework.data.domain.Pageable
@@ -31,6 +32,17 @@ data class GetArticleRequest(
 
     fun getPageable(): Pageable {
         return Pageable.ofSize(size).withPage(page - 1)
+    }
+
+    companion object {
+        fun ofHomeFeed(category: ArticleCategory?, user: UserEntity) = GetArticleRequest(
+            type = ArticleType.DONGNE,
+            category = category,
+            status = ArticleStatus.ACTIVE,
+            address = user.address?.toFullAddress(),
+            page = 1,
+            size = 100//최근 100개를 일단 가져오고 서비스로직에서 인기순으로 15개만 자름
+        )
     }
 }
 
