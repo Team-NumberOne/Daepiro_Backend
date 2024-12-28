@@ -8,16 +8,22 @@ import com.numberone.daepiro.domain.disasterContent.dto.response.GetHomeDisaster
 import com.numberone.daepiro.domain.home.dto.request.GetHomeArticleRequest
 import com.numberone.daepiro.domain.home.dto.response.GetStatusResponse
 import com.numberone.daepiro.domain.home.dto.response.GetWarningResponse
+import com.numberone.daepiro.domain.home.dto.response.GetWeatherResponse
 import com.numberone.daepiro.domain.home.dto.response.HomeDisasterFeed
 import com.numberone.daepiro.domain.shelter.dto.response.GetNearbySheltersResponse
+import com.numberone.daepiro.domain.user.dto.request.UpdateGpsRequest
 import com.numberone.daepiro.global.dto.ApiResult
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.tags.Tag
+import jakarta.validation.Valid
 import org.springframework.data.domain.Slice
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.ModelAttribute
 import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.PutMapping
+import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 
 @Tag(name = "Home API", description = "홈 피드 관련 API")
@@ -64,4 +70,13 @@ interface HomeApiV1 {
     fun getBehaviourTip(
         @Schema(description = "현재 발생한 재난의 재난유형 id", example = "26") @PathVariable disasterId: Long
     ): ApiResult<GetBehaviourTipResponse>
+
+    @GetMapping("/weather")
+    @Operation(
+        summary = "(평상 시) 홈 GPS 및 날씨 정보 피드 조회", description = """
+            홈 화면에 표시할 GPS와 날씨 정보를 조회합니다.
+            (참고!)날씨정보는 아직 외부api와 연동을 하지않아 항상 맑음으로 표기됩니다.
+            """
+    )
+    fun getWeather():ApiResult<GetWeatherResponse>
 }
