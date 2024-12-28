@@ -8,6 +8,7 @@ import com.numberone.daepiro.domain.community.dto.response.QArticleListResponse
 import com.numberone.daepiro.domain.community.dto.response.QAuthorResponse
 import com.numberone.daepiro.domain.community.entity.QArticle.article
 import com.querydsl.core.types.Expression
+import com.querydsl.core.types.dsl.BooleanExpression
 import com.querydsl.core.types.dsl.CaseBuilder
 import com.querydsl.jpa.impl.JPAQueryFactory
 import org.springframework.data.domain.Slice
@@ -18,8 +19,7 @@ class ArticleRepositoryCustomImpl(
 ) : ArticleRepositoryCustom {
     override fun getArticles(
         request: GetArticleRequest,
-        siDo: String?,
-        siGunGu: String?,
+        addressValues: List<com.numberone.daepiro.domain.address.entity.Address>
     ): Slice<ArticleListResponse> {
         val pageable = request.getPageable()
 
@@ -52,8 +52,9 @@ class ArticleRepositoryCustomImpl(
         ).from(article)
             .leftJoin(address).on(article.address.id.eq(address.id))
             .where(
-                siDo?.let { address.siDo.eq(it) },
-                siGunGu?.let { address.siGunGu.eq(it) },
+                addressValues.map { addr ->
+                    address.siDo.eq(addr.siDo).and(address.siGunGu.eq(addr.siGunGu))
+                }.reduce(BooleanExpression::or),
                 request.type?.let { article.type.eq(it) },
                 request.category?.let { article.category.eq(it) },
                 request.status?.let { article.status.eq(it) },

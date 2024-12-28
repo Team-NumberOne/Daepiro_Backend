@@ -39,8 +39,4 @@ interface DisasterContentApiV1 {
         @Schema(description = "조회할 콘텐츠 수", example = "20")
         @RequestParam size: Long
     ): ApiResult<DisasterContentsResponse>
-
-    @GetMapping("/home")
-    @Operation(summary = "정보페이지 홈 전용 재난 콘텐츠 조회", description = "정보페이지 홈에 표시할 재난 콘텐츠를 조회합니다.")
-    fun getHomeDisasterContents(): ApiResult<GetHomeDisasterContentsResponse>
 }

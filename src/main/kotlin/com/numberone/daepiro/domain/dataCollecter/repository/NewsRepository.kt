@@ -16,5 +16,5 @@ interface NewsRepository : JpaRepository<News, Long> {
     @Query("select n from News n where n.id <= :cursor and n.title like %:keyword% order by n.publishedAt desc")
     fun searchNews(keyword: String, cursor: Long, pageable: Pageable): List<News>
 
-    fun findTop3ByOrderByPublishedAtDesc(): List<News>
+    fun findTop15ByOrderByPublishedAtDesc(): List<News>
 }

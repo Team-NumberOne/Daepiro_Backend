@@ -8,6 +8,9 @@ data class GetWarningResponse(
     @Schema(description = "재난 종류", example = "호우")
     val disasterType: String,
 
+    @Schema(description="재난유형 id", example="26")
+    val disasterTypeId: Long,
+
     @Schema(description = "제목", example = "서울시 성북구 쌍문동 호우 발생")
     val title: String,
 
@@ -21,6 +24,7 @@ data class GetWarningResponse(
         fun from(disaster: Disaster): GetWarningResponse {
             return GetWarningResponse(
                 disasterType = disaster.disasterType.type.korean,
+                disasterTypeId = disaster.disasterType.id!!,
                 title = "${disaster.address.toFullAddress()} ${disaster.disasterType.type.korean} 발생",
                 content = disaster.message,
                 time = disaster.generatedAt

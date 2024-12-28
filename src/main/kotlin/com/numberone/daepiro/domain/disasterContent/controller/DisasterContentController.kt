@@ -26,8 +26,4 @@ class DisasterContentController(
     ): ApiResult<DisasterContentsResponse> {
         return disasterContentService.searchDisasterContents(keyword, cursor, size)
     }
-
-    override fun getHomeDisasterContents(): ApiResult<GetHomeDisasterContentsResponse> {
-        return disasterContentService.getHomeDisasterContents()
-    }
 }

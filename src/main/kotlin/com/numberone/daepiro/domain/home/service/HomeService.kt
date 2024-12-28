@@ -1,6 +1,13 @@
 package com.numberone.daepiro.domain.home.service
 
+import com.numberone.daepiro.domain.community.dto.request.GetArticleRequest
+import com.numberone.daepiro.domain.community.dto.response.ArticleListResponse
+import com.numberone.daepiro.domain.community.service.ArticleService
+import com.numberone.daepiro.domain.dataCollecter.repository.NewsRepository
 import com.numberone.daepiro.domain.disaster.service.DisasterService
+import com.numberone.daepiro.domain.disasterContent.dto.response.DisasterContentResponse
+import com.numberone.daepiro.domain.disasterContent.dto.response.GetHomeDisasterContentsResponse
+import com.numberone.daepiro.domain.home.dto.request.GetHomeArticleRequest
 import com.numberone.daepiro.domain.home.dto.response.GetStatusResponse
 import com.numberone.daepiro.domain.home.dto.response.GetWarningResponse
 import com.numberone.daepiro.domain.home.dto.response.HomeDisasterFeed
@@ -9,6 +16,7 @@ import com.numberone.daepiro.domain.user.repository.findByIdOrThrow
 import com.numberone.daepiro.global.dto.ApiResult
 import com.numberone.daepiro.global.exception.CustomErrorContext.NOT_FOUND_OCCURRED_DISASTER
 import com.numberone.daepiro.global.exception.CustomException
+import org.springframework.data.domain.Slice
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
@@ -17,7 +25,9 @@ import java.time.LocalDateTime
 @Transactional(readOnly = true)
 class HomeService(
     private val disasterService: DisasterService,
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val newsRepository: NewsRepository,
+    private val articleService: ArticleService
 ) {
     fun getHomeDisasters(userId: Long): ApiResult<List<HomeDisasterFeed>> {
         val user = userRepository.findByIdOrThrow(userId)
@@ -55,5 +65,17 @@ class HomeService(
             return ApiResult.ok(GetStatusResponse(false))
         }
         return ApiResult.ok(GetStatusResponse(true))
+    }
+
+    fun getHomeNews(): ApiResult<GetHomeDisasterContentsResponse> {
+        val newsList = newsRepository.findTop15ByOrderByPublishedAtDesc()
+        return ApiResult.ok(GetHomeDisasterContentsResponse.of(newsList))
+    }
+
+    fun getHomeArticles(userId: Long, request: GetHomeArticleRequest): ApiResult<List<ArticleListResponse>> {
+        val user = userRepository.findByIdOrThrow(userId)
+        return ApiResult.ok(
+            articleService.getHomeFeed(GetArticleRequest.ofHomeFeed(request.category, user), userId)
+        )
     }
 }
