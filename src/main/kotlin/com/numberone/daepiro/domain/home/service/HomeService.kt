@@ -1,6 +1,9 @@
 package com.numberone.daepiro.domain.home.service
 
+import com.numberone.daepiro.domain.dataCollecter.repository.NewsRepository
 import com.numberone.daepiro.domain.disaster.service.DisasterService
+import com.numberone.daepiro.domain.disasterContent.dto.response.DisasterContentResponse
+import com.numberone.daepiro.domain.disasterContent.dto.response.GetHomeDisasterContentsResponse
 import com.numberone.daepiro.domain.home.dto.response.GetStatusResponse
 import com.numberone.daepiro.domain.home.dto.response.GetWarningResponse
 import com.numberone.daepiro.domain.home.dto.response.HomeDisasterFeed
@@ -17,7 +20,8 @@ import java.time.LocalDateTime
 @Transactional(readOnly = true)
 class HomeService(
     private val disasterService: DisasterService,
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val newsRepository: NewsRepository
 ) {
     fun getHomeDisasters(userId: Long): ApiResult<List<HomeDisasterFeed>> {
         val user = userRepository.findByIdOrThrow(userId)
@@ -55,5 +59,10 @@ class HomeService(
             return ApiResult.ok(GetStatusResponse(false))
         }
         return ApiResult.ok(GetStatusResponse(true))
+    }
+
+    fun getHomeNews(): ApiResult<GetHomeDisasterContentsResponse> {
+        val newsList = newsRepository.findTop15ByOrderByPublishedAtDesc()
+        return ApiResult.ok(GetHomeDisasterContentsResponse.of(newsList))
     }
 }

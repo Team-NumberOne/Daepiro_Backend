@@ -1,5 +1,7 @@
 package com.numberone.daepiro.domain.home.controller
 
+import com.numberone.daepiro.domain.disasterContent.dto.response.DisasterContentResponse
+import com.numberone.daepiro.domain.disasterContent.dto.response.GetHomeDisasterContentsResponse
 import com.numberone.daepiro.domain.home.api.HomeApiV1
 import com.numberone.daepiro.domain.home.dto.response.GetStatusResponse
 import com.numberone.daepiro.domain.home.dto.response.GetWarningResponse
@@ -16,6 +18,10 @@ class HomeController(
     override fun getHomeDisasters(): ApiResult<List<HomeDisasterFeed>> {
         val userId = SecurityContextUtils.getUserId()
         return homeService.getHomeDisasters(userId)
+    }
+
+    override fun getHomeNews(): ApiResult<GetHomeDisasterContentsResponse> {
+        return homeService.getHomeNews()
     }
 
     override fun getWarning(): ApiResult<GetWarningResponse> {

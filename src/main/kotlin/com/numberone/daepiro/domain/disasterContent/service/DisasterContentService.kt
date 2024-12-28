@@ -57,10 +57,4 @@ class DisasterContentService(
 
         return ApiResult.ok(DisasterContentsResponse.of(newsList))
     }
-
-    fun getHomeDisasterContents(): ApiResult<GetHomeDisasterContentsResponse> {
-        val newsList = newsRepository.findTop3ByOrderByPublishedAtDesc()
-        return ApiResult.ok(GetHomeDisasterContentsResponse.of(newsList))
-    }
-
 }
