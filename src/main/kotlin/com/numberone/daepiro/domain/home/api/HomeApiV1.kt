@@ -1,5 +1,6 @@
 package com.numberone.daepiro.domain.home.api
 
+import com.numberone.daepiro.domain.behaviourTip.dto.response.GetBehaviourTipResponse
 import com.numberone.daepiro.domain.community.dto.response.ArticleListResponse
 import com.numberone.daepiro.domain.dataCollecter.dto.response.GetLatestNewsResponse
 import com.numberone.daepiro.domain.disasterContent.dto.response.DisasterContentResponse
@@ -52,4 +53,15 @@ interface HomeApiV1 {
             example = "temperature"
         ) @PathVariable type: String,
     ): ApiResult<GetNearbySheltersResponse>
+
+    @GetMapping("/tip/{disasterId}")
+    @Operation(
+        summary = "(재난 발생 시) 홈 행동요령 피드 조회", description = """
+        홈 행동요령 피드를 조회합니다.
+        현재 발생한 재난 조회 api에서 얻은 재난유형 id값을 입력해주세요.
+        """
+    )
+    fun getBehaviourTip(
+        @Schema(description = "현재 발생한 재난의 재난유형 id", example = "26") @PathVariable disasterId: Long
+    ): ApiResult<GetBehaviourTipResponse>
 }

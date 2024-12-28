@@ -1,5 +1,7 @@
 package com.numberone.daepiro.domain.home.controller
 
+import com.numberone.daepiro.domain.behaviourTip.dto.response.GetBehaviourTipResponse
+import com.numberone.daepiro.domain.behaviourTip.service.BehaviourTipService
 import com.numberone.daepiro.domain.community.dto.request.GetArticleRequest
 import com.numberone.daepiro.domain.community.dto.response.ArticleListResponse
 import com.numberone.daepiro.domain.community.service.ArticleService
@@ -21,7 +23,8 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 class HomeController(
     private val homeService: HomeService,
-    private val shelterService: ShelterService
+    private val shelterService: ShelterService,
+    private val behaviourTipService: BehaviourTipService
 ) : HomeApiV1 {
     override fun getHomeDisasters(): ApiResult<List<HomeDisasterFeed>> {
         val userId = SecurityContextUtils.getUserId()
@@ -50,5 +53,9 @@ class HomeController(
     override fun getShelters(type: String): ApiResult<GetNearbySheltersResponse> {
         val userId = SecurityContextUtils.getUserId()
         return shelterService.getNearbyShelters(userId, type)
+    }
+
+    override fun getBehaviourTip(disasterId: Long): ApiResult<GetBehaviourTipResponse> {
+        return behaviourTipService.getBehaviourTip(disasterId)
     }
 }
