@@ -38,27 +38,6 @@ data class SituationCommentResponse(
     val childComments: List<SituationCommentResponse>
 ) {
     companion object {
-        // todo fake api용 코드입니다. 추후 삭제 필요
-        fun ofFake(
-            id: Long,
-            name: String,
-            time: LocalDateTime,
-            content: String,
-            likeCount: Long,
-            isMine: Boolean,
-            childComments: List<SituationCommentResponse>
-        ): SituationCommentResponse {
-            return SituationCommentResponse(
-                id = id,
-                name = name,
-                time = time,
-                content = content,
-                likeCount = likeCount,
-                isMine = isMine,
-                childComments = childComments
-            )
-        }
-
         fun of(
             comment: Comment,
             user: UserEntity,
