@@ -30,7 +30,17 @@ class BehaviourTipService(
 
         return ApiResult.ok(
             sortTypesByKorean(disasterTypes)
-                .map { BehaviourTipDisasterResponse.of(it) }
+                .map {
+                    BehaviourTipDisasterResponse.of(
+                        it,
+                        behaviourTipRepository.findTipFilters(it.id!!)
+                            .map { filter ->
+                                FilterResponse.of(
+                                    filter,
+                                    behaviourTipRepository.findByDisasterTypeAndFilter(it, filter).map { it.tip })
+                            }
+                    )
+                }
         )
     }
 
@@ -39,7 +49,17 @@ class BehaviourTipService(
 
         return ApiResult.ok(
             sortTypesByKorean(disasterTypes)
-                .map { BehaviourTipDisasterResponse.of(it) }
+                .map {
+                    BehaviourTipDisasterResponse.of(
+                        it,
+                        behaviourTipRepository.findTipFilters(it.id!!)
+                            .map { filter ->
+                                FilterResponse.of(
+                                    filter,
+                                    behaviourTipRepository.findByDisasterTypeAndFilter(it, filter).map { it.tip })
+                            }
+                    )
+                }
         )
     }
 
@@ -53,7 +73,11 @@ class BehaviourTipService(
 
         return ApiResult.ok(
             sortTypesByKorean(filteredTypes)
-                .map { BehaviourTipDisasterResponse.of(it) }
+                .map {
+                    BehaviourTipDisasterResponse.of(
+                        it, listOf()
+                    )
+                }
         )
     }
 
@@ -99,11 +123,12 @@ class BehaviourTipService(
         val filters = behaviourTipRepository.findTipFilters(disasterType.id!!)
 
         return ApiResult.ok(
-            GetBehaviourTipResponse(
+            GetBehaviourTipResponse.of(
                 disasterType.type.korean,
                 filters.map { filter ->
-                    FilterResponse(filter, behaviourTipRepository.findByDisasterTypeAndFilter(disasterType, filter)
-                        .map { it.tip }
+                    FilterResponse.of(
+                        filter,
+                        behaviourTipRepository.findByDisasterTypeAndFilter(disasterType, filter).map { it.tip }
                     )
                 }
             )

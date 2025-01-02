@@ -34,7 +34,7 @@ interface BehaviourTipApiV1 {
     ):ApiResult<Unit>
 
     @GetMapping("/tip/{disasterId}")
-    @Operation(summary = "재난유형에 대한 행동요령 조회", description = "재난유형에 대한 행동요령 조회합니다.")
+    @Operation(summary = "(사용중지) 재난유형에 대한 행동요령 조회", description = "재난유형에 대한 행동요령 조회합니다.")
     fun getBehaviourTip(
         @Schema(description = "재난유형 id", example = "26") @PathVariable disasterId: Long
     ): ApiResult<GetBehaviourTipResponse>
