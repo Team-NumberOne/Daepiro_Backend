@@ -7,6 +7,9 @@ import com.numberone.daepiro.domain.community.repository.article.ArticleReposito
 import com.numberone.daepiro.domain.sponsor.dto.request.CreateSponsorRequest
 import com.numberone.daepiro.domain.sponsor.dto.response.SponsorResponse
 import com.numberone.daepiro.global.dto.ApiResult
+import com.numberone.daepiro.global.exception.CustomErrorContext
+import com.numberone.daepiro.global.exception.CustomErrorContext.NOT_FOUND_ARTICLE
+import com.numberone.daepiro.global.exception.CustomException
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -41,5 +44,14 @@ class SponsorService(
             targetHeart = request.targetHeart
         )
         articleRepository.save(sponsorArticle)
+    }
+
+    fun getSponsor(id: Long): ApiResult<SponsorResponse> {
+        val sponsor = articleRepository.findById(id)
+            .orElseThrow { CustomException(NOT_FOUND_ARTICLE) }
+        if (sponsor.type != ArticleType.SPONSOR) {
+            throw CustomException(NOT_FOUND_ARTICLE)
+        }
+        return ApiResult.ok(SponsorResponse.of(sponsor))
     }
 }

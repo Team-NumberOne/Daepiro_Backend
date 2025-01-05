@@ -7,6 +7,9 @@ import io.swagger.v3.oas.annotations.media.Schema
 import java.time.LocalDateTime
 
 data class SponsorResponse(
+    @Schema(description = "아이디", example = "793")
+    val id: Long,
+
     @Schema(description = "마감 기한", example = "2025-08-01T00:00:00")
     val deadline: LocalDateTime,
 
@@ -48,6 +51,7 @@ data class SponsorResponse(
                 throw IllegalArgumentException("해당 게시글은 후원글이 아닙니다.")
             }
             return SponsorResponse(
+                id = article.id!!,
                 deadline = article.deadline!!,
                 sponsorName = article.sponsorName!!,
                 title = article.title,

@@ -15,6 +15,10 @@ class SponsorController(
         return sponsorService.getSponsors()
     }
 
+    override fun getSponsor(id: Long): ApiResult<SponsorResponse> {
+        return sponsorService.getSponsor(id)
+    }
+
     override fun createSponsor(request: CreateSponsorRequest): ApiResult<Unit> {
         sponsorService.createSponsorsArticle(request)
         return ApiResult.ok()
