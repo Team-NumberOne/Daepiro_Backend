@@ -3,6 +3,7 @@ package com.numberone.daepiro.domain.disasterSituation.dto.response
 import com.numberone.daepiro.domain.community.entity.Comment
 import com.numberone.daepiro.domain.user.entity.UserEntity
 import io.swagger.v3.oas.annotations.media.Schema
+import org.springframework.data.annotation.LastModifiedDate
 import java.time.LocalDateTime
 
 data class SituationCommentResponse(
@@ -27,6 +28,9 @@ data class SituationCommentResponse(
     @Schema(description = "삭제 여부", example = "false")
     val isDeleted: Boolean,
 
+    @Schema(description = "수정 여부", example = "false")
+    val isModified: Boolean,
+
     @Schema(
         description = "자식 댓글 목록", example = "[\n" +
             "        {\n" +
@@ -49,15 +53,17 @@ data class SituationCommentResponse(
             childComments: List<Comment>
         ): SituationCommentResponse {
             val isDeleted = comment.deletedAt != null
+            val isModified = comment.lastModifiedAt != comment.createdAt
             return SituationCommentResponse(
                 id = comment.id!!,
                 name = comment.authUser!!.nickname!!,
-                time = comment.createdAt,
+                time = if (isModified) comment.lastModifiedAt else comment.createdAt,
                 content = if (isDeleted) "작성자에 의해 삭제된 댓글입니다." else comment.body,
                 likeCount = comment.likeCount.toLong(),
                 isMine = comment.authUser!!.id == user.id,
+                isDeleted = isDeleted,
+                isModified = isModified,
                 childComments = childComments.map { of(it, user, listOf()) },
-                isDeleted = isDeleted
             )
         }
     }
