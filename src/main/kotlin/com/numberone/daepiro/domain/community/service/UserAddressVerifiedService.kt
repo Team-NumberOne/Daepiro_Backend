@@ -52,9 +52,12 @@ class UserAddressVerifiedService(
     }
 
     fun getVerifiedOne(userId: Long, addressId: Long): Boolean {
-        val verified = userVerifiedRepository.findByUserIdAndAddressId(userId, addressId)
+        val addressIds =
+            addressRepository.findChildAddress(AddressInfo.from(addressRepository.findByIdOrThrow(addressId)))
+                .map { it.id!! } + addressId
+        val verifiedList = userVerifiedRepository.findByUserIdAndAddressIdIn(userId, addressIds)
 
-        return verified?.verified ?: false
+        return verifiedList.any { it.verified }
     }
 
     fun verify(
