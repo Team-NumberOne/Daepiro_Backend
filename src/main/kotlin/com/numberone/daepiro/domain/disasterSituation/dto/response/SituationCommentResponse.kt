@@ -3,6 +3,7 @@ package com.numberone.daepiro.domain.disasterSituation.dto.response
 import com.numberone.daepiro.domain.community.entity.Comment
 import com.numberone.daepiro.domain.user.entity.UserEntity
 import io.swagger.v3.oas.annotations.media.Schema
+import org.springframework.data.annotation.LastModifiedDate
 import java.time.LocalDateTime
 
 data class SituationCommentResponse(
@@ -24,33 +25,59 @@ data class SituationCommentResponse(
     @Schema(description = "내 댓글 여부", example = "true")
     val isMine: Boolean,
 
-    @Schema(description = "자식 댓글 목록", example= "[\n" +
-        "        {\n" +
-        "          \"id\": 326,\n" +
-        "          \"name\": \"짱구\",\n" +
-        "          \"time\": \"2024-12-14T12:13:55.883Z\",\n" +
-        "          \"content\": \"싫어요!\",\n" +
-        "          \"likeCount\": 3,\n" +
-        "          \"isMine\": true,\n" +
-        "          \"childComments\": []" +
-        "        }\n" +
-        "      ]")
+    @Schema(description = "삭제 여부", example = "false")
+    val isDeleted: Boolean,
+
+    @Schema(description = "수정 여부", example = "false")
+    val isModified: Boolean,
+
+    @Schema(description = "동네 인증 여부", example = "true")
+    val isVerified: Boolean,
+
+    @Schema(
+        description = "자식 댓글 목록", example = "[\n" +
+            "        {\n" +
+            "          \"id\": 326,\n" +
+            "          \"name\": \"짱구\",\n" +
+            "          \"time\": \"2024-12-14T12:13:55.883Z\",\n" +
+            "          \"content\": \"싫어요!\",\n" +
+            "          \"likeCount\": 3,\n" +
+            "          \"isMine\": true,\n" +
+            "          \"childComments\": []" +
+            "        }\n" +
+            "      ]"
+    )
     val childComments: List<SituationCommentResponse>
 ) {
     companion object {
         fun of(
             comment: Comment,
             user: UserEntity,
-            childComments: List<Comment>
+            isVerified: Boolean,
+            childComments: List<Comment>,
+            isChildVerified: Map<Long, Boolean>
         ): SituationCommentResponse {
+            val isDeleted = comment.deletedAt != null
+            val isModified = comment.lastModifiedAt != comment.createdAt
             return SituationCommentResponse(
                 id = comment.id!!,
                 name = comment.authUser!!.nickname!!,
-                time = comment.createdAt,
-                content = comment.body,
+                time = if (isModified) comment.lastModifiedAt else comment.createdAt,
+                content = if (isDeleted) "작성자에 의해 삭제된 댓글입니다." else comment.body,
                 likeCount = comment.likeCount.toLong(),
                 isMine = comment.authUser!!.id == user.id,
-                childComments = childComments.map { of(it, user, listOf()) }
+                isDeleted = isDeleted,
+                isModified = isModified,
+                isVerified = isVerified,
+                childComments = childComments.map {
+                    of(
+                        it,
+                        user,
+                        isChildVerified[it.id!!] ?: false,
+                        listOf(),
+                        mapOf()
+                    )
+                },
             )
         }
     }

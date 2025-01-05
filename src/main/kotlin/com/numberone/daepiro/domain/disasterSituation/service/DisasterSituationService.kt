@@ -9,6 +9,7 @@ import com.numberone.daepiro.domain.community.entity.Comment
 import com.numberone.daepiro.domain.community.repository.article.ArticleRepository
 import com.numberone.daepiro.domain.community.repository.article.findByIdOrThrow
 import com.numberone.daepiro.domain.community.repository.comment.CommentRepository
+import com.numberone.daepiro.domain.community.service.UserAddressVerifiedService
 import com.numberone.daepiro.domain.disaster.entity.Disaster
 import com.numberone.daepiro.domain.disasterSituation.dto.request.CreateSituationCommentRequest
 import com.numberone.daepiro.domain.disasterSituation.dto.response.DisasterSituationResponse
@@ -23,10 +24,11 @@ import java.time.LocalDateTime
 @Service
 @Transactional(readOnly = true)
 class DisasterSituationService(
-    val articleRepository: ArticleRepository,
-    val addressRepository: AddressRepository,
-    val userRepository: UserRepository,
-    val commentRepository: CommentRepository
+    private val articleRepository: ArticleRepository,
+    private val addressRepository: AddressRepository,
+    private val userRepository: UserRepository,
+    private val commentRepository: CommentRepository,
+    private val userAddressVerifiedService: UserAddressVerifiedService
 ) {
     @Transactional
     fun createDisasterSituation(disasters: List<Disaster>) {
@@ -64,7 +66,7 @@ class DisasterSituationService(
         return ApiResult.ok(articles.map {
             val commentEntities = commentRepository.findPopularComments(it.id!!)
             val comments = commentEntities.map { comment ->
-                Pair(comment, listOf<Comment>())
+                Pair(comment, listOf<Comment>())//todo 의미없이 pair를 썼음. 고쳐야함.
             }
 
             DisasterSituationResponse.of(
@@ -88,9 +90,21 @@ class DisasterSituationService(
         val user = userRepository.findByIdOrThrow(userId)
         val comments = commentRepository.findParentComments(situationId)
             .map { Pair(it, commentRepository.findChildComments(it.id!!)) }
+        val article = articleRepository.findByIdOrThrow(situationId)
 
         return ApiResult.ok(comments.map {
-            SituationCommentResponse.of(it.first, user, it.second)
+            SituationCommentResponse.of(
+                it.first,
+                user,
+                userAddressVerifiedService.getVerifiedOne(user.id!!, article.address!!.id!!),
+                it.second,
+                it.second.associate {
+                    it.id!! to userAddressVerifiedService.getVerifiedOne(
+                        it.authUser!!.id!!,
+                        article.address!!.id!!
+                    )
+                }
+            )
         })
     }
 }

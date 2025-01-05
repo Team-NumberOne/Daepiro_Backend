@@ -50,7 +50,7 @@ data class DisasterSituationResponse(
                 time = article.createdAt,
                 commentCount = comments.size.toLong(),
                 isReceived = isReceived,
-                comments = comments.map { SituationCommentResponse.of(it.first, user, it.second) }
+                comments = comments.map { SituationCommentResponse.of(it.first, user, false,it.second, mapOf()) }
             )
         }
     }

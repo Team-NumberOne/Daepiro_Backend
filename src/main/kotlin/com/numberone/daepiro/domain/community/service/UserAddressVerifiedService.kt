@@ -5,6 +5,7 @@ import com.numberone.daepiro.domain.address.repository.AddressRepository
 import com.numberone.daepiro.domain.address.repository.GeoLocationConverter
 import com.numberone.daepiro.domain.address.repository.findAllRelatedAddressBy
 import com.numberone.daepiro.domain.address.repository.findByAddressInfoOrThrow
+import com.numberone.daepiro.domain.address.repository.findByIdOrThrow
 import com.numberone.daepiro.domain.address.vo.AddressInfo
 import com.numberone.daepiro.domain.community.dto.request.UserAddressVerifiedRequest
 import com.numberone.daepiro.domain.community.dto.response.UserAddressVerifiedResponse
@@ -48,6 +49,15 @@ class UserAddressVerifiedService(
                 isVerified = verifiedMapOfAddressId[it.id] ?: false
             )
         }
+    }
+
+    fun getVerifiedOne(userId: Long, addressId: Long): Boolean {
+        val addressIds =
+            addressRepository.findChildAddress(AddressInfo.from(addressRepository.findByIdOrThrow(addressId)))
+                .map { it.id!! } + addressId
+        val verifiedList = userVerifiedRepository.findByUserIdAndAddressIdIn(userId, addressIds)
+
+        return verifiedList.any { it.verified }
     }
 
     fun verify(
