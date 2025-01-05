@@ -31,6 +31,9 @@ data class SituationCommentResponse(
     @Schema(description = "수정 여부", example = "false")
     val isModified: Boolean,
 
+    @Schema(description = "동네 인증 여부", example = "true")
+    val isVerified: Boolean,
+
     @Schema(
         description = "자식 댓글 목록", example = "[\n" +
             "        {\n" +
@@ -50,7 +53,9 @@ data class SituationCommentResponse(
         fun of(
             comment: Comment,
             user: UserEntity,
-            childComments: List<Comment>
+            isVerified: Boolean,
+            childComments: List<Comment>,
+            isChildVerified: Map<Long, Boolean>
         ): SituationCommentResponse {
             val isDeleted = comment.deletedAt != null
             val isModified = comment.lastModifiedAt != comment.createdAt
@@ -63,7 +68,16 @@ data class SituationCommentResponse(
                 isMine = comment.authUser!!.id == user.id,
                 isDeleted = isDeleted,
                 isModified = isModified,
-                childComments = childComments.map { of(it, user, listOf()) },
+                isVerified = isVerified,
+                childComments = childComments.map {
+                    of(
+                        it,
+                        user,
+                        isChildVerified[it.id!!] ?: false,
+                        listOf(),
+                        mapOf()
+                    )
+                },
             )
         }
     }

@@ -7,4 +7,5 @@ interface UserAddressVerifiedRepository : JpaRepository<UserAddressVerified, Lon
     fun findAllByUserId(userId: Long): List<UserAddressVerified>
     fun findAllByUserIdIn(userIds: List<Long>): List<UserAddressVerified>
     fun existsByUserIdAndAddressId(userId: Long, addressId: Long): Boolean
+    fun findByUserIdAndAddressId(userId: Long, addressId: Long): UserAddressVerified?
 }
