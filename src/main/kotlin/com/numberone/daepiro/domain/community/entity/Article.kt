@@ -4,6 +4,9 @@ import com.numberone.daepiro.domain.address.entity.Address
 import com.numberone.daepiro.domain.baseentity.PrimaryKeyEntity
 import com.numberone.daepiro.domain.disaster.entity.DisasterType
 import com.numberone.daepiro.domain.user.entity.UserEntity
+import com.numberone.daepiro.global.exception.CustomErrorContext
+import com.numberone.daepiro.global.exception.CustomErrorContext.NOT_FOUND_ARTICLE
+import com.numberone.daepiro.global.exception.CustomException
 import jakarta.persistence.Column
 import jakarta.persistence.ConstraintMode
 import jakarta.persistence.Entity
@@ -14,6 +17,7 @@ import jakarta.persistence.ForeignKey
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
+import java.time.LocalDateTime
 
 @Entity
 @Table(name = "article")
@@ -31,6 +35,15 @@ class Article(
     authUser: UserEntity? = null,
     address: Address? = null,
     disasterType: DisasterType? = null,
+
+    sponsorName: String? = null,
+    sponsorDescription: String? = null,
+    sponsorUrl: String? = null,
+    thumbnail: String? = null,
+    summary: String? = null,
+    deadline: LocalDateTime? = null,
+    currentHeart: Int? = null,
+    targetHeart: Int? = null,
 ) : PrimaryKeyEntity() {
     @Column(nullable = false)
     var title: String = title
@@ -90,6 +103,38 @@ class Article(
     var disasterType: DisasterType? = disasterType
         protected set
 
+    @Column(nullable = true)
+    var sponsorName: String? = sponsorName
+        protected set
+
+    @Column(nullable = true)
+    var sponsorDescription: String? = sponsorDescription
+        protected set
+
+    @Column(nullable = true)
+    var sponsorUrl: String? = sponsorUrl
+        protected set
+
+    @Column(nullable = true)
+    var thumbnail: String? = thumbnail
+        protected set
+
+    @Column(nullable = true)
+    var summary: String? = summary
+        protected set
+
+    @Column(nullable = true)
+    var deadline: LocalDateTime? = deadline
+        protected set
+
+    @Column(nullable = true)
+    var currentHeart: Int? = currentHeart
+        protected set
+
+    @Column(nullable = true)
+    var targetHeart: Int? = targetHeart
+        protected set
+
     companion object {
         fun of(
             title: String,
@@ -105,6 +150,15 @@ class Article(
             authUser: UserEntity? = null,
             address: Address? = null,
             disasterType: DisasterType? = null,
+
+            sponsorName: String? = null,
+            sponsorDescription: String? = null,
+            sponsorUrl: String? = null,
+            thumbnail: String? = null,
+            summary: String? = null,
+            deadline: LocalDateTime? = null,
+            currentHeart: Int? = null,
+            targetHeart: Int? = null,
         ): Article {
             return Article(
                 title = title,
@@ -120,6 +174,14 @@ class Article(
                 authUser = authUser,
                 address = address,
                 disasterType = disasterType,
+                sponsorName = sponsorName,
+                sponsorDescription = sponsorDescription,
+                sponsorUrl = sponsorUrl,
+                thumbnail = thumbnail,
+                summary = summary,
+                deadline = deadline,
+                currentHeart = currentHeart,
+                targetHeart = targetHeart,
             )
         }
     }
@@ -163,6 +225,15 @@ class Article(
         }
     }
 
+    fun increaseHeartCount(heart: Int): Article {
+        if (currentHeart == null) {
+            throw CustomException(NOT_FOUND_ARTICLE)
+        }
+        return this.apply {
+            currentHeart = currentHeart!! + heart
+        }
+    }
+
 
     fun update(
         title: String,
@@ -193,6 +264,7 @@ enum class ArticleType(
     DONGNE("동네생활"),
     INFORMATION("정보"),
     DISASTER("재난상황"),
+    SPONSOR("후원글")
     ;
 }
 

@@ -47,6 +47,8 @@ class SecurityConfig(
                 authorize(POST, "/v1/auth/admin", permitAll)
                 authorize(POST, "/v1/auth/user", permitAll)
                 authorize("/v1/datacollector/**", hasAuthority("ADMIN"))
+                authorize("/v1/behaviourtips", hasAuthority("ADMIN"))
+                authorize("/v1/sponsors", hasAuthority("ADMIN"))
                 authorize(anyRequest, authenticated)
             }
             addFilterBefore<ExceptionTranslationFilter>(jwtFilter)
