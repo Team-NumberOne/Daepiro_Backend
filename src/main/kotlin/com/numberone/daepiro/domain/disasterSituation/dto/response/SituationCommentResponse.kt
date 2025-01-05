@@ -43,6 +43,9 @@ data class SituationCommentResponse(
             "          \"content\": \"싫어요!\",\n" +
             "          \"likeCount\": 3,\n" +
             "          \"isMine\": true,\n" +
+            "          \"isDeleted\": false,\n" +
+            "          \"isModified\": false,\n" +
+            "          \"isVerified\": true,\n" +
             "          \"childComments\": []" +
             "        }\n" +
             "      ]"
