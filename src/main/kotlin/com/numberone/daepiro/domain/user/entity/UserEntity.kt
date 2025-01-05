@@ -4,6 +4,7 @@ import com.numberone.daepiro.domain.address.entity.Address
 import com.numberone.daepiro.domain.address.entity.UserAddress
 import com.numberone.daepiro.domain.baseentity.PrimaryKeyEntity
 import com.numberone.daepiro.domain.disaster.entity.UserDisasterType
+import com.numberone.daepiro.domain.sponsor.entity.Cheering
 import com.numberone.daepiro.domain.user.enums.Role
 import com.numberone.daepiro.domain.user.enums.SocialPlatform
 import com.numberone.daepiro.domain.user.vo.PasswordLoginInformation
@@ -52,6 +53,9 @@ class UserEntity(
 
     @OneToMany(mappedBy = "user", cascade = [CascadeType.ALL])
     val userDisasterTypes: List<UserDisasterType> = emptyList(),
+
+    @OneToMany(mappedBy = "user", cascade = [CascadeType.ALL])
+    val cheeringList : List<Cheering> = emptyList(),
 
     var fcmToken: String? = null,
 ) : PrimaryKeyEntity() {

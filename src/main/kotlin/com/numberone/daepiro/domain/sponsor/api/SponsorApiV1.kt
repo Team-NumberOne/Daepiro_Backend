@@ -1,7 +1,9 @@
 package com.numberone.daepiro.domain.sponsor.api
 
+import com.numberone.daepiro.domain.sponsor.dto.request.CheeringRequest
 import com.numberone.daepiro.domain.sponsor.dto.request.CreateSponsorRequest
 import com.numberone.daepiro.domain.sponsor.dto.request.SponsorRequest
+import com.numberone.daepiro.domain.sponsor.dto.response.CheeringResponse
 import com.numberone.daepiro.domain.sponsor.dto.response.SponsorResponse
 import com.numberone.daepiro.global.dto.ApiResult
 import io.swagger.v3.oas.annotations.Operation
@@ -60,4 +62,45 @@ interface SponsorApiV1 {
         @Schema(description = "후원글 id", example = "793") @PathVariable id: Long,
         @RequestBody @Valid request: SponsorRequest
     ): ApiResult<Unit>
+
+    @PostMapping("/cheering")
+    @Operation(
+        summary = "응원하기",
+        description = """
+        응원을 합니다.
+    """
+    )
+    fun createCheering(
+        @RequestBody @Valid request: CheeringRequest
+    ): ApiResult<Unit>
+
+    @PutMapping("/cheering/{id}")
+    @Operation(
+        summary = "응원 메세지 수정",
+        description = """
+        응원 메세지 내용을 수정합니다. 본인이 작성한 응원 메세지만 수정 가능합니다.
+    """
+    )
+    fun updateCheering(
+        @Schema(description = "응원 id", example = "2") @PathVariable id: Long,
+        @RequestBody @Valid request: CheeringRequest
+    ): ApiResult<Unit>
+
+    @GetMapping("/cheering")
+    @Operation(
+        summary = "전체 응원 메세지 목록 조회",
+        description = """
+        응원의 한마디 페이지에서 사용될 전체 응원 메세지 목록을 조회합니다.
+    """
+    )
+    fun getCheering(): ApiResult<List<CheeringResponse>>
+
+    @GetMapping("/messages")
+    @Operation(
+        summary = "후원 홈 상단 응원 메세지 목록 조회",
+        description = """
+        후원 페이지 홈 상단에 표시될 응원 메세지 목록을 조회합니다.
+    """
+    )
+    fun getMessages(): ApiResult<List<CheeringResponse>>
 }

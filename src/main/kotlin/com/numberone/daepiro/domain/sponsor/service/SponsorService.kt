@@ -4,9 +4,15 @@ import com.numberone.daepiro.domain.community.entity.Article
 import com.numberone.daepiro.domain.community.entity.ArticleCategory
 import com.numberone.daepiro.domain.community.entity.ArticleType
 import com.numberone.daepiro.domain.community.repository.article.ArticleRepository
+import com.numberone.daepiro.domain.sponsor.dto.request.CheeringRequest
 import com.numberone.daepiro.domain.sponsor.dto.request.CreateSponsorRequest
 import com.numberone.daepiro.domain.sponsor.dto.request.SponsorRequest
+import com.numberone.daepiro.domain.sponsor.dto.response.CheeringResponse
 import com.numberone.daepiro.domain.sponsor.dto.response.SponsorResponse
+import com.numberone.daepiro.domain.sponsor.entity.Cheering
+import com.numberone.daepiro.domain.sponsor.repository.CheeringRepository
+import com.numberone.daepiro.domain.user.repository.UserRepository
+import com.numberone.daepiro.domain.user.repository.findByIdOrThrow
 import com.numberone.daepiro.global.dto.ApiResult
 import com.numberone.daepiro.global.exception.CustomErrorContext
 import com.numberone.daepiro.global.exception.CustomErrorContext.NOT_FOUND_ARTICLE
@@ -18,6 +24,8 @@ import org.springframework.transaction.annotation.Transactional
 @Transactional(readOnly = true)
 class SponsorService(
     private val articleRepository: ArticleRepository,
+    private val cheeringRepository: CheeringRepository,
+    private val userRepository: UserRepository
 ) {
     fun getSponsors(): ApiResult<List<SponsorResponse>> {
         val sponsors = articleRepository.findSponsorArticle()
@@ -63,5 +71,37 @@ class SponsorService(
             .apply {
                 increaseHeartCount(request.heart)
             }
+    }
+
+    @Transactional
+    fun createCheering(request: CheeringRequest, userId: Long) {
+        val user = userRepository.findByIdOrThrow(userId)
+        val cheering = Cheering.of(user, request.content)
+
+        cheeringRepository.save(cheering)
+    }
+
+    @Transactional
+    fun updateCheering(id: Long, request: CheeringRequest, userId: Long) {
+        val user = userRepository.findByIdOrThrow(userId)
+        val cheering = cheeringRepository.findById(id)
+            .orElseThrow { CustomException(CustomErrorContext.NOT_FOUND_CHEERING) }
+
+        if (cheering.user.id != user.id) {
+            throw CustomException(CustomErrorContext.NOT_CHEERING_AUTHOR)
+        }
+        cheering.updateContent(request.content)
+    }
+
+    fun getCheering(userId: Long): ApiResult<List<CheeringResponse>> {
+        val cheeringList = cheeringRepository.findTop100ByOrderByCreatedAtDesc()
+            .map { CheeringResponse.of(it, it.user.id == userId) }
+        return ApiResult.ok(cheeringList)
+    }
+
+    fun getMessages(userId: Long): ApiResult<List<CheeringResponse>> {
+        val cheeringList = cheeringRepository.findTop20ByOrderByCreatedAtDesc()
+            .map { CheeringResponse.of(it, it.user.id == userId) }
+        return ApiResult.ok(cheeringList)
     }
 }
