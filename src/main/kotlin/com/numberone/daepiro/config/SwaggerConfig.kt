@@ -37,8 +37,10 @@ class SwaggerConfig {
                 "/v1/comments/**",
                 "/v1/user-address-verified",
                 "/v1/behaviourtips/**",
+                "/v1/sponsors/**",
             )
             .pathsToExclude("/v1/behaviourtips")
+            .pathsToExclude("/v1/sponsors")
             .build()
     }
 
@@ -48,7 +50,8 @@ class SwaggerConfig {
             .group("2) ready for admin")
             .pathsToMatch(
                 "/v1/datacollector/**",
-                "/v1/behaviourtips"
+                "/v1/behaviourtips",
+                "/v1/sponsors"
             )
             .build()
     }

@@ -14,6 +14,7 @@ import jakarta.persistence.ForeignKey
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
+import java.time.LocalDateTime
 
 @Entity
 @Table(name = "article")
@@ -31,7 +32,16 @@ class Article(
     authUser: UserEntity? = null,
     address: Address? = null,
     disasterType: DisasterType? = null,
-) : PrimaryKeyEntity() {
+
+    sponsorName:String?=null,
+    sponsorDescription:String?=null,
+    sponsorUrl:String?=null,
+    thumbnail:String?=null,
+    summary:String?=null,
+    deadline: LocalDateTime?=null,
+    currentHeart:Int?=null,
+    targetHeart:Int?=null,
+    ) : PrimaryKeyEntity() {
     @Column(nullable = false)
     var title: String = title
         protected set
@@ -90,6 +100,38 @@ class Article(
     var disasterType: DisasterType? = disasterType
         protected set
 
+    @Column(nullable = true)
+    var sponsorName: String? = sponsorName
+        protected set
+
+    @Column(nullable = true)
+    var sponsorDescription: String? = sponsorDescription
+        protected set
+
+    @Column(nullable = true)
+    var sponsorUrl: String? = sponsorUrl
+        protected set
+
+    @Column(nullable = true)
+    var thumbnail: String? = thumbnail
+        protected set
+
+    @Column(nullable = true)
+    var summary: String? = summary
+        protected set
+
+    @Column(nullable = true)
+    var deadline: LocalDateTime? = deadline
+        protected set
+
+    @Column(nullable = true)
+    var currentHeart: Int? = currentHeart
+        protected set
+
+    @Column(nullable = true)
+    var targetHeart: Int? = targetHeart
+        protected set
+
     companion object {
         fun of(
             title: String,
@@ -105,6 +147,15 @@ class Article(
             authUser: UserEntity? = null,
             address: Address? = null,
             disasterType: DisasterType? = null,
+
+            sponsorName:String?=null,
+            sponsorDescription:String?=null,
+            sponsorUrl:String?=null,
+            thumbnail:String?=null,
+            summary:String?=null,
+            deadline: LocalDateTime?=null,
+            currentHeart:Int?=null,
+            targetHeart:Int?=null,
         ): Article {
             return Article(
                 title = title,
@@ -120,6 +171,14 @@ class Article(
                 authUser = authUser,
                 address = address,
                 disasterType = disasterType,
+                sponsorName = sponsorName,
+                sponsorDescription = sponsorDescription,
+                sponsorUrl = sponsorUrl,
+                thumbnail = thumbnail,
+                summary = summary,
+                deadline = deadline,
+                currentHeart = currentHeart,
+                targetHeart = targetHeart,
             )
         }
     }
@@ -193,6 +252,7 @@ enum class ArticleType(
     DONGNE("동네생활"),
     INFORMATION("정보"),
     DISASTER("재난상황"),
+    SPONSOR("후원글")
     ;
 }
 
