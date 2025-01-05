@@ -5,6 +5,7 @@ import com.numberone.daepiro.domain.community.entity.ArticleCategory
 import com.numberone.daepiro.domain.community.entity.ArticleType
 import com.numberone.daepiro.domain.community.repository.article.ArticleRepository
 import com.numberone.daepiro.domain.sponsor.dto.request.CreateSponsorRequest
+import com.numberone.daepiro.domain.sponsor.dto.request.SponsorRequest
 import com.numberone.daepiro.domain.sponsor.dto.response.SponsorResponse
 import com.numberone.daepiro.global.dto.ApiResult
 import com.numberone.daepiro.global.exception.CustomErrorContext
@@ -53,5 +54,14 @@ class SponsorService(
             throw CustomException(NOT_FOUND_ARTICLE)
         }
         return ApiResult.ok(SponsorResponse.of(sponsor))
+    }
+
+    @Transactional
+    fun sponsor(id: Long, request: SponsorRequest) {
+        articleRepository.findById(id)
+            .orElseThrow { CustomException(NOT_FOUND_ARTICLE) }
+            .apply {
+                increaseHeartCount(request.heart)
+            }
     }
 }

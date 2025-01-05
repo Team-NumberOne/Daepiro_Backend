@@ -4,6 +4,9 @@ import com.numberone.daepiro.domain.address.entity.Address
 import com.numberone.daepiro.domain.baseentity.PrimaryKeyEntity
 import com.numberone.daepiro.domain.disaster.entity.DisasterType
 import com.numberone.daepiro.domain.user.entity.UserEntity
+import com.numberone.daepiro.global.exception.CustomErrorContext
+import com.numberone.daepiro.global.exception.CustomErrorContext.NOT_FOUND_ARTICLE
+import com.numberone.daepiro.global.exception.CustomException
 import jakarta.persistence.Column
 import jakarta.persistence.ConstraintMode
 import jakarta.persistence.Entity
@@ -33,15 +36,15 @@ class Article(
     address: Address? = null,
     disasterType: DisasterType? = null,
 
-    sponsorName:String?=null,
-    sponsorDescription:String?=null,
-    sponsorUrl:String?=null,
-    thumbnail:String?=null,
-    summary:String?=null,
-    deadline: LocalDateTime?=null,
-    currentHeart:Int?=null,
-    targetHeart:Int?=null,
-    ) : PrimaryKeyEntity() {
+    sponsorName: String? = null,
+    sponsorDescription: String? = null,
+    sponsorUrl: String? = null,
+    thumbnail: String? = null,
+    summary: String? = null,
+    deadline: LocalDateTime? = null,
+    currentHeart: Int? = null,
+    targetHeart: Int? = null,
+) : PrimaryKeyEntity() {
     @Column(nullable = false)
     var title: String = title
         protected set
@@ -148,14 +151,14 @@ class Article(
             address: Address? = null,
             disasterType: DisasterType? = null,
 
-            sponsorName:String?=null,
-            sponsorDescription:String?=null,
-            sponsorUrl:String?=null,
-            thumbnail:String?=null,
-            summary:String?=null,
-            deadline: LocalDateTime?=null,
-            currentHeart:Int?=null,
-            targetHeart:Int?=null,
+            sponsorName: String? = null,
+            sponsorDescription: String? = null,
+            sponsorUrl: String? = null,
+            thumbnail: String? = null,
+            summary: String? = null,
+            deadline: LocalDateTime? = null,
+            currentHeart: Int? = null,
+            targetHeart: Int? = null,
         ): Article {
             return Article(
                 title = title,
@@ -219,6 +222,15 @@ class Article(
         return this.apply {
             commentCount = (commentCount - 1)
                 .coerceAtLeast(0) // 0 이상은 보장
+        }
+    }
+
+    fun increaseHeartCount(heart: Int): Article {
+        if (currentHeart == null) {
+            throw CustomException(NOT_FOUND_ARTICLE)
+        }
+        return this.apply {
+            currentHeart = currentHeart!! + heart
         }
     }
 

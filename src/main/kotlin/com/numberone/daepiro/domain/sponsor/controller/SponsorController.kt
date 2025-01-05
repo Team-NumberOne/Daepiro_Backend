@@ -2,6 +2,7 @@ package com.numberone.daepiro.domain.sponsor.controller
 
 import com.numberone.daepiro.domain.sponsor.api.SponsorApiV1
 import com.numberone.daepiro.domain.sponsor.dto.request.CreateSponsorRequest
+import com.numberone.daepiro.domain.sponsor.dto.request.SponsorRequest
 import com.numberone.daepiro.domain.sponsor.dto.response.SponsorResponse
 import com.numberone.daepiro.domain.sponsor.service.SponsorService
 import com.numberone.daepiro.global.dto.ApiResult
@@ -21,6 +22,11 @@ class SponsorController(
 
     override fun createSponsor(request: CreateSponsorRequest): ApiResult<Unit> {
         sponsorService.createSponsorsArticle(request)
+        return ApiResult.ok()
+    }
+
+    override fun sponsor(id: Long, request: SponsorRequest): ApiResult<Unit> {
+        sponsorService.sponsor(id, request)
         return ApiResult.ok()
     }
 }
