@@ -54,7 +54,7 @@ class CommentService(
     @Transactional
     fun deleteComment(commentId: Long) {
         val comment = commentRepository.findByIdOrThrow(commentId)
-            .also { commentRepository.delete(it) }
+            .also { it.delete() }
         articleRepository.findByIdOrNull(comment.documentId)
             ?.also { it.decreaseCommentCount() }
     }
