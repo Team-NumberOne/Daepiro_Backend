@@ -92,19 +92,21 @@ class DisasterSituationService(
             .map { Pair(it, commentRepository.findChildComments(it.id!!)) }
         val article = articleRepository.findByIdOrThrow(situationId)
 
-        return ApiResult.ok(comments.map {
-            SituationCommentResponse.of(
-                it.first,
-                user,
-                userAddressVerifiedService.getVerifiedOne(user.id!!, article.address!!.id!!),
-                it.second,
-                it.second.associate {
-                    it.id!! to userAddressVerifiedService.getVerifiedOne(
-                        it.authUser!!.id!!,
-                        article.address!!.id!!
-                    )
-                }
-            )
-        })
+        return ApiResult.ok(comments
+            .filter { !it.first.isDeleted() || it.second.isNotEmpty() }
+            .map {
+                SituationCommentResponse.of(
+                    it.first,
+                    user,
+                    userAddressVerifiedService.getVerifiedOne(user.id!!, article.address!!.id!!),
+                    it.second,
+                    it.second.associate {
+                        it.id!! to userAddressVerifiedService.getVerifiedOne(
+                            it.authUser!!.id!!,
+                            article.address!!.id!!
+                        )
+                    }
+                )
+            })
     }
 }
