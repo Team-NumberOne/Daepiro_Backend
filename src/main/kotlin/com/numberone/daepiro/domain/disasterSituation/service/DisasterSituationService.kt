@@ -96,7 +96,10 @@ class DisasterSituationService(
         val article = articleRepository.findByIdOrThrow(situationId)
 
         val result = comments
-            .filter { !it.first.isDeleted() || it.second.isNotEmpty() }
+            .filter {
+                !it.first.isDeleted() ||
+                    it.second.any { !it.isDeleted() }
+            }
             .map {
                 SituationCommentResponse.of(
                     it.first,

@@ -76,7 +76,7 @@ data class SituationCommentResponse(
                 isDeleted = isDeleted,
                 isModified = isModified,
                 isVerified = isVerified,
-                childComments = childComments.map {
+                childComments = childComments.filter { !it.isDeleted() }.map {
                     of(
                         it,
                         user,
