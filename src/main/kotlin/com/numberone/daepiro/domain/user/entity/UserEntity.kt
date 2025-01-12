@@ -55,7 +55,7 @@ class UserEntity(
     val userDisasterTypes: List<UserDisasterType> = emptyList(),
 
     @OneToMany(mappedBy = "user", cascade = [CascadeType.ALL])
-    val cheeringList : List<Cheering> = emptyList(),
+    val cheeringList: List<Cheering> = emptyList(),
 
     var fcmToken: String? = null,
 ) : PrimaryKeyEntity() {
@@ -82,7 +82,7 @@ class UserEntity(
         this.nickname = nickname
     }
 
-    fun initFcmToken(fcmToken: String) {
+    fun initFcmToken(fcmToken: String?) {
         this.fcmToken = fcmToken
     }
 

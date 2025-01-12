@@ -14,7 +14,9 @@ import com.numberone.daepiro.domain.disaster.entity.Disaster
 import com.numberone.daepiro.domain.disasterSituation.dto.request.CreateSituationCommentRequest
 import com.numberone.daepiro.domain.disasterSituation.dto.response.DisasterSituationResponse
 import com.numberone.daepiro.domain.disasterSituation.dto.response.SituationCommentResponse
+import com.numberone.daepiro.domain.user.repository.UserLikeRepository
 import com.numberone.daepiro.domain.user.repository.UserRepository
+import com.numberone.daepiro.domain.user.repository.findAllLikedCommentId
 import com.numberone.daepiro.domain.user.repository.findByIdOrThrow
 import com.numberone.daepiro.global.dto.ApiResult
 import org.springframework.stereotype.Service
@@ -28,7 +30,8 @@ class DisasterSituationService(
     private val addressRepository: AddressRepository,
     private val userRepository: UserRepository,
     private val commentRepository: CommentRepository,
-    private val userAddressVerifiedService: UserAddressVerifiedService
+    private val userAddressVerifiedService: UserAddressVerifiedService,
+    private val userLikeRepository: UserLikeRepository
 ) {
     @Transactional
     fun createDisasterSituation(disasters: List<Disaster>) {
@@ -66,7 +69,7 @@ class DisasterSituationService(
         return ApiResult.ok(articles.map {
             val commentEntities = commentRepository.findPopularComments(it.id!!)
             val comments = commentEntities.map { comment ->
-                Pair(comment, listOf<Comment>())//todo 의미없이 pair를 썼음. 고쳐야함.
+                Pair(comment, listOf<Comment>())//todo 의미없이 pair를 썼음. 고쳐야함. 쩔수 없나.
             }
 
             DisasterSituationResponse.of(
@@ -92,19 +95,29 @@ class DisasterSituationService(
             .map { Pair(it, commentRepository.findChildComments(it.id!!)) }
         val article = articleRepository.findByIdOrThrow(situationId)
 
-        return ApiResult.ok(comments.map {
-            SituationCommentResponse.of(
-                it.first,
-                user,
-                userAddressVerifiedService.getVerifiedOne(user.id!!, article.address!!.id!!),
-                it.second,
-                it.second.associate {
-                    it.id!! to userAddressVerifiedService.getVerifiedOne(
-                        it.authUser!!.id!!,
-                        article.address!!.id!!
-                    )
-                }
-            )
-        })
+        val result = comments
+            .filter { !it.first.isDeleted() || it.second.isNotEmpty() }
+            .map {
+                SituationCommentResponse.of(
+                    it.first,
+                    user,
+                    userAddressVerifiedService.getVerifiedOne(user.id!!, article.address!!.id!!),
+                    it.second,
+                    it.second.associate {
+                        it.id!! to userAddressVerifiedService.getVerifiedOne(
+                            it.authUser!!.id!!,
+                            article.address!!.id!!
+                        )
+                    }
+                )
+            }
+        val likedCommentIdSet = userLikeRepository.findAllLikedCommentId(userId)
+        result.forEach {
+            it.isLiked = likedCommentIdSet.contains(it.id)
+            it.childComments.forEach { childComment ->
+                childComment.isLiked = likedCommentIdSet.contains(childComment.id)
+            }
+        }
+        return ApiResult.ok(result)
     }
 }

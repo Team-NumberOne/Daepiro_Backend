@@ -13,6 +13,7 @@ import com.numberone.daepiro.domain.disaster.repository.findByTypeOrThrow
 import com.numberone.daepiro.domain.disaster.service.DisasterService
 import com.numberone.daepiro.domain.user.dto.request.AddressRequest
 import com.numberone.daepiro.domain.user.dto.request.OnboardingRequest
+import com.numberone.daepiro.domain.user.dto.request.UpdateFcmTokenRequest
 import com.numberone.daepiro.domain.user.dto.request.UpdateGpsRequest
 import com.numberone.daepiro.domain.user.dto.response.CheckNicknameResponse
 import com.numberone.daepiro.domain.user.dto.response.DisasterWithRegionResponse
@@ -150,5 +151,15 @@ class UserService(
     fun deleteUser(userId: Long) {
         val user = userRepository.findByIdOrThrow(userId)
         user.delete()
+    }
+
+    fun updateFcmToken(request: UpdateFcmTokenRequest, userId: Long) {
+        val user = userRepository.findByIdOrThrow(userId)
+        user.initFcmToken(request.fcmToken)
+    }
+
+    fun logout(userId: Long) {
+        val user = userRepository.findByIdOrThrow(userId)
+        user.initFcmToken(null)
     }
 }

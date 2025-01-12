@@ -2,6 +2,7 @@ package com.numberone.daepiro.domain.disasterSituation.dto.response
 
 import com.numberone.daepiro.domain.community.entity.Comment
 import com.numberone.daepiro.domain.user.entity.UserEntity
+import com.numberone.daepiro.global.utils.SecurityContextUtils
 import io.swagger.v3.oas.annotations.media.Schema
 import org.springframework.data.annotation.LastModifiedDate
 import java.time.LocalDateTime
@@ -50,8 +51,11 @@ data class SituationCommentResponse(
             "        }\n" +
             "      ]"
     )
-    val childComments: List<SituationCommentResponse>
+    val childComments: List<SituationCommentResponse>,
 ) {
+    @Schema(description = "내 좋아요 여부", example = "true")
+    var isLiked: Boolean = false
+
     companion object {
         fun of(
             comment: Comment,
@@ -80,7 +84,7 @@ data class SituationCommentResponse(
                         listOf(),
                         mapOf()
                     )
-                },
+                }
             )
         }
     }
