@@ -2,6 +2,7 @@ package com.numberone.daepiro.domain.user.controller
 
 import com.numberone.daepiro.domain.user.api.UserApiV1
 import com.numberone.daepiro.domain.user.dto.request.OnboardingRequest
+import com.numberone.daepiro.domain.user.dto.request.UpdateFcmTokenRequest
 import com.numberone.daepiro.domain.user.dto.request.UpdateGpsRequest
 import com.numberone.daepiro.domain.user.dto.response.CheckNicknameResponse
 import com.numberone.daepiro.domain.user.dto.response.DisasterWithRegionResponse
@@ -56,4 +57,19 @@ class UserController(
         userService.deleteUser(SecurityContextUtils.getUserId())
         return ApiResult.ok()
     }
+
+    override fun updateFcmToken(request: UpdateFcmTokenRequest): ApiResult<Unit> {
+        userService.updateFcmToken(
+            request,
+            SecurityContextUtils.getUserId()
+        )
+        return ApiResult.ok()
+    }
+
+    override fun logout(): ApiResult<Unit> {
+        userService.logout(SecurityContextUtils.getUserId())
+        return ApiResult.ok()
+    }
+
+
 }

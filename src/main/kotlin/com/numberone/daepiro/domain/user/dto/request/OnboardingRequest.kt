@@ -21,8 +21,11 @@ data class OnboardingRequest(
     )
     val disasterTypes: List<String>,
 
-    @Schema(description = "FCM 토큰", example = "cT9YaTTeTEeGeohmih6qWf:APA91bGoybhRF2sB6JC7mPNaqJi3XjPhwbTyy91iexup7QDB_AXxI5lug_l-4o0y9T4uYKoysdf12Wde5X01fv-dqWck1kk33d4O5TN3oz_4nzuUVa2ffE3S9ELAcZm2a308W7NGD3Sc")
-    val fcmToken: String
+    @Schema(
+        description = "FCM 토큰(온보딩 시 설정 안 한다면 null 가능)",
+        example = "cT9YaTTeTEeGeohmih6qWf:APA91bGoybhRF2sB6JC7mPNaqJi3XjPhwbTyy91iexup7QDB_AXxI5lug_l-4o0y9T4uYKoysdf12Wde5X01fv-dqWck1kk33d4O5TN3oz_4nzuUVa2ffE3S9ELAcZm2a308W7NGD3Sc"
+    )
+    val fcmToken: String?
 )
 
 data class AddressRequest(

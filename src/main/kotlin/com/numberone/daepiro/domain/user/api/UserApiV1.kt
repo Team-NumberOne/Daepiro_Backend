@@ -1,6 +1,7 @@
 package com.numberone.daepiro.domain.user.api
 
 import com.numberone.daepiro.domain.user.dto.request.OnboardingRequest
+import com.numberone.daepiro.domain.user.dto.request.UpdateFcmTokenRequest
 import com.numberone.daepiro.domain.user.dto.request.UpdateGpsRequest
 import com.numberone.daepiro.domain.user.dto.response.CheckNicknameResponse
 import com.numberone.daepiro.domain.user.dto.response.DisasterWithRegionResponse
@@ -59,4 +60,14 @@ interface UserApiV1 {
     @DeleteMapping
     @Operation(summary = "회원 탈퇴", description = "회원 탈퇴를 진행합니다.")
     fun deleteUser(): ApiResult<Unit>
+
+    @PutMapping("/fcm")
+    @Operation(summary = "FCM 토큰 설정", description = "사용자의 FCM 토큰을 설정합니다.")
+    fun updateFcmToken(
+        @RequestBody @Valid request: UpdateFcmTokenRequest
+    ): ApiResult<Unit>
+
+    @PutMapping("/logout")
+    @Operation(summary = "로그아웃", description = "로그아웃을 진행합니다.(FCM 토큰 삭제)")
+    fun logout(): ApiResult<Unit>
 }
