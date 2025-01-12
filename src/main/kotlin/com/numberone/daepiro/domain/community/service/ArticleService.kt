@@ -12,6 +12,7 @@ import com.numberone.daepiro.domain.community.dto.response.ArticleLikeResponse
 import com.numberone.daepiro.domain.community.dto.response.ArticleListResponse
 import com.numberone.daepiro.domain.community.dto.response.ArticleSimpleResponse
 import com.numberone.daepiro.domain.community.dto.response.CommentResponse
+import com.numberone.daepiro.domain.community.dto.response.CommentResponseWithIsMine
 import com.numberone.daepiro.domain.community.entity.Article
 import com.numberone.daepiro.domain.community.entity.ReportedDocument
 import com.numberone.daepiro.domain.community.event.ArticleAddressMappingEvent
@@ -184,11 +185,15 @@ class ArticleService(
             return@let authorVerifiedAddressIds.contains(article.address?.id)
         } ?: false
 
+
+
         return ArticleDetailResponse.of(
             article = article,
             isLiked = isLikedArticle,
             files = files,
-            comments = roots,
+            comments = roots.map {
+                CommentResponseWithIsMine.of(it, it.author?.userId == userId)
+            },
             isVerified = isVerifiedAuthor,
         )
     }
