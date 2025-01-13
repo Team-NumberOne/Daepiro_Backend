@@ -11,7 +11,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory
 class CommentRepositoryCustomImpl(
     private val queryFactory: JPAQueryFactory
 ) : CommentRepositoryCustom {
-    override fun findCommentsByDocumentId(articleId: Long): List<CommentResponse> {
+    override fun findCommentsByDocumentId(articleId: Long,userId:Long): List<CommentResponse> {
         val parentComment = QComment("parentComment")
         val author = QUserEntity("author")
 
@@ -29,6 +29,8 @@ class CommentRepositoryCustomImpl(
                 parentComment.id,
                 comment.createdAt,
                 comment.lastModifiedAt,
+                comment.deletedAt,
+                comment.authUser.id.eq(userId),
             )
         ).from(comment)
             .leftJoin(comment.authUser, author).on(comment.authUser.id.eq(author.id))

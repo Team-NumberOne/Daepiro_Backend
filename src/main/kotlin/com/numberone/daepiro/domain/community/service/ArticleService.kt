@@ -12,7 +12,6 @@ import com.numberone.daepiro.domain.community.dto.response.ArticleLikeResponse
 import com.numberone.daepiro.domain.community.dto.response.ArticleListResponse
 import com.numberone.daepiro.domain.community.dto.response.ArticleSimpleResponse
 import com.numberone.daepiro.domain.community.dto.response.CommentResponse
-import com.numberone.daepiro.domain.community.dto.response.CommentResponseWithIsMine
 import com.numberone.daepiro.domain.community.entity.Article
 import com.numberone.daepiro.domain.community.entity.ReportedDocument
 import com.numberone.daepiro.domain.community.event.ArticleAddressMappingEvent
@@ -143,7 +142,7 @@ class ArticleService(
             article.id!!
         )
 
-        val comments = commentRepository.findCommentsByDocumentId(article.id!!)
+        val comments = commentRepository.findCommentsByDocumentId(article.id!!, userId)
 
         val verifiedAddressIdMapOfAuthorId =
             userAddressVerifyRepository.findAllByUserIdIn(comments.mapNotNull { it.author?.userId })
@@ -157,13 +156,15 @@ class ArticleService(
         val articleAddress = article.address
         comments.forEach {
             val comment = commentById[it.id] ?: return@forEach
+            if (comment.deletedAt != null)
+                comment.body = "작성자에 의해 삭제된 댓글입니다."
+            if (likedCommentIdSet.contains(comment.id)) {
+                comment.isLiked = true
+            }
             if (comment.parentCommentId != null) {
                 val parentComment = commentById[comment.parentCommentId]
                 parentComment?.children?.add(comment)
                 return@forEach
-            }
-            if (likedCommentIdSet.contains(comment.id)) {
-                comment.isLiked = true
             }
             val commentAuthor = comment.author
             if (articleAddress != null && commentAuthor != null) {
@@ -185,15 +186,13 @@ class ArticleService(
             return@let authorVerifiedAddressIds.contains(article.address?.id)
         } ?: false
 
-
+        roots.forEach { it.children.removeIf { it.deletedAt != null }}
 
         return ArticleDetailResponse.of(
             article = article,
             isLiked = isLikedArticle,
             files = files,
-            comments = roots.map {
-                CommentResponseWithIsMine.of(it, it.author?.userId == userId)
-            },
+            comments = roots.filter { it.children.isNotEmpty() || it.deletedAt == null },
             isVerified = isVerifiedAuthor,
         )
     }

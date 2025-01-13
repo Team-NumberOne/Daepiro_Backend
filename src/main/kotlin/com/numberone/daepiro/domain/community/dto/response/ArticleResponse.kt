@@ -123,7 +123,7 @@ data class ArticleDetailResponse(
     val files: List<String>?,
 
     @Schema(description = "해당 게시글에 작성된 댓글 목록 (계층형)")
-    val comments: List<CommentResponseWithIsMine> = emptyList(),
+    val comments: List<CommentResponse> = emptyList(),
 
     @Schema(description = "좋아요를 누른 게시글인지?", example = "true")
     val isLiked: Boolean = false,
@@ -140,7 +140,7 @@ data class ArticleDetailResponse(
             isLiked: Boolean = false,
             isVerified: Boolean,
             files: List<FileEntity>? = emptyList(),
-            comments: List<CommentResponseWithIsMine> = emptyList()
+            comments: List<CommentResponse> = emptyList()
         ): ArticleDetailResponse {
             return ArticleDetailResponse(
                 id = article.id!!,
@@ -205,7 +205,7 @@ data class CommentResponse @QueryProjection constructor(
     @Schema(description = "댓글 아이디(PK)")
     val id: Long,
     @Schema(description = "댓글 본문")
-    val body: String,
+    var body: String,
     @Schema(description = "작성자 정보")
     val author: AuthorResponse? = null,
     @Schema(description = "좋아요 개수")
@@ -216,6 +216,10 @@ data class CommentResponse @QueryProjection constructor(
     val createdAt: LocalDateTime? = null,
     @Schema(description = "수정일시", example = "2024-12-02T21:48:14.929554")
     val lastModifiedAt: LocalDateTime? = null,
+    @Schema(description = "삭제일시", example = "2024-12-02T21:48:14.929554")
+    val deletedAt: LocalDateTime? = null,
+    @Schema(description = "내 댓글 여부", example = "true")
+    val isMine: Boolean,
 ) {
     @Schema(description = "해당 댓글에 자식으로 포함된 댓글들")
     var children: MutableList<CommentResponse> = mutableListOf()
@@ -236,48 +240,4 @@ data class ArticleLikeResponse(
             )
         }
     }
-}
-
-data class CommentResponseWithIsMine(
-    @Schema(description = "댓글 아이디(PK)")
-    val id: Long,
-    @Schema(description = "댓글 본문")
-    val body: String,
-    @Schema(description = "작성자 정보")
-    val author: AuthorResponse? = null,
-    @Schema(description = "좋아요 개수")
-    val likeCount: Int = 0,
-    @Schema(description = "부모 댓글 Id")
-    val parentCommentId: Long? = null,
-    @Schema(description = "생성일시", example = "2024-12-02T21:48:14.929554")
-    val createdAt: LocalDateTime? = null,
-    @Schema(description = "수정일시", example = "2024-12-02T21:48:14.929554")
-    val lastModifiedAt: LocalDateTime? = null,
-    @Schema(description = "해당 댓글에 자식으로 포함된 댓글들")
-    var children: MutableList<CommentResponse> = mutableListOf(),
-    @Schema(description = "좋아요를 누른 댓글인지??", example = "true")
-    var isLiked: Boolean = false,
-    @Schema(description = "내 댓글 여부", example = "true")
-    val isMine: Boolean,
-) {
-    companion object {
-        fun of(
-            comment: CommentResponse,
-            isMine: Boolean
-        ): CommentResponseWithIsMine {
-            return CommentResponseWithIsMine(
-                id = comment.id,
-                body = comment.body,
-                author = comment.author,
-                likeCount = comment.likeCount,
-                parentCommentId = comment.parentCommentId,
-                createdAt = comment.createdAt,
-                lastModifiedAt = comment.lastModifiedAt,
-                children = comment.children,
-                isLiked = comment.isLiked,
-                isMine = isMine
-            )
-        }
-    }
-
 }
