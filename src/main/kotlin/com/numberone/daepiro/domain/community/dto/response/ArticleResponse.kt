@@ -205,7 +205,7 @@ data class CommentResponse @QueryProjection constructor(
     @Schema(description = "댓글 아이디(PK)")
     val id: Long,
     @Schema(description = "댓글 본문")
-    val body: String,
+    var body: String,
     @Schema(description = "작성자 정보")
     val author: AuthorResponse? = null,
     @Schema(description = "좋아요 개수")

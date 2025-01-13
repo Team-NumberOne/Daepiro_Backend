@@ -156,6 +156,8 @@ class ArticleService(
         val articleAddress = article.address
         comments.forEach {
             val comment = commentById[it.id] ?: return@forEach
+            if (comment.deletedAt != null)
+                comment.body = "작성자에 의해 삭제된 댓글입니다."
             if (comment.parentCommentId != null) {
                 val parentComment = commentById[comment.parentCommentId]
                 parentComment?.children?.add(comment)
@@ -184,13 +186,13 @@ class ArticleService(
             return@let authorVerifiedAddressIds.contains(article.address?.id)
         } ?: false
 
-
+        roots.forEach { it.children.removeIf { it.deletedAt != null }}
 
         return ArticleDetailResponse.of(
             article = article,
             isLiked = isLikedArticle,
             files = files,
-            comments = roots,
+            comments = roots.filter { it.children.isNotEmpty() || it.deletedAt == null },
             isVerified = isVerifiedAuthor,
         )
     }
