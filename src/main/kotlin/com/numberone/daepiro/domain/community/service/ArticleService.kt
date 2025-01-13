@@ -158,13 +158,13 @@ class ArticleService(
             val comment = commentById[it.id] ?: return@forEach
             if (comment.deletedAt != null)
                 comment.body = "작성자에 의해 삭제된 댓글입니다."
+            if (likedCommentIdSet.contains(comment.id)) {
+                comment.isLiked = true
+            }
             if (comment.parentCommentId != null) {
                 val parentComment = commentById[comment.parentCommentId]
                 parentComment?.children?.add(comment)
                 return@forEach
-            }
-            if (likedCommentIdSet.contains(comment.id)) {
-                comment.isLiked = true
             }
             val commentAuthor = comment.author
             if (articleAddress != null && commentAuthor != null) {
