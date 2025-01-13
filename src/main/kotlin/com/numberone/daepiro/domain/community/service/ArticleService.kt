@@ -12,7 +12,6 @@ import com.numberone.daepiro.domain.community.dto.response.ArticleLikeResponse
 import com.numberone.daepiro.domain.community.dto.response.ArticleListResponse
 import com.numberone.daepiro.domain.community.dto.response.ArticleSimpleResponse
 import com.numberone.daepiro.domain.community.dto.response.CommentResponse
-import com.numberone.daepiro.domain.community.dto.response.CommentResponseWithIsMine
 import com.numberone.daepiro.domain.community.entity.Article
 import com.numberone.daepiro.domain.community.entity.ReportedDocument
 import com.numberone.daepiro.domain.community.event.ArticleAddressMappingEvent
@@ -143,7 +142,7 @@ class ArticleService(
             article.id!!
         )
 
-        val comments = commentRepository.findCommentsByDocumentId(article.id!!)
+        val comments = commentRepository.findCommentsByDocumentId(article.id!!, userId)
 
         val verifiedAddressIdMapOfAuthorId =
             userAddressVerifyRepository.findAllByUserIdIn(comments.mapNotNull { it.author?.userId })
@@ -191,9 +190,7 @@ class ArticleService(
             article = article,
             isLiked = isLikedArticle,
             files = files,
-            comments = roots.map {
-                CommentResponseWithIsMine.of(it, it.author?.userId == userId)
-            },
+            comments = roots,
             isVerified = isVerifiedAuthor,
         )
     }
