@@ -4,6 +4,8 @@ import com.numberone.daepiro.domain.community.entity.Article
 import com.numberone.daepiro.domain.community.entity.ArticleCategory
 import com.numberone.daepiro.domain.community.entity.ArticleType
 import com.numberone.daepiro.domain.community.repository.article.ArticleRepository
+import com.numberone.daepiro.domain.disaster.entity.DisasterType
+import com.numberone.daepiro.domain.disaster.repository.DisasterTypeRepository
 import com.numberone.daepiro.domain.sponsor.dto.request.CheeringRequest
 import com.numberone.daepiro.domain.sponsor.dto.request.CreateSponsorRequest
 import com.numberone.daepiro.domain.sponsor.dto.request.SponsorRequest
@@ -25,7 +27,8 @@ import org.springframework.transaction.annotation.Transactional
 class SponsorService(
     private val articleRepository: ArticleRepository,
     private val cheeringRepository: CheeringRepository,
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val disasterTypeRepository: DisasterTypeRepository
 ) {
     fun getSponsors(): ApiResult<List<SponsorResponse>> {
         val sponsors = articleRepository.findSponsorArticle()
@@ -50,7 +53,9 @@ class SponsorService(
             summary = request.summary,
             deadline = request.deadline,
             currentHeart = request.currentHeart,
-            targetHeart = request.targetHeart
+            targetHeart = request.targetHeart,
+            disasterType = disasterTypeRepository.findByType(DisasterType.DisasterValue.kor2code(request.disasterType))
+                ?: throw CustomException(CustomErrorContext.NOT_FOUND_DISASTER_TYPE)
         )
         articleRepository.save(sponsorArticle)
     }

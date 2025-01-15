@@ -11,7 +11,7 @@ data class SponsorResponse(
     val id: Long,
 
     @Schema(description = "마감 기한", example = "2025-08-01T00:00:00")
-    val deadline: LocalDateTime,
+    val deadline: LocalDateTime?,
 
     @Schema(description = "후원사", example = "포항시")
     val sponsorName: String,
@@ -42,6 +42,9 @@ data class SponsorResponse(
 
     @Schema(description = "본문 내용", example = "본문 내용")
     val body:String,
+
+    @Schema(description = "재난 종류", example = "지진")
+    val disasterType: String
 ) {
     companion object {
         fun of(
@@ -52,7 +55,7 @@ data class SponsorResponse(
             }
             return SponsorResponse(
                 id = article.id!!,
-                deadline = article.deadline!!,
+                deadline = article.deadline,
                 sponsorName = article.sponsorName!!,
                 title = article.title,
                 thumbnail = article.thumbnail!!,
@@ -61,7 +64,8 @@ data class SponsorResponse(
                 sponsorDescription = article.sponsorDescription!!,
                 sponsorUrl = article.sponsorUrl!!,
                 summary = article.summary!!,
-                body = article.body
+                body = article.body,
+                disasterType = article.disasterType!!.type.korean
             )
         }
     }
