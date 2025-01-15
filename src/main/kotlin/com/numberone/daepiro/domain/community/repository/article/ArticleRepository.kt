@@ -14,7 +14,7 @@ interface ArticleRepository : JpaRepository<Article, Long>, ArticleRepositoryCus
     @Query("SELECT a FROM Article a WHERE a.type = 'DISASTER' AND a.createdAt>:time")
     fun findDisasterSituation(@Param("time") time: LocalDateTime): List<Article>
 
-    @Query("SELECT a FROM Article a WHERE a.type = 'SPONSOR' AND a.deadline > CURRENT_TIMESTAMP ORDER BY a.createdAt ASC")
+    @Query("SELECT a FROM Article a WHERE a.type = 'SPONSOR' AND ( a.deadline > CURRENT_TIMESTAMP OR a.deadline IS NULL ) ORDER BY a.createdAt ASC")
     fun findSponsorArticle(): List<Article>
 }
 

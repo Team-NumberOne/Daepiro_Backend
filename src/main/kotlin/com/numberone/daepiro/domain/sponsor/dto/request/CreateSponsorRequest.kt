@@ -1,6 +1,7 @@
 package com.numberone.daepiro.domain.sponsor.dto.request
 
 import com.amazonaws.services.cloudformation.model.ChangeSetSummary
+import com.numberone.daepiro.domain.disaster.entity.DisasterType
 import io.swagger.v3.oas.annotations.media.Schema
 import java.time.LocalDateTime
 
@@ -29,12 +30,15 @@ data class CreateSponsorRequest(
     @Schema(description = "요약", example = "요약")
     val summary: String,
 
-    @Schema(description = "마감 기한", example = "2021-08-01T00:00:00")
-    val deadline: LocalDateTime,
+    @Schema(description = "마감 기한(null은 상시)", example = "2021-08-01T00:00:00")
+    val deadline: LocalDateTime?,
 
     @Schema(description = "현재 하트", example = "102311")
     val currentHeart: Int,
 
     @Schema(description = "목표 하트", example = "150000")
-    val targetHeart: Int
+    val targetHeart: Int,
+
+    @Schema(description = "재난 종류", example = "지진")
+    val disasterType: String
 )
