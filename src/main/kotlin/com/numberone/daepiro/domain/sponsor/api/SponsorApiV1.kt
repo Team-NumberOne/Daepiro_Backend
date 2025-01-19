@@ -1,5 +1,6 @@
 package com.numberone.daepiro.domain.sponsor.api
 
+import com.numberone.daepiro.domain.community.dto.request.ReportRequest
 import com.numberone.daepiro.domain.sponsor.dto.request.CheeringRequest
 import com.numberone.daepiro.domain.sponsor.dto.request.CreateSponsorRequest
 import com.numberone.daepiro.domain.sponsor.dto.request.SponsorRequest
@@ -84,6 +85,23 @@ interface SponsorApiV1 {
     fun updateCheering(
         @Schema(description = "응원 id", example = "2") @PathVariable id: Long,
         @RequestBody @Valid request: CheeringRequest
+    ): ApiResult<Unit>
+
+    @Operation(
+        summary = "신고하기",
+        description = """
+            type에는 다음 중 하나의 영단어 대문자를 입력해야 합니다.
+            LIE: 허위사실
+            ABUSE: 욕설
+            AD: 광고
+            LEWD: 음란
+            ETC: 기타
+        """
+    )
+    @PutMapping("/cheering/{id}/report")
+    fun report(
+        @PathVariable("id") id: Long,
+        @RequestBody request: ReportRequest,
     ): ApiResult<Unit>
 
     @GetMapping("/cheering")

@@ -4,6 +4,7 @@ import com.numberone.daepiro.domain.community.entity.Article
 import com.numberone.daepiro.domain.community.entity.Comment
 import com.numberone.daepiro.domain.community.entity.ReportedDocument
 import com.numberone.daepiro.domain.community.entity.ReportedDocumentType
+import com.numberone.daepiro.domain.sponsor.entity.Cheering
 import com.numberone.daepiro.domain.user.entity.UserEntity
 import org.springframework.data.jpa.repository.JpaRepository
 
@@ -34,5 +35,16 @@ fun ReportedDocumentRepository.isAlreadyReportedComment(
         userId = user.id!!,
         documentType = ReportedDocumentType.COMMENT,
         documentId = comment.id!!
+    )
+}
+
+fun ReportedDocumentRepository.isAlreadyReportedCheering(
+    user: UserEntity,
+    cheering: Cheering,
+): Boolean {
+    return existsByReportUserIdAndDocumentIdAndDocumentType(
+        userId = user.id!!,
+        documentType = ReportedDocumentType.CHEERING,
+        documentId = cheering.id!!
     )
 }
