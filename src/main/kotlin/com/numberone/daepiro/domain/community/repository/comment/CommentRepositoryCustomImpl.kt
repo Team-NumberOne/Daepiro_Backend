@@ -24,6 +24,7 @@ class CommentRepositoryCustomImpl(
                     author.nickname,
                     author.realname,
                     author.isCompletedOnboarding,
+                    author.profileImageUrl
                 ),
                 comment.likeCount,
                 parentComment.id,

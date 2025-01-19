@@ -21,6 +21,7 @@ import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.OneToMany
 import jakarta.persistence.Table
+import kotlin.random.Random
 
 @Entity
 @Table(name = "`users`")
@@ -58,6 +59,8 @@ class UserEntity(
     val cheeringList: List<Cheering> = emptyList(),
 
     var fcmToken: String? = null,
+
+    var profileImageUrl: String? = null,
 ) : PrimaryKeyEntity() {
     companion object {
         fun of(
@@ -80,6 +83,10 @@ class UserEntity(
     ) {
         this.realname = realname
         this.nickname = nickname
+        this.profileImageUrl = "https://daepiro-dev.s3.ap-northeast-2.amazonaws.com/article/profile/" + (Random.nextInt(
+            1,
+            8
+        )) + ".png"
     }
 
     fun initFcmToken(fcmToken: String?) {

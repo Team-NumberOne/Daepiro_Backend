@@ -46,7 +46,8 @@ class ArticleRepositoryCustomImpl(
                     article.authUser.id,
                     article.authUser.nickname,
                     article.authUser.realname,
-                    article.authUser.isCompletedOnboarding
+                    article.authUser.isCompletedOnboarding,
+                    article.authUser.profileImageUrl
                 )
             )
         ).from(article)
