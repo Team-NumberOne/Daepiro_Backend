@@ -1,6 +1,7 @@
 package com.numberone.daepiro.domain.community.entity
 
 import com.numberone.daepiro.domain.baseentity.PrimaryKeyEntity
+import com.numberone.daepiro.domain.sponsor.entity.Cheering
 import com.numberone.daepiro.domain.user.entity.UserEntity
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
@@ -12,7 +13,7 @@ class ReportedDocument(
     documentId: Long,
     documentType: ReportedDocumentType,
     reportUser: UserEntity,
-    type: String,
+    type: ReportType,
     detail: String,
     email: String,
 ) : PrimaryKeyEntity() {
@@ -30,7 +31,7 @@ class ReportedDocument(
 
     // 신고 유형
     @Column(nullable = false)
-    var type: String = type
+    var type: ReportType = type
         protected set
 
     // 상세 이유
@@ -49,7 +50,7 @@ class ReportedDocument(
                 documentId = article.id!!,
                 documentType = ReportedDocumentType.ARTICLE,
                 reportUser = user,
-                type = type,
+                type = ReportType.valueOf(type),
                 detail = detail,
                 email = email
             )
@@ -60,7 +61,18 @@ class ReportedDocument(
                 documentId = comment.id!!,
                 documentType = ReportedDocumentType.COMMENT,
                 reportUser = user,
-                type = type,
+                type = ReportType.valueOf(type),
+                detail = detail,
+                email = email
+            )
+        }
+
+        fun from(cheering: Cheering, user: UserEntity, type: String, detail: String, email: String): ReportedDocument{
+            return ReportedDocument(
+                documentId = cheering.id!!,
+                documentType = ReportedDocumentType.CHEERING,
+                reportUser = user,
+                type = ReportType.valueOf(type),
                 detail = detail,
                 email = email
             )
@@ -70,5 +82,14 @@ class ReportedDocument(
 
 enum class ReportedDocumentType {
     ARTICLE,
-    COMMENT
+    COMMENT,
+    CHEERING
+}
+
+enum class ReportType{
+    LIE,
+    ABUSE,
+    AD,
+    LEWD,
+    ETC
 }

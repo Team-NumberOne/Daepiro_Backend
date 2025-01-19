@@ -1,9 +1,13 @@
 package com.numberone.daepiro.domain.sponsor.service
 
+import com.numberone.daepiro.domain.community.dto.request.ReportRequest
 import com.numberone.daepiro.domain.community.entity.Article
 import com.numberone.daepiro.domain.community.entity.ArticleCategory
 import com.numberone.daepiro.domain.community.entity.ArticleType
+import com.numberone.daepiro.domain.community.entity.ReportedDocument
 import com.numberone.daepiro.domain.community.repository.article.ArticleRepository
+import com.numberone.daepiro.domain.community.repository.reported.ReportedDocumentRepository
+import com.numberone.daepiro.domain.community.repository.reported.isAlreadyReportedCheering
 import com.numberone.daepiro.domain.disaster.entity.DisasterType
 import com.numberone.daepiro.domain.disaster.repository.DisasterTypeRepository
 import com.numberone.daepiro.domain.sponsor.dto.request.CheeringRequest
@@ -28,7 +32,8 @@ class SponsorService(
     private val articleRepository: ArticleRepository,
     private val cheeringRepository: CheeringRepository,
     private val userRepository: UserRepository,
-    private val disasterTypeRepository: DisasterTypeRepository
+    private val disasterTypeRepository: DisasterTypeRepository,
+    private val reportedDocumentRepository: ReportedDocumentRepository,
 ) {
     fun getSponsors(): ApiResult<List<SponsorResponse>> {
         val sponsors = articleRepository.findSponsorArticle()
@@ -108,5 +113,26 @@ class SponsorService(
         val cheeringList = cheeringRepository.findTop20ByOrderByCreatedAtDesc()
             .map { CheeringResponse.of(it, it.user.id == userId) }
         return ApiResult.ok(cheeringList)
+    }
+
+    @Transactional
+    fun report(userId: Long, cheeringId: Long, request: ReportRequest) {
+        val user = userRepository.findByIdOrThrow(userId)
+        val cheering = cheeringRepository.findById(cheeringId)
+            .orElseThrow { CustomException(CustomErrorContext.NOT_FOUND_CHEERING) }
+
+        if (reportedDocumentRepository.isAlreadyReportedCheering(user, cheering)) {
+            throw CustomException(CustomErrorContext.INVALID_VALUE, "해당 유저에 의해 이미 신고된 댓글입니다.")
+        }
+
+        reportedDocumentRepository.save(
+            ReportedDocument.from(
+                cheering = cheering,
+                user = user,
+                type = request.type,
+                detail = request.detail,
+                email = request.email,
+            )
+        )
     }
 }

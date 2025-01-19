@@ -52,7 +52,15 @@ interface CommentApiV1 {
     ): ApiResult<CommentLikeResponse>
 
     @Operation(
-        summary = "신고하기"
+        summary = "신고하기",
+        description = """
+            type에는 다음 중 하나의 영단어 대문자를 입력해야 합니다.
+            LIE: 허위사실
+            ABUSE: 욕설
+            AD: 광고
+            LEWD: 음란
+            ETC: 기타
+        """
     )
     @PutMapping("/{id}/report")
     fun report(
