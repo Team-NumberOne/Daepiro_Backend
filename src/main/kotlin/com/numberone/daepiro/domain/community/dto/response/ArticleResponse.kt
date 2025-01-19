@@ -184,6 +184,9 @@ data class AuthorResponse @QueryProjection constructor(
 
     @Schema(description = "온보딩 완료 여부", example = "true")
     val isCompletedOnboarding: Boolean,
+
+    @Schema(description = "프로필 이미지 URL", example = "https://path/to/image.png")
+    val profileImageUrl: String? = null,
 ) {
     @Schema(description = "동네인증 완료 여부", example = "true")
     var isVerified: Boolean = false
@@ -195,6 +198,7 @@ data class AuthorResponse @QueryProjection constructor(
                 nickname = user.nickname,
                 realname = user.realname,
                 isCompletedOnboarding = user.isCompletedOnboarding,
+                profileImageUrl = user.profileImageUrl,
             ).apply { this.isVerified = isVerified }
         }
     }
