@@ -88,4 +88,10 @@ class ArticleController(
         )
         return ApiResult.noContent(path = "/v1/articles/$id/report")
     }
+
+    override fun delete(id: Long): ApiResult<Unit> {
+        val userId = SecurityContextUtils.getUserId()
+        articleService.delete(userId, id)
+        return ApiResult.ok(path = "/v1/articles/$id")
+    }
 }

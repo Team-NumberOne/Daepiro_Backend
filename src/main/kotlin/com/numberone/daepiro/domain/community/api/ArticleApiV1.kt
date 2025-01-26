@@ -17,6 +17,7 @@ import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.data.domain.Slice
 import org.springframework.http.MediaType
+import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.ModelAttribute
 import org.springframework.web.bind.annotation.PathVariable
@@ -114,4 +115,12 @@ interface ArticleApiV1 {
         @RequestBody request: ReportRequest,
     ): ApiResult<Unit>
 
+    @Operation(
+        summary = "게시글 삭제",
+        description = "게시글을 삭제합니다."
+    )
+    @DeleteMapping("/{id}")
+    fun delete(
+        @PathVariable("id") id: Long,
+    ): ApiResult<Unit>
 }
