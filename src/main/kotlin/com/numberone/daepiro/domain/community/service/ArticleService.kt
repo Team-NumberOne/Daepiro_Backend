@@ -186,7 +186,7 @@ class ArticleService(
             return@let authorVerifiedAddressIds.contains(article.address?.id)
         } ?: false
 
-        roots.forEach { it.children.removeIf { it.deletedAt != null }}
+        roots.forEach { it.children.removeIf { it.deletedAt != null } }
 
         return ArticleDetailResponse.of(
             article = article,
@@ -352,5 +352,14 @@ class ArticleService(
         articleRepository.save(
             article.increaseReportCount()
         )
+    }
+
+    @Transactional
+    fun delete(userId: Long, articleId: Long) {
+        val article = articleRepository.findByIdOrThrow(articleId)
+        if (article.authUser?.id != userId) {
+            throw CustomException(CustomErrorContext.NOT_ARTICLE_AUTHOR)
+        }
+        articleRepository.delete(article)
     }
 }
