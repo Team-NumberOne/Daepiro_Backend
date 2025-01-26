@@ -37,6 +37,7 @@ data class UpsertArticleRequest(
     val latitude: Double? = null
 )
 
+@ParameterObject
 @Schema(description = "게시글 생성 request dto")
 data class UpdateArticleRequest(
     @Schema(description = "게시글 타입. <br>-동네생활: DONGNE<br>-정보: INFORMATION ", example = "DONGNE")
