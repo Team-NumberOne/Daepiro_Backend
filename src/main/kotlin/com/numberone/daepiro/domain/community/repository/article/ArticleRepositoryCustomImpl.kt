@@ -7,6 +7,7 @@ import com.numberone.daepiro.domain.community.dto.response.QAddressResponse
 import com.numberone.daepiro.domain.community.dto.response.QArticleListResponse
 import com.numberone.daepiro.domain.community.dto.response.QAuthorResponse
 import com.numberone.daepiro.domain.community.entity.QArticle.article
+import com.numberone.daepiro.global.utils.SecurityContextUtils
 import com.querydsl.core.types.Expression
 import com.querydsl.core.types.dsl.BooleanExpression
 import com.querydsl.core.types.dsl.CaseBuilder
@@ -48,7 +49,8 @@ class ArticleRepositoryCustomImpl(
                     article.authUser.realname,
                     article.authUser.isCompletedOnboarding,
                     article.authUser.profileImageUrl
-                )
+                ),
+                article.authUser.id.eq(SecurityContextUtils.getUserId()),
             )
         ).from(article)
             .leftJoin(address).on(article.address.id.eq(address.id))

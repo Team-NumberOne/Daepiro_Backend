@@ -40,6 +40,8 @@ data class ArticleListResponse @QueryProjection constructor(
     val lastModifiedAt: LocalDateTime? = null,
     @Schema(description = "작성자 정보")
     val authorUser: AuthorResponse? = null,
+    @Schema(description = "내 게시글 여부", example = "true")
+    val isMine: Boolean
 ) {
     @Schema(description = "미리보기 이미지", example = "[\"https://path/to/file1\", \"https://path/to/file2\"]")
     var previewImageUrl: String? = null
@@ -133,6 +135,9 @@ data class ArticleDetailResponse(
 
     @Schema(description = "수정일시", example = "2024-12-02T21:48:14.929554")
     val lastModifiedAt: LocalDateTime? = null,
+
+    @Schema(description = "내 게시글 여부", example = "true")
+    val isMine: Boolean,
 ) {
     companion object {
         fun of(
@@ -166,6 +171,7 @@ data class ArticleDetailResponse(
                 comments = comments,
                 createdAt = article.createdAt,
                 lastModifiedAt = article.lastModifiedAt,
+                isMine = article.authUser?.id == article.authUser?.id
             )
         }
     }
