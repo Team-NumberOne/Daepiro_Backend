@@ -6,6 +6,7 @@ import com.numberone.daepiro.domain.mypage.dto.request.EditAddressesRequest
 import com.numberone.daepiro.domain.mypage.dto.request.EditDisasterTypesRequest
 import com.numberone.daepiro.domain.mypage.dto.request.EditProfileRequest
 import com.numberone.daepiro.domain.mypage.dto.request.GetMyArticleRequest
+import com.numberone.daepiro.domain.mypage.dto.request.InquireRequest
 import com.numberone.daepiro.domain.mypage.dto.response.MyAddressesResponse
 import com.numberone.daepiro.domain.mypage.dto.response.MyDisasterTypesResponse
 import com.numberone.daepiro.domain.mypage.dto.response.MyNotificationResponse
@@ -68,6 +69,12 @@ class MyPageController(
     override fun updateMyDisasterTypes(request: EditDisasterTypesRequest): ApiResult<Unit> {
         val userId = SecurityContextUtils.getUserId()
         myPageService.updateMyDisasterTypes(userId, request)
+        return ApiResult.ok()
+    }
+
+    override fun inquire(request: InquireRequest): ApiResult<Unit> {
+        val userId = SecurityContextUtils.getUserId()
+        myPageService.inquire(userId, request)
         return ApiResult.ok()
     }
 }

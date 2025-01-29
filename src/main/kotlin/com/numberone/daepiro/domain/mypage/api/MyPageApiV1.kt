@@ -5,6 +5,7 @@ import com.numberone.daepiro.domain.mypage.dto.request.EditAddressesRequest
 import com.numberone.daepiro.domain.mypage.dto.request.EditDisasterTypesRequest
 import com.numberone.daepiro.domain.mypage.dto.request.EditProfileRequest
 import com.numberone.daepiro.domain.mypage.dto.request.GetMyArticleRequest
+import com.numberone.daepiro.domain.mypage.dto.request.InquireRequest
 import com.numberone.daepiro.domain.mypage.dto.response.MyAddressesResponse
 import com.numberone.daepiro.domain.mypage.dto.response.MyDisasterTypesResponse
 import com.numberone.daepiro.domain.mypage.dto.response.MyNotificationResponse
@@ -17,6 +18,7 @@ import org.springframework.data.domain.Slice
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.ModelAttribute
 import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
@@ -61,6 +63,8 @@ interface MyPageApiV1 {
         summary = "마이페이지 알림 설정 수정", description = """
         커뮤니티 또는 재난 알림 수신 유무를 변경합니다.
         on이면 off로, off면 on으로 변경됩니다.
+
+        알림 타입은 영어 소문자로 입력해주세요!
         """
     )
     fun updateMyNotification(
@@ -77,5 +81,20 @@ interface MyPageApiV1 {
     @Operation(summary = "마이페이지 재난유형 설정 수정", description = "재난유형 설정을 수정합니다.")
     fun updateMyDisasterTypes(
         @RequestBody request: EditDisasterTypesRequest
+    ): ApiResult<Unit>
+
+    @PostMapping("/inquires")
+    @Operation(
+        summary = "문의하기", description = """
+        문의하기를 합니다.
+        문의 유형에느 아래 중 하나의 영단어 대문자 값을 입력해주세요.
+        SERVICE: 서비스 개선
+        DISASTER: 재난 알림 및 정보
+        COMMUNITY: 커뮤니티 이용
+        ETC: 기타
+        """
+    )
+    fun inquire(
+        @RequestBody request: InquireRequest
     ): ApiResult<Unit>
 }

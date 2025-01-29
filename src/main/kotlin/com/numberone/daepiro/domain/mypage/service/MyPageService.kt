@@ -6,10 +6,13 @@ import com.numberone.daepiro.domain.mypage.dto.request.EditAddressesRequest
 import com.numberone.daepiro.domain.mypage.dto.request.EditDisasterTypesRequest
 import com.numberone.daepiro.domain.mypage.dto.request.EditProfileRequest
 import com.numberone.daepiro.domain.mypage.dto.request.GetMyArticleRequest
+import com.numberone.daepiro.domain.mypage.dto.request.InquireRequest
 import com.numberone.daepiro.domain.mypage.dto.response.MyAddressesResponse
 import com.numberone.daepiro.domain.mypage.dto.response.MyDisasterTypesResponse
 import com.numberone.daepiro.domain.mypage.dto.response.MyNotificationResponse
 import com.numberone.daepiro.domain.mypage.dto.response.MyProfileResponse
+import com.numberone.daepiro.domain.mypage.entity.Inquiry
+import com.numberone.daepiro.domain.mypage.repository.InquiryRepository
 import com.numberone.daepiro.domain.user.repository.UserRepository
 import com.numberone.daepiro.domain.user.repository.findByIdOrThrow
 import com.numberone.daepiro.domain.user.service.UserService
@@ -26,7 +29,8 @@ import org.springframework.transaction.annotation.Transactional
 class MyPageService(
     private val userRepository: UserRepository,
     private val articleRepository: ArticleRepository,
-    private val userService: UserService
+    private val userService: UserService,
+    private val inquiryRepository: InquiryRepository,
 ) {
     fun getMyProfile(userId: Long): ApiResult<MyProfileResponse> {
         val user = userRepository.findByIdOrThrow(userId)
@@ -78,5 +82,10 @@ class MyPageService(
     fun updateMyDisasterTypes(userId: Long, request: EditDisasterTypesRequest) {
         val user = userRepository.findByIdOrThrow(userId)
         userService.handleOnboardingDisasterType(request.disasterTypes, user)
+    }
+
+    @Transactional
+    fun inquire(userId: Long, request: InquireRequest) {
+        inquiryRepository.save(Inquiry.of(request.type, request.content, request.email, userId))
     }
 }
