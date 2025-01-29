@@ -59,7 +59,7 @@ class UserService(
         return ApiResult.ok(getUserAddress(user))
     }
 
-    private fun handleOnboardingDisasterType(
+    fun handleOnboardingDisasterType(
         disasterTypes: List<String>,
         user: UserEntity,
     ) {
@@ -78,7 +78,7 @@ class UserService(
         userDisasterTypeRepository.saveAll(userDisasterTypeList)
     }
 
-    private fun handleOnboardingAddress(
+    fun handleOnboardingAddress(
         addresses: List<AddressRequest>,
         user: UserEntity,
     ) {

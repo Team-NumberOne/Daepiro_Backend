@@ -2,6 +2,9 @@ package com.numberone.daepiro.domain.mypage.controller
 
 import com.numberone.daepiro.domain.community.dto.response.ArticleListResponse
 import com.numberone.daepiro.domain.mypage.api.MyPageApiV1
+import com.numberone.daepiro.domain.mypage.dto.request.EditAddressesRequest
+import com.numberone.daepiro.domain.mypage.dto.request.EditDisasterTypesRequest
+import com.numberone.daepiro.domain.mypage.dto.request.EditProfileRequest
 import com.numberone.daepiro.domain.mypage.dto.request.GetMyArticleRequest
 import com.numberone.daepiro.domain.mypage.dto.response.MyAddressesResponse
 import com.numberone.daepiro.domain.mypage.dto.response.MyDisasterTypesResponse
@@ -42,5 +45,29 @@ class MyPageController(
     ): ApiResult<Slice<ArticleListResponse>> {
         val userId = SecurityContextUtils.getUserId()
         return myPageService.getMyArticles(userId, request)
+    }
+
+    override fun updateMyProfile(request: EditProfileRequest): ApiResult<Unit> {
+        val userId = SecurityContextUtils.getUserId()
+        myPageService.updateMyProfile(userId, request)
+        return ApiResult.ok()
+    }
+
+    override fun updateMyNotification(type: String): ApiResult<Unit> {
+        val userId = SecurityContextUtils.getUserId()
+        myPageService.updateMyNotification(userId, type)
+        return ApiResult.ok()
+    }
+
+    override fun updateMyAddresses(request: EditAddressesRequest): ApiResult<Unit> {
+        val userId = SecurityContextUtils.getUserId()
+        myPageService.updateMyAddresses(userId, request)
+        return ApiResult.ok()
+    }
+
+    override fun updateMyDisasterTypes(request: EditDisasterTypesRequest): ApiResult<Unit> {
+        val userId = SecurityContextUtils.getUserId()
+        myPageService.updateMyDisasterTypes(userId, request)
+        return ApiResult.ok()
     }
 }

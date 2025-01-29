@@ -62,9 +62,9 @@ class UserEntity(
 
     var profileImageUrl: String? = null,
 
-    val isCommunityNotificationEnabled: Boolean = true,
+    var isCommunityNotificationEnabled: Boolean = true,
 
-    val isDisasterNotificationEnabled: Boolean = true,
+    var isDisasterNotificationEnabled: Boolean = true,
 ) : PrimaryKeyEntity() {
     companion object {
         fun of(

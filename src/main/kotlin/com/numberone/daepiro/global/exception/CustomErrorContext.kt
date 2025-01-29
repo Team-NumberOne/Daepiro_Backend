@@ -47,6 +47,9 @@ enum class CustomErrorContext(
     NOT_FOUND_CHEERING(HttpStatus.NOT_FOUND, 2800, "응원을 찾을 수 없습니다."),
     NOT_CHEERING_AUTHOR(HttpStatus.BAD_REQUEST, 2801, "응원 작성자가 아닙니다."),
 
+    // 29xx: 알림 관련 오류
+    NOT_FOUND_NOTIFICATION_TYPE(HttpStatus.NOT_FOUND, 2900, "알림 유형을 찾을 수 없습니다."),
+
     // 99xx: 공통 오류
     INVALID_JSON_FORMAT(HttpStatus.BAD_REQUEST, 9001, "JSON 형식이 잘못되었습니다."),
     INVALID_VALUE(HttpStatus.INTERNAL_SERVER_ERROR, 9002, "유효하지 않은 값이 발견되었습니다."),
