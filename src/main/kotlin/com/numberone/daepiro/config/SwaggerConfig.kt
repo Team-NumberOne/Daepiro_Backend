@@ -38,6 +38,7 @@ class SwaggerConfig {
                 "/v1/user-address-verified",
                 "/v1/behaviourtips/**",
                 "/v1/sponsors/**",
+                "/v1/my-page/**",
             )
             .pathsToExclude("/v1/behaviourtips")
             .pathsToExclude("/v1/sponsors")

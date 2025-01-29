@@ -61,6 +61,10 @@ class UserEntity(
     var fcmToken: String? = null,
 
     var profileImageUrl: String? = null,
+
+    var isCommunityNotificationEnabled: Boolean = true,
+
+    var isDisasterNotificationEnabled: Boolean = true,
 ) : PrimaryKeyEntity() {
     companion object {
         fun of(

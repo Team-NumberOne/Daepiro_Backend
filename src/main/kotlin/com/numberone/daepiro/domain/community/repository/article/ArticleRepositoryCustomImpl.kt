@@ -6,7 +6,9 @@ import com.numberone.daepiro.domain.community.dto.response.ArticleListResponse
 import com.numberone.daepiro.domain.community.dto.response.QAddressResponse
 import com.numberone.daepiro.domain.community.dto.response.QArticleListResponse
 import com.numberone.daepiro.domain.community.dto.response.QAuthorResponse
+import com.numberone.daepiro.domain.community.entity.ArticleStatus
 import com.numberone.daepiro.domain.community.entity.QArticle.article
+import com.numberone.daepiro.domain.mypage.dto.request.GetMyArticleRequest
 import com.numberone.daepiro.global.utils.SecurityContextUtils
 import com.querydsl.core.types.Expression
 import com.querydsl.core.types.dsl.BooleanExpression
@@ -67,6 +69,52 @@ class ArticleRepositoryCustomImpl(
             .limit(pageable.pageSize + 1L)
             .fetch()
 
+
+        return SliceImpl(
+            content,
+            pageable,
+            hasNextPage(content, pageable.pageSize)
+        )
+    }
+
+    override fun getMyArticles(userId: Long, request: GetMyArticleRequest): Slice<ArticleListResponse> {
+        val pageable = request.getPageable()
+
+        val content = queryFactory.select(
+            QArticleListResponse(
+                article.id,
+                article.status,
+                article.type.stringValue(),
+                article.category,
+                article.title,
+                article.body,
+                article.likeCount,
+                article.viewCount,
+                article.commentCount,
+                article.reportCount,
+                QAddressResponse(
+                    caseWhenLocationVisible(address.id, null),
+                    caseWhenLocationVisible(address.siDo, null),
+                    caseWhenLocationVisible(address.siGunGu, null)
+                ),
+                article.createdAt,
+                article.lastModifiedAt,
+                QAuthorResponse(
+                    article.authUser.id,
+                    article.authUser.nickname,
+                    article.authUser.realname,
+                    article.authUser.isCompletedOnboarding,
+                    article.authUser.profileImageUrl
+                ),
+                article.authUser.id.eq(SecurityContextUtils.getUserId()),
+            )
+        ).from(article)
+            .leftJoin(address).on(article.address.id.eq(address.id))
+            .where(article.authUser.id.eq(userId), article.status.eq(ArticleStatus.ACTIVE))
+            .orderBy(article.id.desc())
+            .offset(pageable.offset)
+            .limit(pageable.pageSize + 1L)
+            .fetch()
 
         return SliceImpl(
             content,
