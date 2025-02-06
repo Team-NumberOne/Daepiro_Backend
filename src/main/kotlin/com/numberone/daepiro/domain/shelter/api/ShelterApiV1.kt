@@ -17,13 +17,13 @@ interface ShelterApiV1 {
         summary = "주변 대피소 목록 조회",
         description = """
         사용자의 주변 대피소 목록을 조회합니다.
-        쿼리 파라미터로 대피소 유형을 지정해주세요. (temperature: 쉼터, earthquake: 지진, tsunami: 지진해일, civil: 민방위)
+        쿼리 파라미터로 대피소 유형을 지정해주세요. (all: 전체, temperature: 쉼터, earthquake: 지진, tsunami: 지진해일, civil: 민방위)
         이 api 호출 이전에 gps 정보 업데이트 api를 통해 사용자의 위치 정보를 업데이트 해주세요.
         """
     )
     fun getNearbyShelters(
         @Schema(
-            description = "대피소 유형 (temperature | earthquake | tsunami | civil)",
+            description = "대피소 유형 (all | temperature | earthquake | tsunami | civil)",
             example = "temperature"
         ) @PathVariable type: String,
     ): ApiResult<GetNearbySheltersResponse>

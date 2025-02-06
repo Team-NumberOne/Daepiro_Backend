@@ -52,10 +52,12 @@ interface HomeApiV1 {
     fun getStatus(): ApiResult<GetStatusResponse>
 
     @GetMapping("/shelters/{type}")
-    @Operation(summary = "(재난 발생 시) 홈 대피소 피드 조회", description = "대피소 목록을 조회합니다.")
+    @Operation(summary = "(재난 발생 시) 홈 대피소 피드 조회", description = """
+        대피소 목록을 조회합니다.
+    """)
     fun getShelters(
         @Schema(
-            description = "대피소 유형 (temperature | earthquake | tsunami | civil)",
+            description = "대피소 유형 (all | temperature | earthquake | tsunami | civil)",
             example = "temperature"
         ) @PathVariable type: String,
     ): ApiResult<GetNearbySheltersResponse>

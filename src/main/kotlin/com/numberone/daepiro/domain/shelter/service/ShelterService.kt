@@ -1,6 +1,7 @@
 package com.numberone.daepiro.domain.shelter.service
 
 import com.numberone.daepiro.domain.shelter.dto.response.GetNearbySheltersResponse
+import com.numberone.daepiro.domain.shelter.entity.Shelter
 import com.numberone.daepiro.domain.shelter.entity.ShelterType
 import com.numberone.daepiro.domain.shelter.repository.ShelterRepository
 import com.numberone.daepiro.domain.user.repository.UserRepository
@@ -26,7 +27,12 @@ class ShelterService(
         val longitude = user.longitude!!
         val latitude = user.latitude!!
 
-        val shelters = shelterRepository.findTop10ClosestShelters(longitude, latitude, ShelterType.word2code(type).name)
+        var shelters = emptyList<Shelter>()
+        if (type == "all") {
+            shelters = shelterRepository.findTop20ClosestAllShelters(longitude, latitude)
+        } else {
+            shelters = shelterRepository.findTop10ClosestShelters(longitude, latitude, ShelterType.word2code(type).name)
+        }
         return ApiResult.ok(
             GetNearbySheltersResponse.of(
                 address.toFullAddress(),

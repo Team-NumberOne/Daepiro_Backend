@@ -29,7 +29,7 @@ data class GetNearbySheltersResponse(
                             it.latitude
                         )
                     )
-                }
+                }.distinctBy { it.name }.take(10)
             )
         }
     }
