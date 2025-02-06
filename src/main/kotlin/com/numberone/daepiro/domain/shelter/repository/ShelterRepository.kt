@@ -21,4 +21,18 @@ interface ShelterRepository : JpaRepository<Shelter, Long> {
         @Param("latitude") latitude: Double,
         @Param("type") type: String
     ): List<Shelter>
+
+    @Query(
+        value = "SELECT id, name, latitude, longitude, address, type " +
+            "FROM shelter " +
+            "ORDER BY (6371 * ACOS(COS(RADIANS(:latitude)) * COS(RADIANS(latitude)) * " +
+            "COS(RADIANS(longitude) - RADIANS(:longitude)) + " +
+            "SIN(RADIANS(:latitude)) * SIN(RADIANS(latitude)))) " +
+            "LIMIT 20",
+        nativeQuery = true
+    )
+    fun findTop20ClosestAllShelters(
+        @Param("longitude") longitude: Double,
+        @Param("latitude") latitude: Double,
+    ): List<Shelter>
 }
