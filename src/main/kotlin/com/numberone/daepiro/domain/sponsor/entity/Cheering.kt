@@ -8,6 +8,7 @@ import jakarta.persistence.FetchType
 import jakarta.persistence.ForeignKey
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
+import java.time.LocalDateTime
 
 @Entity
 class Cheering(
@@ -31,5 +32,6 @@ class Cheering(
 
     fun updateContent(content: String) {
         this.content = content
+        lastModifiedAt = LocalDateTime.now()
     }
 }

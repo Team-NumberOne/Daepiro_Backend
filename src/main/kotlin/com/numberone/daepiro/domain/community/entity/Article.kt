@@ -247,6 +247,7 @@ class Article(
         this.type = type
         this.category = category
         this.isLocationVisible = isLocationVisible
+        lastModifiedAt = LocalDateTime.now()
     }
 }
 

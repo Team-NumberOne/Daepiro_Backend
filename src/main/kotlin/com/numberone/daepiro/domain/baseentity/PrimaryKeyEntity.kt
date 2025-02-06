@@ -22,7 +22,6 @@ abstract class PrimaryKeyEntity {
     @Column(nullable = false, updatable = false)
     var createdAt: LocalDateTime = LocalDateTime.now()
 
-    @LastModifiedDate
     @Column(nullable = false)
     var lastModifiedAt: LocalDateTime = LocalDateTime.now()
 

@@ -12,6 +12,7 @@ import jakarta.persistence.ForeignKey
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
+import java.time.LocalDateTime
 
 @Entity
 @Table(name = "`comment`")
@@ -59,6 +60,7 @@ class Comment(
     fun modifyComment(body: String): Comment {
         return this.apply {
             this.body = body
+            lastModifiedAt = LocalDateTime.now()
         }
     }
 
