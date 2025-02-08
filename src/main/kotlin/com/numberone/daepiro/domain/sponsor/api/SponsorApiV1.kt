@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
+import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
@@ -85,6 +86,17 @@ interface SponsorApiV1 {
     fun updateCheering(
         @Schema(description = "응원 id", example = "2") @PathVariable id: Long,
         @RequestBody @Valid request: CheeringRequest
+    ): ApiResult<Unit>
+
+    @DeleteMapping("/cheering/{id}")
+    @Operation(
+        summary = "응원 메세지 삭제",
+        description = """
+        응원 메세지를 삭제합니다. 본인이 작성한 응원 메세지만 삭제 가능합니다.
+    """
+    )
+    fun deleteCheering(
+        @Schema(description = "응원 id", example = "2") @PathVariable id: Long
     ): ApiResult<Unit>
 
     @Operation(

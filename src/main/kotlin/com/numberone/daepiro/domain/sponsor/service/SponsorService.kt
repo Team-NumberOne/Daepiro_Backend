@@ -135,4 +135,16 @@ class SponsorService(
             )
         )
     }
+
+    @Transactional
+    fun deleteCheering(id: Long, userId: Long) {
+        val user = userRepository.findByIdOrThrow(userId)
+        val cheering = cheeringRepository.findById(id)
+            .orElseThrow { CustomException(CustomErrorContext.NOT_FOUND_CHEERING) }
+
+        if (cheering.user.id != user.id) {
+            throw CustomException(CustomErrorContext.NOT_CHEERING_AUTHOR)
+        }
+        cheeringRepository.delete(cheering)
+    }
 }
