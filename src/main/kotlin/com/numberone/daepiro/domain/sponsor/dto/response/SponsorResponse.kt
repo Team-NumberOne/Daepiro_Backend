@@ -19,6 +19,9 @@ data class SponsorResponse(
     @Schema(description = "제목", example = "제목")
     val title: String,
 
+    @Schema(description = "부제목", example = "부제목")
+    val subtitle: String,
+
     @Schema(
         description = "썸네일",
         example = "https://img8.yna.co.kr/photo/yna/YH/2024/11/05/PYH2024110509530001300_T2.jpg"
@@ -37,11 +40,11 @@ data class SponsorResponse(
     @Schema(description = "후원사 URL", example = "https://www.naver.com")
     val sponsorUrl: String,
 
-    @Schema(description = "요약", example = "요약")
-    val summary: String,
+    @Schema(description = "요약")
+    val summary: List<String>,
 
     @Schema(description = "본문 내용", example = "본문 내용")
-    val body:String,
+    val body: String,
 
     @Schema(description = "재난 종류", example = "지진")
     val disasterType: String
@@ -58,12 +61,13 @@ data class SponsorResponse(
                 deadline = article.deadline,
                 sponsorName = article.sponsorName!!,
                 title = article.title,
+                subtitle = article.subtitle!!,
                 thumbnail = article.thumbnail!!,
                 currentHeart = article.currentHeart!!,
                 targetHeart = article.targetHeart!!,
                 sponsorDescription = article.sponsorDescription!!,
                 sponsorUrl = article.sponsorUrl!!,
-                summary = article.summary!!,
+                summary = article.summary,
                 body = article.body,
                 disasterType = article.disasterType!!.type.korean
             )

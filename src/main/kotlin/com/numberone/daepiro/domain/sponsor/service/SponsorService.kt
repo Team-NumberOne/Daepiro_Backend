@@ -60,7 +60,8 @@ class SponsorService(
             currentHeart = request.currentHeart,
             targetHeart = request.targetHeart,
             disasterType = disasterTypeRepository.findByType(DisasterType.DisasterValue.kor2code(request.disasterType))
-                ?: throw CustomException(CustomErrorContext.NOT_FOUND_DISASTER_TYPE)
+                ?: throw CustomException(CustomErrorContext.NOT_FOUND_DISASTER_TYPE),
+            subtitle = request.subtitle,
         )
         articleRepository.save(sponsorArticle)
     }
@@ -134,5 +135,17 @@ class SponsorService(
                 email = request.email,
             )
         )
+    }
+
+    @Transactional
+    fun deleteCheering(id: Long, userId: Long) {
+        val user = userRepository.findByIdOrThrow(userId)
+        val cheering = cheeringRepository.findById(id)
+            .orElseThrow { CustomException(CustomErrorContext.NOT_FOUND_CHEERING) }
+
+        if (cheering.user.id != user.id) {
+            throw CustomException(CustomErrorContext.NOT_CHEERING_AUTHOR)
+        }
+        cheeringRepository.delete(cheering)
     }
 }

@@ -48,6 +48,13 @@ class SponsorController(
         return ApiResult.ok()
     }
 
+    override fun deleteCheering(id: Long): ApiResult<Unit> {
+        val userId = SecurityContextUtils.getUserId()
+        sponsorService.deleteCheering(id, userId)
+        return ApiResult.ok()
+    }
+
+
     override fun report(id: Long, request: ReportRequest): ApiResult<Unit> {
         val emailRegex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$".toRegex()
         if (!emailRegex.matches(request.email)) {
