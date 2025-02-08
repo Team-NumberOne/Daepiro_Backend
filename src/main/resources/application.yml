@@ -6,6 +6,10 @@ logging:
     com.numberone.daepiro.domain.community.service.UserAddressVerifiedService: DEBUG
 
 spring:
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
   jpa:
     hibernate:
       # todo: 릴리즈 된 이후에 update -> none 으로 변경 필요
