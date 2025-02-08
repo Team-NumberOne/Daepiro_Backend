@@ -60,7 +60,8 @@ class SponsorService(
             currentHeart = request.currentHeart,
             targetHeart = request.targetHeart,
             disasterType = disasterTypeRepository.findByType(DisasterType.DisasterValue.kor2code(request.disasterType))
-                ?: throw CustomException(CustomErrorContext.NOT_FOUND_DISASTER_TYPE)
+                ?: throw CustomException(CustomErrorContext.NOT_FOUND_DISASTER_TYPE),
+            subtitle = request.subtitle,
         )
         articleRepository.save(sponsorArticle)
     }

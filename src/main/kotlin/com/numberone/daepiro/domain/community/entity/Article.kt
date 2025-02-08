@@ -9,12 +9,14 @@ import com.numberone.daepiro.global.exception.CustomErrorContext.NOT_FOUND_ARTIC
 import com.numberone.daepiro.global.exception.CustomException
 import jakarta.persistence.Column
 import jakarta.persistence.ConstraintMode
+import jakarta.persistence.ElementCollection
 import jakarta.persistence.Entity
 import jakarta.persistence.EnumType
 import jakarta.persistence.Enumerated
 import jakarta.persistence.FetchType
 import jakarta.persistence.ForeignKey
 import jakarta.persistence.JoinColumn
+import jakarta.persistence.Lob
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
 import java.time.LocalDateTime
@@ -40,16 +42,22 @@ class Article(
     sponsorDescription: String? = null,
     sponsorUrl: String? = null,
     thumbnail: String? = null,
-    summary: String? = null,
+
+    @ElementCollection
+    val summary: List<String> = emptyList(),
+    val subtitle: String? = null,
+
     deadline: LocalDateTime? = null,
     currentHeart: Int? = null,
     targetHeart: Int? = null,
-) : PrimaryKeyEntity() {
+
+    ) : PrimaryKeyEntity() {
     @Column(nullable = false)
     var title: String = title
         protected set
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "TEXT")
+    @Lob
     var body: String = body
         protected set
 
@@ -120,10 +128,6 @@ class Article(
         protected set
 
     @Column(nullable = true)
-    var summary: String? = summary
-        protected set
-
-    @Column(nullable = true)
     var deadline: LocalDateTime? = deadline
         protected set
 
@@ -155,10 +159,11 @@ class Article(
             sponsorDescription: String? = null,
             sponsorUrl: String? = null,
             thumbnail: String? = null,
-            summary: String? = null,
+            summary: List<String> = emptyList(),
             deadline: LocalDateTime? = null,
             currentHeart: Int? = null,
             targetHeart: Int? = null,
+            subtitle: String? = null,
         ): Article {
             return Article(
                 title = title,
@@ -182,6 +187,7 @@ class Article(
                 deadline = deadline,
                 currentHeart = currentHeart,
                 targetHeart = targetHeart,
+                subtitle = subtitle
             )
         }
     }
