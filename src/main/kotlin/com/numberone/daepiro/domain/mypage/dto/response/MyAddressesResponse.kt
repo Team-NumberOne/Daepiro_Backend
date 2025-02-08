@@ -5,20 +5,20 @@ import com.numberone.daepiro.domain.user.entity.UserEntity
 import io.swagger.v3.oas.annotations.media.Schema
 
 data class MyAddressesResponse(
-    val addresses: List<AddressResponse>
+    val addresses: List<MyAddressReponse>
 ) {
     companion object {
         fun of(
             user: UserEntity
         ): MyAddressesResponse {
             return MyAddressesResponse(
-                addresses = user.userAddresses.map { AddressResponse.of(it) }
+                addresses = user.userAddresses.map { MyAddressReponse.of(it) }
             )
         }
     }
 }
 
-data class AddressResponse(
+data class MyAddressReponse(
     @Schema(description = "이름", example = "집")
     val name: String,
 
@@ -28,8 +28,8 @@ data class AddressResponse(
     companion object {
         fun of(
             address: UserAddress
-        ): AddressResponse {
-            return AddressResponse(
+        ): MyAddressReponse {
+            return MyAddressReponse(
                 name = address.name,
                 address = address.address.toFullAddress()
             )
