@@ -2,6 +2,9 @@ package com.numberone.daepiro.domain.mypage.service
 
 import com.numberone.daepiro.domain.community.dto.response.ArticleListResponse
 import com.numberone.daepiro.domain.community.repository.article.ArticleRepository
+import com.numberone.daepiro.domain.community.repository.verified.UserAddressVerifiedRepository
+import com.numberone.daepiro.domain.file.entity.FileDocumentType
+import com.numberone.daepiro.domain.file.repository.FileRepository
 import com.numberone.daepiro.domain.mypage.dto.request.EditAddressesRequest
 import com.numberone.daepiro.domain.mypage.dto.request.EditDisasterTypesRequest
 import com.numberone.daepiro.domain.mypage.dto.request.EditProfileRequest
@@ -13,11 +16,12 @@ import com.numberone.daepiro.domain.mypage.dto.response.MyNotificationResponse
 import com.numberone.daepiro.domain.mypage.dto.response.MyProfileResponse
 import com.numberone.daepiro.domain.mypage.entity.Inquiry
 import com.numberone.daepiro.domain.mypage.repository.InquiryRepository
+import com.numberone.daepiro.domain.user.repository.UserLikeRepository
 import com.numberone.daepiro.domain.user.repository.UserRepository
+import com.numberone.daepiro.domain.user.repository.findAllLikedArticleId
 import com.numberone.daepiro.domain.user.repository.findByIdOrThrow
 import com.numberone.daepiro.domain.user.service.UserService
 import com.numberone.daepiro.global.dto.ApiResult
-import com.numberone.daepiro.global.exception.CustomErrorContext
 import com.numberone.daepiro.global.exception.CustomErrorContext.NOT_FOUND_NOTIFICATION_TYPE
 import com.numberone.daepiro.global.exception.CustomException
 import org.springframework.data.domain.Slice
@@ -31,6 +35,9 @@ class MyPageService(
     private val articleRepository: ArticleRepository,
     private val userService: UserService,
     private val inquiryRepository: InquiryRepository,
+    private val fileRepository: FileRepository,
+    private val userLikeRepository: UserLikeRepository,
+    private val userAddressVerifyRepository: UserAddressVerifiedRepository
 ) {
     fun getMyProfile(userId: Long): ApiResult<MyProfileResponse> {
         val user = userRepository.findByIdOrThrow(userId)
@@ -52,8 +59,39 @@ class MyPageService(
         return ApiResult.ok(MyDisasterTypesResponse.of(user))
     }
 
+    //ArticleService.getMulti와 중복되는 코드 많음
     fun getMyArticles(userId: Long, request: GetMyArticleRequest): ApiResult<Slice<ArticleListResponse>> {
-        return ApiResult.ok(articleRepository.getMyArticles(userId, request))
+        val slice = articleRepository.getMyArticles(userId, request)
+        val files = fileRepository.findAllByDocumentTypeAndDocumentIdIn(
+            documentType = FileDocumentType.ARTICLE,
+            documentIds = slice.map { it.id }.distinct(),
+        )
+
+        val likedArticleIdSet = userLikeRepository.findAllLikedArticleId(userId)
+
+        val authorMapOfArticleId = slice.content.associate { it.id to it.authorUser }
+        val verifiedAddressIdMapOfAuthorId =
+            userAddressVerifyRepository.findAllByUserIdIn(authorMapOfArticleId.mapNotNull { it.value?.userId })
+                .groupBy { it.userId }
+                .mapValues { it -> it.value.map { it.addressId } }
+
+        slice.forEach { article ->
+            val relatedFile = files.find { it.documentId == article.id }
+            relatedFile?.let {
+                article.updatePreviewImageUrl(it.path)
+            }
+            if (likedArticleIdSet.contains(article.id)) {
+                article.updateIsLiked(true)
+            }
+            val author = article.authorUser
+            val articleAddress = article.address
+
+            if (author != null && articleAddress != null) {
+                val verifiedAuthorAddresses = verifiedAddressIdMapOfAuthorId[author.userId]
+                author.isVerified = verifiedAuthorAddresses?.contains(articleAddress.addressId) ?: false
+            }
+        }
+        return ApiResult.ok(slice)
     }
 
     @Transactional
