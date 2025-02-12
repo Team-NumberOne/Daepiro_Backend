@@ -6,6 +6,7 @@ import com.numberone.daepiro.domain.community.entity.ArticleStatus
 import com.numberone.daepiro.domain.file.entity.FileEntity
 import com.numberone.daepiro.domain.file.entity.toPaths
 import com.numberone.daepiro.domain.user.entity.UserEntity
+정import com.numberone.daepiro.global.utils.SecurityContextUtils
 import com.querydsl.core.annotations.QueryProjection
 import io.swagger.v3.oas.annotations.media.Schema
 import java.time.LocalDateTime
@@ -171,7 +172,7 @@ data class ArticleDetailResponse(
                 comments = comments,
                 createdAt = article.createdAt,
                 lastModifiedAt = article.lastModifiedAt,
-                isMine = article.authUser?.id == article.authUser?.id
+                isMine = article.authUser?.id == SecurityContextUtils.getUserId()
             )
         }
     }

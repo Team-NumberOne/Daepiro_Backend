@@ -18,12 +18,11 @@ abstract class PrimaryKeyEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null
 
-    @CreatedDate
     @Column(nullable = false, updatable = false)
     var createdAt: LocalDateTime = LocalDateTime.now()
 
     @Column(nullable = false)
-    var lastModifiedAt: LocalDateTime = LocalDateTime.now()
+    var lastModifiedAt: LocalDateTime = createdAt
 
     @Column
     var deletedAt: LocalDateTime? = null
