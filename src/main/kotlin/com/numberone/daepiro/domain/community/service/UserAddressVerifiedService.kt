@@ -3,9 +3,10 @@ package com.numberone.daepiro.domain.community.service
 import com.numberone.daepiro.domain.address.entity.Address
 import com.numberone.daepiro.domain.address.repository.AddressRepository
 import com.numberone.daepiro.domain.address.repository.GeoLocationConverter
-import com.numberone.daepiro.domain.address.repository.findAllRelatedAddressBy
 import com.numberone.daepiro.domain.address.repository.findByAddressInfoOrThrow
 import com.numberone.daepiro.domain.address.repository.findByIdOrThrow
+import com.numberone.daepiro.domain.address.repository.findChildWithMe
+import com.numberone.daepiro.domain.address.repository.findParentWithMe
 import com.numberone.daepiro.domain.address.vo.AddressInfo
 import com.numberone.daepiro.domain.community.dto.request.UserAddressVerifiedRequest
 import com.numberone.daepiro.domain.community.dto.response.UserAddressVerifiedResponse
@@ -68,7 +69,7 @@ class UserAddressVerifiedService(
         // 1. 요청받은 address 에 대해서 현재 주소와 일치하는지 검사한다.
 
         // ㄴ 1.1 위경도 기반으로 Address 를 collect
-        val addressByGeoLocation = addressRepository.findAllRelatedAddressBy(
+        val addressByGeoLocation = addressRepository.findChildWithMe(
             address = geoLocationConverter.findByLongitudeAndLatitudeOrThrow(
                 request.longitude,
                 request.latitude,

@@ -2,7 +2,6 @@ package com.numberone.daepiro.domain.address.repository
 
 import com.numberone.daepiro.domain.address.entity.Address
 import com.numberone.daepiro.domain.address.vo.AddressInfo
-import com.numberone.daepiro.global.exception.CustomErrorContext
 import com.numberone.daepiro.global.exception.CustomErrorContext.NOT_FOUND_ADDRESS
 import com.numberone.daepiro.global.exception.CustomException
 import org.springframework.data.jpa.repository.JpaRepository
@@ -39,10 +38,16 @@ fun AddressRepository.findByAddressInfoOrThrow(ai: AddressInfo): Address {
         ?: throw IllegalArgumentException("올바르지 않은 주소 요청입니다.")
 }
 
-fun AddressRepository.findAllRelatedAddressBy(address: Address): Set<Address> {
-    val parents = findParentAddress(AddressInfo.from(address))
+fun AddressRepository.findChildWithMe(address: Address): Set<Address> {
+    //val parents = findParentAddress(AddressInfo.from(address))
     val children = findChildAddress(AddressInfo.from(address))
-    return (parents + children + address).toSet()
+    //return (parents + children + address).toSet()
+    return (children + address).toSet()
+}
+
+fun AddressRepository.findParentWithMe(address: Address): Set<Address> {
+    val parents = findParentAddress(AddressInfo.from(address))
+    return (parents + address).toSet()
 }
 
 fun AddressRepository.findByIdOrThrow(id: Long): Address {

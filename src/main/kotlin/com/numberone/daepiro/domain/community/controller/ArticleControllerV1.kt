@@ -2,6 +2,7 @@ package com.numberone.daepiro.domain.community.controller
 
 import com.numberone.daepiro.domain.community.api.ArticleApiV1
 import com.numberone.daepiro.domain.community.dto.request.GetArticleRequest
+import com.numberone.daepiro.domain.community.dto.request.GetAvailablePositionRequest
 import com.numberone.daepiro.domain.community.dto.request.ReportRequest
 import com.numberone.daepiro.domain.community.dto.request.UpdateArticleRequest
 import com.numberone.daepiro.domain.community.dto.request.UpsertArticleRequest
@@ -93,5 +94,9 @@ class ArticleController(
         val userId = SecurityContextUtils.getUserId()
         articleService.delete(userId, id)
         return ApiResult.ok(path = "/v1/articles/$id")
+    }
+
+    override fun getAvailablePosition(request: GetAvailablePositionRequest): ApiResult<Boolean> {
+        return ApiResult.ok(articleService.getAvailablePosition(request))
     }
 }
