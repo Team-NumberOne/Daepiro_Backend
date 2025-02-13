@@ -41,7 +41,8 @@ class ArticleRepositoryCustomImpl(
                 QAddressResponse(
                     caseWhenLocationVisible(address.id, null),
                     caseWhenLocationVisible(address.siDo, null),
-                    caseWhenLocationVisible(address.siGunGu, null)
+                    caseWhenLocationVisible(address.siGunGu, null),
+                    caseWhenLocationVisible(address.eupMyeonDong, null),
                 ),
                 article.createdAt,
                 article.lastModifiedAt,
@@ -95,7 +96,8 @@ class ArticleRepositoryCustomImpl(
                 QAddressResponse(
                     caseWhenLocationVisible(address.id, null),
                     caseWhenLocationVisible(address.siDo, null),
-                    caseWhenLocationVisible(address.siGunGu, null)
+                    caseWhenLocationVisible(address.siGunGu, null),
+                    caseWhenLocationVisible(address.eupMyeonDong, null),
                 ),
                 article.createdAt,
                 article.lastModifiedAt,

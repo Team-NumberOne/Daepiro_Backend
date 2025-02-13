@@ -30,7 +30,7 @@ class ArticleAddressEventListener(
 
         TransactionUtils.writable {
             val relatedAddress = addressRepository.findParentWithMe(address)
-                .find { it.depth == 2 } // si_gun_gu 까지만 세분화
+                .find { it.depth == 3 } // si_gun_gu 까지만 세분화
 
             relatedAddress?.let {
                 // map address with article

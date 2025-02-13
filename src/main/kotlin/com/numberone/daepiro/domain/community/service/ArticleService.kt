@@ -91,6 +91,10 @@ class ArticleService(
                     request.latitude!!,
                 )
             )
+        } else {
+            article.updateAddress(
+                address = addressRepository.findByAddressInfoOrThrow(AddressInfo.from(request.dongne))
+            )
         }
 
         return ArticleSimpleResponse.from(

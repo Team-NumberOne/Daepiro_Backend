@@ -34,7 +34,10 @@ data class UpsertArticleRequest(
     @Schema(description = "위도", example = "37.508121")
     @field:DecimalMin(value = "33.0", message = "대한민국 주소의 위도를 입력해주세요.")
     @field:DecimalMax(value = "43.0", message = "대한민국 주소의 위도를 입력해주세요.")
-    val latitude: Double? = null
+    val latitude: Double? = null,
+
+    @Schema(description = "동네", example = "서울특별시 강남구")
+    val dongne: String
 )
 
 @ParameterObject
