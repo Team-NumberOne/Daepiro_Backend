@@ -1,6 +1,7 @@
 package com.numberone.daepiro.domain.community.api
 
 import com.numberone.daepiro.domain.community.dto.request.GetArticleRequest
+import com.numberone.daepiro.domain.community.dto.request.GetAvailablePositionRequest
 import com.numberone.daepiro.domain.community.dto.request.ReportRequest
 import com.numberone.daepiro.domain.community.dto.request.UpdateArticleRequest
 import com.numberone.daepiro.domain.community.dto.request.UpsertArticleRequest
@@ -123,4 +124,13 @@ interface ArticleApiV1 {
     fun delete(
         @PathVariable("id") id: Long,
     ): ApiResult<Unit>
+
+    @Operation(
+        summary = "현위치 표시 가능 여부 조회",
+        description = "현위치 표시 가능 여부를 조회합니다.(true일 경우 현위치 표시 가능)"
+    )
+    @PostMapping("/position")
+    fun getAvailablePosition(
+        @RequestBody request: GetAvailablePositionRequest,
+    ): ApiResult<Boolean>
 }

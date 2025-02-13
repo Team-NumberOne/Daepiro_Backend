@@ -2,7 +2,8 @@ package com.numberone.daepiro.domain.community.event
 
 import com.numberone.daepiro.domain.address.repository.AddressRepository
 import com.numberone.daepiro.domain.address.repository.GeoLocationConverter
-import com.numberone.daepiro.domain.address.repository.findAllRelatedAddressBy
+import com.numberone.daepiro.domain.address.repository.findChildWithMe
+import com.numberone.daepiro.domain.address.repository.findParentWithMe
 import com.numberone.daepiro.domain.community.repository.article.ArticleRepository
 import com.numberone.daepiro.domain.community.repository.article.findByIdOrThrow
 import com.numberone.daepiro.global.utils.TransactionUtils
@@ -28,13 +29,13 @@ class ArticleAddressEventListener(
         )
 
         TransactionUtils.writable {
-            val relatedAddress = addressRepository.findAllRelatedAddressBy(address)
-                .find { it.depth == 2 } // si_gun_gu 까지만 세분화
+            val relatedAddress = addressRepository.findParentWithMe(address)
+                .find { it.depth == 3 } // si_gun_gu 까지만 세분화
 
             relatedAddress?.let {
                 // map address with article
                 articleRepository.save(article.updateAddress(it))
-                addressRepository.save(it)
+                //addressRepository.save(it)
             }
         }
     }

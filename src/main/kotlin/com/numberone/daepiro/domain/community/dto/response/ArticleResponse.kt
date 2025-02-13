@@ -63,6 +63,7 @@ data class AddressResponse @QueryProjection constructor(
     val addressId: Long? = null,
     val siDo: String? = null,
     val siGunGu: String? = null,
+    val eupMyeonDong: String? = null,
 )
 
 @Schema(description = "간단한 아티클 응답 모델")

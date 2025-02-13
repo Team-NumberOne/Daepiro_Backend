@@ -1,9 +1,13 @@
 package com.numberone.daepiro.domain.community.service
 
 import com.numberone.daepiro.domain.address.repository.AddressRepository
+import com.numberone.daepiro.domain.address.repository.GeoLocationConverter
 import com.numberone.daepiro.domain.address.repository.findByAddressInfoOrThrow
+import com.numberone.daepiro.domain.address.repository.findChildWithMe
+import com.numberone.daepiro.domain.address.repository.findParentWithMe
 import com.numberone.daepiro.domain.address.vo.AddressInfo
 import com.numberone.daepiro.domain.community.dto.request.GetArticleRequest
+import com.numberone.daepiro.domain.community.dto.request.GetAvailablePositionRequest
 import com.numberone.daepiro.domain.community.dto.request.ReportRequest
 import com.numberone.daepiro.domain.community.dto.request.UpdateArticleRequest
 import com.numberone.daepiro.domain.community.dto.request.UpsertArticleRequest
@@ -52,6 +56,7 @@ class ArticleService(
     private val userLikeRepository: UserLikeRepository,
     private val userAddressVerifyRepository: UserAddressVerifiedRepository,
     private val reportedDocumentRepository: ReportedDocumentRepository,
+    private val geoLocationConverter: GeoLocationConverter,
 ) {
 
     @Transactional
@@ -85,6 +90,10 @@ class ArticleService(
                     request.longitude!!,
                     request.latitude!!,
                 )
+            )
+        } else {
+            article.updateAddress(
+                address = addressRepository.findByAddressInfoOrThrow(AddressInfo.from(request.dongne))
             )
         }
 
@@ -361,5 +370,18 @@ class ArticleService(
             throw CustomException(CustomErrorContext.NOT_ARTICLE_AUTHOR)
         }
         articleRepository.delete(article)
+    }
+
+    fun getAvailablePosition(request: GetAvailablePositionRequest): Boolean {
+        val addresses = addressRepository.findChildWithMe(
+            address = geoLocationConverter.findByLongitudeAndLatitudeOrThrow(
+                request.longitude,
+                request.latitude,
+            )
+        )
+
+        val target = addressRepository.findByAddressInfoOrThrow(AddressInfo.from(request.address))
+
+        return addresses.any { it.id == target.id }
     }
 }
