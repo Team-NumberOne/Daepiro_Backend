@@ -1,15 +1,18 @@
 package com.numberone.daepiro.domain.mypage.service
 
 import com.numberone.daepiro.domain.community.dto.response.ArticleListResponse
+import com.numberone.daepiro.domain.community.entity.Article
 import com.numberone.daepiro.domain.community.repository.article.ArticleRepository
 import com.numberone.daepiro.domain.community.repository.verified.UserAddressVerifiedRepository
 import com.numberone.daepiro.domain.file.entity.FileDocumentType
 import com.numberone.daepiro.domain.file.repository.FileRepository
+import com.numberone.daepiro.domain.mypage.dto.request.CreateAnnouncementRequest
 import com.numberone.daepiro.domain.mypage.dto.request.EditAddressesRequest
 import com.numberone.daepiro.domain.mypage.dto.request.EditDisasterTypesRequest
 import com.numberone.daepiro.domain.mypage.dto.request.EditProfileRequest
 import com.numberone.daepiro.domain.mypage.dto.request.GetMyArticleRequest
 import com.numberone.daepiro.domain.mypage.dto.request.InquireRequest
+import com.numberone.daepiro.domain.mypage.dto.response.AnnouncementResponse
 import com.numberone.daepiro.domain.mypage.dto.response.MyAddressesResponse
 import com.numberone.daepiro.domain.mypage.dto.response.MyDisasterTypesResponse
 import com.numberone.daepiro.domain.mypage.dto.response.MyNotificationResponse
@@ -125,5 +128,21 @@ class MyPageService(
     @Transactional
     fun inquire(userId: Long, request: InquireRequest) {
         inquiryRepository.save(Inquiry.of(request.type, request.content, request.email, userId))
+    }
+
+    fun getAnnouncements(): ApiResult<List<AnnouncementResponse>> {
+        val result = articleRepository.findAllAnnouncement()
+        return ApiResult.ok(result.map { AnnouncementResponse.of(it) })
+    }
+
+    fun getAnnouncement(id: Long): ApiResult<AnnouncementResponse> {
+        val result = articleRepository.findAnnouncementById(id)
+        return ApiResult.ok(AnnouncementResponse.of(result, articleRepository.findNextAnnouncement(result.id!!)))
+    }
+
+    @Transactional
+    fun createAnnouncement(request: CreateAnnouncementRequest, userId: Long) {
+        val user = userRepository.findByIdOrThrow(userId)
+        articleRepository.save(Article.ofAnnouncement(request.title, request.body, user))
     }
 }

@@ -1,11 +1,13 @@
 package com.numberone.daepiro.domain.mypage.api
 
 import com.numberone.daepiro.domain.community.dto.response.ArticleListResponse
+import com.numberone.daepiro.domain.mypage.dto.request.CreateAnnouncementRequest
 import com.numberone.daepiro.domain.mypage.dto.request.EditAddressesRequest
 import com.numberone.daepiro.domain.mypage.dto.request.EditDisasterTypesRequest
 import com.numberone.daepiro.domain.mypage.dto.request.EditProfileRequest
 import com.numberone.daepiro.domain.mypage.dto.request.GetMyArticleRequest
 import com.numberone.daepiro.domain.mypage.dto.request.InquireRequest
+import com.numberone.daepiro.domain.mypage.dto.response.AnnouncementResponse
 import com.numberone.daepiro.domain.mypage.dto.response.MyAddressesResponse
 import com.numberone.daepiro.domain.mypage.dto.response.MyDisasterTypesResponse
 import com.numberone.daepiro.domain.mypage.dto.response.MyNotificationResponse
@@ -48,9 +50,21 @@ interface MyPageApiV1 {
         @ModelAttribute request: GetMyArticleRequest
     ): ApiResult<Slice<ArticleListResponse>>
 
-//    @GetMapping("/announcement")
-//    @Operation(summary = "마이페이지 공지사항 조회", description = "마이페이지 공지사항을 조회합니다.")
-//    fun getAnnouncement():ApiResult<>
+    @GetMapping("/announcement")
+    @Operation(summary = "마이페이지 공지사항 복수 조회", description = "마이페이지 공지사항을 조회합니다.")
+    fun getAnnouncements(): ApiResult<List<AnnouncementResponse>>
+
+    @GetMapping("/announcement/{id}")
+    @Operation(summary = "마이페이지 공지사항 단일 조회", description = "마이페이지 공지사항을 조회합니다.")
+    fun getAnnouncement(
+        @Schema(description = "공지사항 ID", example = "5805") @PathVariable id: Long
+    ): ApiResult<AnnouncementResponse>
+
+    @PostMapping("/announcement/create")
+    @Operation(summary = "마이페이지 공지사항 생성", description = "마이페이지 공지사항을 생성합니다.")
+    fun createAnnouncement(
+        @RequestBody request: CreateAnnouncementRequest
+    ): ApiResult<Unit>
 
     @PutMapping("/profiles")
     @Operation(summary = "마이페이지 프로필 수정", description = "프로필을 수정합니다.")

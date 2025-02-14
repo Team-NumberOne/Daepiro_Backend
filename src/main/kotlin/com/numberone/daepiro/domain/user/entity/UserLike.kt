@@ -29,7 +29,7 @@ class UserLike(
 ) : PrimaryKeyEntity()
 
 enum class UserLikeDocumentType {
-    DONGNE, DISASTER, INFORMATION, SPONSOR,COMMENT;
+    DONGNE, DISASTER, INFORMATION, SPONSOR, COMMENT, ANNOUCEMENT;
 
     companion object {
         fun from(articleType: ArticleType): UserLikeDocumentType {
@@ -38,6 +38,7 @@ enum class UserLikeDocumentType {
                 ArticleType.DISASTER -> DISASTER;
                 ArticleType.INFORMATION -> INFORMATION;
                 ArticleType.SPONSOR -> SPONSOR;
+                ArticleType.ANNOUNCEMENT -> ANNOUCEMENT
             }
         }
     }

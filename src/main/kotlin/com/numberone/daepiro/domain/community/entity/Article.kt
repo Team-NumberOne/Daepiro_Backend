@@ -190,6 +190,20 @@ class Article(
                 subtitle = subtitle
             )
         }
+
+        fun ofAnnouncement(
+            title: String,
+            body: String,
+            authUser: UserEntity,
+        ): Article {
+            return Article(
+                title = title,
+                body = body,
+                type = ArticleType.ANNOUNCEMENT,
+                category = ArticleCategory.OTHER,
+                authUser = authUser,
+            )
+        }
     }
 
     fun updateAddress(address: Address): Article {
@@ -271,7 +285,8 @@ enum class ArticleType(
     DONGNE("동네생활"),
     INFORMATION("정보"),
     DISASTER("재난상황"),
-    SPONSOR("후원글")
+    SPONSOR("후원글"),
+    ANNOUNCEMENT("공지사항"),
     ;
 }
 

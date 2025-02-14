@@ -16,6 +16,19 @@ interface ArticleRepository : JpaRepository<Article, Long>, ArticleRepositoryCus
 
     @Query("SELECT a FROM Article a WHERE a.type = 'SPONSOR' AND ( a.deadline > CURRENT_TIMESTAMP OR a.deadline IS NULL ) ORDER BY a.createdAt ASC")
     fun findSponsorArticle(): List<Article>
+
+    @Query("SELECT a FROM Article a WHERE a.type = 'ANNOUNCEMENT' ORDER BY a.createdAt DESC")
+    fun findAllAnnouncement(): List<Article>
+
+    @Query("SELECT a FROM Article a WHERE a.type = 'ANNOUNCEMENT' AND a.id = :id ORDER BY a.createdAt DESC")
+    fun findAnnouncementById(@Param("id") id: Long): Article
+
+    @Query(
+        "SELECT * FROM article WHERE type = 'ANNOUNCEMENT' AND id < :id ORDER BY created_at DESC LIMIT 3",
+        nativeQuery = true
+    )
+    fun findNextAnnouncement(@Param("id") id: Long): List<Article>
+
 }
 
 fun ArticleRepository.findByIdOrThrow(id: Long): Article {
