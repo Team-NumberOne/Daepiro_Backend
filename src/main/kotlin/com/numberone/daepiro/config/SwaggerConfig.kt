@@ -40,8 +40,7 @@ class SwaggerConfig {
                 "/v1/sponsors/**",
                 "/v1/my-page/**",
             )
-            .pathsToExclude("/v1/behaviourtips")
-            .pathsToExclude("/v1/sponsors")
+            .pathsToExclude("/v1/behaviourtips","/v1/my-page/announcement/create","/v1/sponsors")
             .build()
     }
 
@@ -52,7 +51,8 @@ class SwaggerConfig {
             .pathsToMatch(
                 "/v1/datacollector/**",
                 "/v1/behaviourtips",
-                "/v1/sponsors"
+                "/v1/sponsors",
+                "/v1/my-page/announcement/create"
             )
             .build()
     }

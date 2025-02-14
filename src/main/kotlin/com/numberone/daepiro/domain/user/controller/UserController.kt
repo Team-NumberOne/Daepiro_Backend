@@ -53,8 +53,8 @@ class UserController(
         return userService.getAddresses(SecurityContextUtils.getUserId())
     }
 
-    override fun deleteUser(): ApiResult<Unit> {
-        userService.deleteUser(SecurityContextUtils.getUserId())
+    override fun deleteUser(reason: String): ApiResult<Unit> {
+        userService.deleteUser(SecurityContextUtils.getUserId(),reason)
         return ApiResult.ok()
     }
 

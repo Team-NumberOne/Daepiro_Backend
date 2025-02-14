@@ -2,11 +2,13 @@ package com.numberone.daepiro.domain.mypage.controller
 
 import com.numberone.daepiro.domain.community.dto.response.ArticleListResponse
 import com.numberone.daepiro.domain.mypage.api.MyPageApiV1
+import com.numberone.daepiro.domain.mypage.dto.request.CreateAnnouncementRequest
 import com.numberone.daepiro.domain.mypage.dto.request.EditAddressesRequest
 import com.numberone.daepiro.domain.mypage.dto.request.EditDisasterTypesRequest
 import com.numberone.daepiro.domain.mypage.dto.request.EditProfileRequest
 import com.numberone.daepiro.domain.mypage.dto.request.GetMyArticleRequest
 import com.numberone.daepiro.domain.mypage.dto.request.InquireRequest
+import com.numberone.daepiro.domain.mypage.dto.response.AnnouncementResponse
 import com.numberone.daepiro.domain.mypage.dto.response.MyAddressesResponse
 import com.numberone.daepiro.domain.mypage.dto.response.MyDisasterTypesResponse
 import com.numberone.daepiro.domain.mypage.dto.response.MyNotificationResponse
@@ -46,6 +48,20 @@ class MyPageController(
     ): ApiResult<Slice<ArticleListResponse>> {
         val userId = SecurityContextUtils.getUserId()
         return myPageService.getMyArticles(userId, request)
+    }
+
+    override fun getAnnouncements(): ApiResult<List<AnnouncementResponse>> {
+        return myPageService.getAnnouncements()
+    }
+
+    override fun getAnnouncement(id: Long): ApiResult<AnnouncementResponse> {
+        return myPageService.getAnnouncement(id)
+    }
+
+    override fun createAnnouncement(request: CreateAnnouncementRequest): ApiResult<Unit> {
+        val userId = SecurityContextUtils.getUserId()
+        myPageService.createAnnouncement(request, userId)
+        return ApiResult.ok()
     }
 
     override fun updateMyProfile(request: EditProfileRequest): ApiResult<Unit> {
