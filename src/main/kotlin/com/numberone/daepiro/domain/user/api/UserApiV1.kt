@@ -50,16 +50,30 @@ interface UserApiV1 {
     fun getRecentDisasters(): ApiResult<List<DisasterWithRegionResponse>>
 
     @GetMapping("/addresses")
-    @Operation(summary = "사용자 수신 설정 주소 조회", description = """
+    @Operation(
+        summary = "사용자 수신 설정 주소 조회", description = """
         사용자가 수신 설정한 주소들을 조회합니다.
         응답 값중 fullAddress는 동네생활 게시글 조회 api 호출시 입력 값으로 사용됩니다.
         shortAddress는 동네생활 프론트 UI에서 사용됩니다.
-    """)
+    """
+    )
     fun getAddresses(): ApiResult<List<UserAddressResponse>>
 
-    @DeleteMapping
-    @Operation(summary = "회원 탈퇴", description = "회원 탈퇴를 진행합니다.")
-    fun deleteUser(): ApiResult<Unit>
+    @DeleteMapping("/{reason}")
+    @Operation(
+        summary = "회원 탈퇴", description = """
+        회원 탈퇴를 진행합니다.
+        탈퇴 사유는 다음과 같습니다.
+        new : 새 계정을 만들고 싶어요
+        alarm : 알림이 너무 자주 와요
+        info : 정보가 부족해요
+        user : 불편한 사람을 만났어요
+        etc : 기타
+        """
+    )
+    fun deleteUser(
+        @Schema(description = "탈퇴 사유", example = "alarm") @PathVariable reason: String
+    ): ApiResult<Unit>
 
     @PutMapping("/fcm")
     @Operation(summary = "FCM 토큰 설정", description = "사용자의 FCM 토큰을 설정합니다.")

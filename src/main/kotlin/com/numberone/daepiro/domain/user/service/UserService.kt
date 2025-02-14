@@ -11,6 +11,9 @@ import com.numberone.daepiro.domain.disaster.repository.DisasterTypeRepository
 import com.numberone.daepiro.domain.disaster.repository.UserDisasterTypeRepository
 import com.numberone.daepiro.domain.disaster.repository.findByTypeOrThrow
 import com.numberone.daepiro.domain.disaster.service.DisasterService
+import com.numberone.daepiro.domain.mypage.entity.Reason
+import com.numberone.daepiro.domain.mypage.entity.ReasonType
+import com.numberone.daepiro.domain.mypage.repository.ReasonRepository
 import com.numberone.daepiro.domain.user.dto.request.AddressRequest
 import com.numberone.daepiro.domain.user.dto.request.OnboardingRequest
 import com.numberone.daepiro.domain.user.dto.request.UpdateFcmTokenRequest
@@ -22,6 +25,8 @@ import com.numberone.daepiro.domain.user.entity.UserEntity
 import com.numberone.daepiro.domain.user.repository.UserRepository
 import com.numberone.daepiro.domain.user.repository.findByIdOrThrow
 import com.numberone.daepiro.global.dto.ApiResult
+import com.numberone.daepiro.global.exception.CustomErrorContext
+import com.numberone.daepiro.global.exception.CustomErrorContext.ALREADY_DELETED_USER
 import com.numberone.daepiro.global.exception.CustomErrorContext.INVALID_ADDRESS_FORMAT
 import com.numberone.daepiro.global.exception.CustomException
 import org.springframework.stereotype.Service
@@ -37,6 +42,7 @@ class UserService(
     private val addressRepository: AddressRepository,
     private val disasterService: DisasterService,
     private val geoLocationConverter: GeoLocationConverter,
+    private val reasonRepository: ReasonRepository
 ) {
     fun checkNickname(
         nickname: String,
@@ -148,9 +154,11 @@ class UserService(
     }
 
     @Transactional
-    fun deleteUser(userId: Long) {
+    fun deleteUser(userId: Long, reason: String) {
         val user = userRepository.findByIdOrThrow(userId)
+        if (user.deletedAt != null) throw CustomException(ALREADY_DELETED_USER)
         user.delete()
+        reasonRepository.save(Reason.of(ReasonType.valueOf(reason.uppercase()), user.id!!))
     }
 
     fun updateFcmToken(request: UpdateFcmTokenRequest, userId: Long) {
