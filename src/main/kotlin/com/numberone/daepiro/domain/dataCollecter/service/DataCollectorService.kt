@@ -14,6 +14,8 @@ import com.numberone.daepiro.domain.disaster.entity.DisasterType.DisasterValue
 import com.numberone.daepiro.domain.disaster.repository.DisasterRepository
 import com.numberone.daepiro.domain.disaster.repository.DisasterTypeRepository
 import com.numberone.daepiro.domain.disasterSituation.service.DisasterSituationService
+import com.numberone.daepiro.domain.notification.entity.NotificationCategory
+import com.numberone.daepiro.domain.notification.service.NotificationService
 import com.numberone.daepiro.global.dto.ApiResult
 import com.numberone.daepiro.global.exception.CustomErrorContext.INVALID_ADDRESS_FORMAT
 import com.numberone.daepiro.global.exception.CustomErrorContext.NOT_FOUND_DISASTER_TYPE
@@ -31,7 +33,8 @@ class DataCollectorService(
     private val addressRepository: AddressRepository,
     private val disasterTypeRepository: DisasterTypeRepository,
     private val userAddressRepository: UserAddressRepository,
-    private val disasterSituationService: DisasterSituationService
+    private val disasterSituationService: DisasterSituationService,
+    private val notificationService: NotificationService
 ) {
     fun getLatestNews(): ApiResult<GetLatestNewsResponse> {
         val news = newsRepository.findLatestNews().firstOrNull()
@@ -89,7 +92,7 @@ class DataCollectorService(
 
         disasterRepository.saveAll(disasters)
         disasterSituationService.createDisasterSituation(disasters)
-        //sendDisasterNotification(disasters)
+        sendDisasterNotification(disasters)
         // todo fcm 적용시 주석해제
     }
 
@@ -99,14 +102,15 @@ class DataCollectorService(
             val currentAddress = addressRepository.findByAddressInfo(addressInfo)
                 ?: throw CustomException(INVALID_ADDRESS_FORMAT)
             val addresses = addressRepository.findChildAddress(addressInfo) + currentAddress
-            val fcmTokens = userAddressRepository
+            val users = userAddressRepository
                 .findByAddressIdIn(addresses.map { it.id!! })
-                .mapNotNull { it.user.fcmToken }
+                .map{ it.user }
 
-            FcmUtils.sendFcm(
-                fcmTokens,
+            notificationService.sendNotification(
+                users,
+                NotificationCategory.DISASTER,
                 "${disaster.address.toFullAddress()} ${disaster.disasterType.type.korean} 발생",
-                disaster.message
+                "대피로에서 ${disaster.disasterType.type.korean} 행동요령을 확인해보세요."
             )
         }
     }
