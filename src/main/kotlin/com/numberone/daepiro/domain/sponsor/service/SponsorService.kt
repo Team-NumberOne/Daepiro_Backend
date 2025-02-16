@@ -10,6 +10,8 @@ import com.numberone.daepiro.domain.community.repository.reported.ReportedDocume
 import com.numberone.daepiro.domain.community.repository.reported.isAlreadyReportedCheering
 import com.numberone.daepiro.domain.disaster.entity.DisasterType
 import com.numberone.daepiro.domain.disaster.repository.DisasterTypeRepository
+import com.numberone.daepiro.domain.notification.entity.NotificationCategory
+import com.numberone.daepiro.domain.notification.service.NotificationService
 import com.numberone.daepiro.domain.sponsor.dto.request.CheeringRequest
 import com.numberone.daepiro.domain.sponsor.dto.request.CreateSponsorRequest
 import com.numberone.daepiro.domain.sponsor.dto.request.SponsorRequest
@@ -34,6 +36,7 @@ class SponsorService(
     private val userRepository: UserRepository,
     private val disasterTypeRepository: DisasterTypeRepository,
     private val reportedDocumentRepository: ReportedDocumentRepository,
+    private val notificationService: NotificationService
 ) {
     fun getSponsors(): ApiResult<List<SponsorResponse>> {
         val sponsors = articleRepository.findSponsorArticle()
@@ -62,6 +65,12 @@ class SponsorService(
             disasterType = disasterTypeRepository.findByType(DisasterType.DisasterValue.kor2code(request.disasterType))
                 ?: throw CustomException(CustomErrorContext.NOT_FOUND_DISASTER_TYPE),
             subtitle = request.subtitle,
+        )
+        notificationService.sendNotification(
+            users = userRepository.findAll(),
+            title = "대피로에 새로운 후원이 열렸어요.",
+            body = request.title,
+            category = NotificationCategory.SPONSOR
         )
         articleRepository.save(sponsorArticle)
     }

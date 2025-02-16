@@ -19,6 +19,8 @@ import com.numberone.daepiro.domain.mypage.dto.response.MyNotificationResponse
 import com.numberone.daepiro.domain.mypage.dto.response.MyProfileResponse
 import com.numberone.daepiro.domain.mypage.entity.Inquiry
 import com.numberone.daepiro.domain.mypage.repository.InquiryRepository
+import com.numberone.daepiro.domain.notification.entity.NotificationCategory
+import com.numberone.daepiro.domain.notification.service.NotificationService
 import com.numberone.daepiro.domain.user.repository.UserLikeRepository
 import com.numberone.daepiro.domain.user.repository.UserRepository
 import com.numberone.daepiro.domain.user.repository.findAllLikedArticleId
@@ -40,7 +42,8 @@ class MyPageService(
     private val inquiryRepository: InquiryRepository,
     private val fileRepository: FileRepository,
     private val userLikeRepository: UserLikeRepository,
-    private val userAddressVerifyRepository: UserAddressVerifiedRepository
+    private val userAddressVerifyRepository: UserAddressVerifiedRepository,
+    private val notificationService: NotificationService
 ) {
     fun getMyProfile(userId: Long): ApiResult<MyProfileResponse> {
         val user = userRepository.findByIdOrThrow(userId)
@@ -144,5 +147,11 @@ class MyPageService(
     fun createAnnouncement(request: CreateAnnouncementRequest, userId: Long) {
         val user = userRepository.findByIdOrThrow(userId)
         articleRepository.save(Article.ofAnnouncement(request.title, request.body, user))
+        notificationService.sendNotification(
+            users = userRepository.findAll(),
+            title = "대피로에 새로운 공지사항이 있어요.",
+            body = request.title,
+            category = NotificationCategory.ANNOUNCEMENT,
+        )
     }
 }
