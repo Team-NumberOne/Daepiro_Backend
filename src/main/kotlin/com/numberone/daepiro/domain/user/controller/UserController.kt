@@ -7,6 +7,7 @@ import com.numberone.daepiro.domain.user.dto.request.UpdateGpsRequest
 import com.numberone.daepiro.domain.user.dto.response.CheckNicknameResponse
 import com.numberone.daepiro.domain.user.dto.response.DisasterWithRegionResponse
 import com.numberone.daepiro.domain.user.dto.response.GetUserResponse
+import com.numberone.daepiro.domain.user.dto.response.NotificationResponse
 import com.numberone.daepiro.domain.user.dto.response.UserAddressResponse
 import com.numberone.daepiro.domain.user.service.UserService
 import com.numberone.daepiro.global.dto.ApiResult
@@ -69,6 +70,10 @@ class UserController(
     override fun logout(): ApiResult<Unit> {
         userService.logout(SecurityContextUtils.getUserId())
         return ApiResult.ok()
+    }
+
+    override fun getNotifications(): ApiResult<List<NotificationResponse>> {
+        return userService.getNotifications(SecurityContextUtils.getUserId())
     }
 
 

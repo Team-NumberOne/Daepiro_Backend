@@ -4,6 +4,7 @@ import com.numberone.daepiro.domain.community.dto.request.CreateCommentRequest
 import com.numberone.daepiro.domain.community.dto.request.ReportRequest
 import com.numberone.daepiro.domain.community.dto.response.CommentLikeResponse
 import com.numberone.daepiro.domain.community.dto.response.CommentSimpleResponse
+import com.numberone.daepiro.domain.community.entity.ArticleType
 import com.numberone.daepiro.domain.community.entity.Comment
 import com.numberone.daepiro.domain.community.entity.ReportedDocument
 import com.numberone.daepiro.domain.community.repository.article.ArticleRepository
@@ -13,6 +14,8 @@ import com.numberone.daepiro.domain.community.repository.comment.ModifyCommentRe
 import com.numberone.daepiro.domain.community.repository.comment.findByIdOrThrow
 import com.numberone.daepiro.domain.community.repository.reported.ReportedDocumentRepository
 import com.numberone.daepiro.domain.community.repository.reported.isAlreadyReportedComment
+import com.numberone.daepiro.domain.notification.entity.NotificationCategory
+import com.numberone.daepiro.domain.notification.service.NotificationService
 import com.numberone.daepiro.domain.user.entity.UserLike
 import com.numberone.daepiro.domain.user.entity.UserLikeDocumentType
 import com.numberone.daepiro.domain.user.repository.UserLikeRepository
@@ -32,6 +35,7 @@ class CommentService(
     private val userRepository: UserRepository,
     private val userLikeRepository: UserLikeRepository,
     private val reportedDocumentRepository: ReportedDocumentRepository,
+    private val notificationService: NotificationService
 ) {
     @Transactional
     fun createComment(userId: Long, request: CreateCommentRequest): CommentSimpleResponse {
@@ -47,6 +51,21 @@ class CommentService(
                 parentComment = parentComment,
             )
         )
+        if (parentComment != null) {
+            notificationService.sendNotification(
+                users = listOf(parentComment.authUser!!),
+                title = "내 댓글에 ${author.nickname}님이 답글을 달았어요.",
+                body = request.body,
+                category = NotificationCategory.COMMUNITY
+            )
+        } else if (article.type == ArticleType.DONGNE) {
+            notificationService.sendNotification(
+                users = listOf(article.authUser!!),
+                title = "내 게시글에 ${author.nickname}님이 댓글을 달았어요.",
+                body = request.body,
+                category = NotificationCategory.COMMUNITY
+            )
+        }
 
         return CommentSimpleResponse.from(comment)
     }
@@ -70,6 +89,7 @@ class CommentService(
     @Transactional
     fun like(commentId: Long, userId: Long): CommentLikeResponse {
         val comment = commentRepository.findByIdOrThrow(commentId)
+        val user = userRepository.findByIdOrThrow(userId)
 
         when (userLikeRepository.isLikedComment(userId, comment)) {
             true -> {
@@ -85,10 +105,16 @@ class CommentService(
                 comment.increaseLikeCount()
                 userLikeRepository.save(
                     UserLike(
-                        user = userRepository.findByIdOrThrow(userId),
+                        user = user,
                         documentType = UserLikeDocumentType.COMMENT,
                         documentId = comment.id!!,
                     )
+                )
+                notificationService.sendNotification(
+                    users = listOf(comment.authUser!!),
+                    title = "${user.nickname}님이 내 댓글을 좋아해요.",
+                    body = "${user.nickname}님이 내 댓글을 좋아해요.",
+                    category = NotificationCategory.COMMUNITY
                 )
             }
         }

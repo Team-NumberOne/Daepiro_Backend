@@ -14,18 +14,19 @@ import com.numberone.daepiro.domain.disaster.service.DisasterService
 import com.numberone.daepiro.domain.mypage.entity.Reason
 import com.numberone.daepiro.domain.mypage.entity.ReasonType
 import com.numberone.daepiro.domain.mypage.repository.ReasonRepository
+import com.numberone.daepiro.domain.notification.repository.NotificationRepository
 import com.numberone.daepiro.domain.user.dto.request.AddressRequest
 import com.numberone.daepiro.domain.user.dto.request.OnboardingRequest
 import com.numberone.daepiro.domain.user.dto.request.UpdateFcmTokenRequest
 import com.numberone.daepiro.domain.user.dto.request.UpdateGpsRequest
 import com.numberone.daepiro.domain.user.dto.response.CheckNicknameResponse
 import com.numberone.daepiro.domain.user.dto.response.DisasterWithRegionResponse
+import com.numberone.daepiro.domain.user.dto.response.NotificationResponse
 import com.numberone.daepiro.domain.user.dto.response.UserAddressResponse
 import com.numberone.daepiro.domain.user.entity.UserEntity
 import com.numberone.daepiro.domain.user.repository.UserRepository
 import com.numberone.daepiro.domain.user.repository.findByIdOrThrow
 import com.numberone.daepiro.global.dto.ApiResult
-import com.numberone.daepiro.global.exception.CustomErrorContext
 import com.numberone.daepiro.global.exception.CustomErrorContext.ALREADY_DELETED_USER
 import com.numberone.daepiro.global.exception.CustomErrorContext.INVALID_ADDRESS_FORMAT
 import com.numberone.daepiro.global.exception.CustomException
@@ -42,7 +43,8 @@ class UserService(
     private val addressRepository: AddressRepository,
     private val disasterService: DisasterService,
     private val geoLocationConverter: GeoLocationConverter,
-    private val reasonRepository: ReasonRepository
+    private val reasonRepository: ReasonRepository,
+    private val notificationRepository: NotificationRepository
 ) {
     fun checkNickname(
         nickname: String,
@@ -169,5 +171,10 @@ class UserService(
     fun logout(userId: Long) {
         val user = userRepository.findByIdOrThrow(userId)
         user.initFcmToken(null)
+    }
+
+    fun getNotifications(userId: Long): ApiResult<List<NotificationResponse>> {
+        val notifications = notificationRepository.findTop30ByUserIdOrderByCreatedAtDesc(userId)
+        return ApiResult.ok(notifications.map { NotificationResponse.of(it) })
     }
 }

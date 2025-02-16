@@ -6,6 +6,7 @@ import com.numberone.daepiro.domain.user.dto.request.UpdateGpsRequest
 import com.numberone.daepiro.domain.user.dto.response.CheckNicknameResponse
 import com.numberone.daepiro.domain.user.dto.response.DisasterWithRegionResponse
 import com.numberone.daepiro.domain.user.dto.response.GetUserResponse
+import com.numberone.daepiro.domain.user.dto.response.NotificationResponse
 import com.numberone.daepiro.domain.user.dto.response.UserAddressResponse
 import com.numberone.daepiro.global.dto.ApiResult
 import io.swagger.v3.oas.annotations.Operation
@@ -84,4 +85,8 @@ interface UserApiV1 {
     @PutMapping("/logout")
     @Operation(summary = "로그아웃", description = "로그아웃을 진행합니다.(FCM 토큰 삭제)")
     fun logout(): ApiResult<Unit>
+
+    @GetMapping("/notifications")
+    @Operation(summary = "알림 내역 조회", description = "사용자의 알림 내역을 조회합니다.")
+    fun getNotifications(): ApiResult<List<NotificationResponse>>
 }

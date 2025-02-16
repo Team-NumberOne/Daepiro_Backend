@@ -17,6 +17,7 @@ import com.numberone.daepiro.domain.community.dto.response.ArticleListResponse
 import com.numberone.daepiro.domain.community.dto.response.ArticleSimpleResponse
 import com.numberone.daepiro.domain.community.dto.response.CommentResponse
 import com.numberone.daepiro.domain.community.entity.Article
+import com.numberone.daepiro.domain.community.entity.ArticleType
 import com.numberone.daepiro.domain.community.entity.ReportedDocument
 import com.numberone.daepiro.domain.community.event.ArticleAddressMappingEvent
 import com.numberone.daepiro.domain.community.event.ArticleFileUploadEvent
@@ -29,6 +30,8 @@ import com.numberone.daepiro.domain.community.repository.verified.UserAddressVer
 import com.numberone.daepiro.domain.file.entity.FileDocumentType
 import com.numberone.daepiro.domain.file.model.RawFile
 import com.numberone.daepiro.domain.file.repository.FileRepository
+import com.numberone.daepiro.domain.notification.entity.NotificationCategory
+import com.numberone.daepiro.domain.notification.service.NotificationService
 import com.numberone.daepiro.domain.user.entity.UserLike
 import com.numberone.daepiro.domain.user.entity.UserLikeDocumentType
 import com.numberone.daepiro.domain.user.repository.UserLikeRepository
@@ -57,6 +60,7 @@ class ArticleService(
     private val userAddressVerifyRepository: UserAddressVerifiedRepository,
     private val reportedDocumentRepository: ReportedDocumentRepository,
     private val geoLocationConverter: GeoLocationConverter,
+    private val notificationService: NotificationService
 ) {
 
     @Transactional
@@ -311,6 +315,7 @@ class ArticleService(
         articleId: Long,
     ): ArticleLikeResponse {
         val article = articleRepository.findByIdOrThrow(articleId)
+        val user = userRepository.findByIdOrThrow(userId)
 
         when (userLikeRepository.isLikedArticle(userId, article)) {
             true -> {
@@ -325,11 +330,19 @@ class ArticleService(
                 article.increaseLikeCount()
                 userLikeRepository.save(
                     UserLike(
-                        user = userRepository.findByIdOrThrow(userId),
+                        user = user,
                         documentType = UserLikeDocumentType.from(article.type),
                         documentId = article.id!!,
                     )
                 )
+                if(article.type==ArticleType.DONGNE) {
+                    notificationService.sendNotification(
+                        users = listOf(article.authUser!!),
+                        title = "${user.nickname}님이 내 게시글을 좋아해요.",
+                        body = "${user.nickname}님이 내 게시글을 좋아해요.",
+                        category = NotificationCategory.COMMUNITY
+                    )
+                }
             };
         }
         return ArticleLikeResponse.from(article)
