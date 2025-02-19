@@ -30,11 +30,11 @@ data class ApiResult<T>(
 
         fun noContent(
             path: String = "",
-            message: String = "No Content"
+            message: String = "Success"
         ) =
             ApiResult<Unit>(
-                httpStatus = HttpStatus.NO_CONTENT,
-                code = 204,
+                httpStatus = HttpStatus.OK,
+                code = 1000,
                 message = message,
                 path = path
             )

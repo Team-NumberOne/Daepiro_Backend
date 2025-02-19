@@ -152,7 +152,7 @@ data class ArticleDetailResponse(
             return ArticleDetailResponse(
                 id = article.id!!,
                 title = article.title,
-                address = article.address?.toFullAddress(),
+                address = article.address?.takeIf { article.isLocationVisible }?.toDetailAddress(),
                 body = article.body,
                 type = article.type.description,
                 category = article.category,
