@@ -51,10 +51,19 @@ class Address(
 
         if (siGunGu != null) {
             ret = "$siGunGu $ret"
-        }
-        else {
+        } else {
             ret = "$siDo $ret"
         }
         return ret.trim()
+    }
+
+    fun toDetailAddress(): String {
+        if (eupMyeonDong != null) {
+            return eupMyeonDong!!
+        }
+        if (siGunGu != null) {
+            return siGunGu!!
+        }
+        return siDo
     }
 }
