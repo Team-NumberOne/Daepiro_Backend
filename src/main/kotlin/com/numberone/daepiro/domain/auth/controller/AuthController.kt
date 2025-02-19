@@ -24,6 +24,7 @@ class AuthController(
         return when (platform) {
             SocialPlatform.KAKAO.path -> authService.kakaoLogin(request)
             SocialPlatform.NAVER.path -> authService.naverLogin(request)
+            SocialPlatform.APPLE.path -> authService.appleLogin(request)
             else -> throw CustomException(UNSUPPORTED_PLATFORM)
         }
     }

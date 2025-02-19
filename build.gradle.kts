@@ -52,6 +52,7 @@ dependencies {
     // auth
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("io.jsonwebtoken:jjwt:0.12.3")
+    implementation ("com.auth0:java-jwt:4.4.0")
 
     // db
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
@@ -98,6 +99,9 @@ dependencies {
 
     // fcm
     implementation("com.google.firebase:firebase-admin:9.2.0")
+
+    // bouncy castle
+    implementation("org.bouncycastle:bcpkix-jdk18on:1.76") // 최신 버전 사용
 }
 
 kotlin {
