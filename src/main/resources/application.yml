@@ -46,6 +46,14 @@ kakao:
 naver:
   base-url: ${NAVER_BASE_URL}
   token-info-url: ${NAVER_TOKEN_INFO_URL}
+apple:
+  base-url: ${APPLE_BASE_URL}
+  client-id: ${APPLE_CLIENT_ID}
+  team-id: ${APPLE_TEAM_ID}
+  key-id: ${APPLE_KEY_ID}
+  private-key: ${APPLE_PRIVATE_KEY}
+  redirect-uri: ${APPLE_REDIRECT_URI}
+  grant-type: ${APPLE_GRANT_TYPE}
 fcm:
   key-path: ${FCM_KEY_PATH}
 
