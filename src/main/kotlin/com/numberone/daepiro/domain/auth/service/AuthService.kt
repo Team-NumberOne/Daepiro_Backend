@@ -160,6 +160,7 @@ class AuthService(
             throw CustomException(INVALID_PASSWORD)
     }
 
+    @Transactional
     fun appleLogin(request: SocialLoginRequest): ApiResult<LoginResponse> {
         val tokenInfo = appleFeign.getIdToken(
             clientId = appleClientId,
