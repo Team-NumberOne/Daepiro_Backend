@@ -21,6 +21,7 @@ enum class CustomErrorContext(
     NOT_FOUND_USER(HttpStatus.NOT_FOUND, 2100, "사용자를 찾을 수 없습니다."),
     NOT_FOUND_USER_LOCATION(HttpStatus.BAD_REQUEST, 2101, "사용자의 위치 정보를 찾을 수 없습니다."),
     ALREADY_DELETED_USER(HttpStatus.BAD_REQUEST, 2102, "이미 탈퇴한 사용자입니다."),
+    LEAVE_APPLE_FAILED(HttpStatus.BAD_REQUEST, 2103, "Apple Code가 필요합니다."),
 
     // 22xx: 재난 관련 오류
     NOT_FOUND_DISASTER_TYPE(HttpStatus.NOT_FOUND, 2200, "재난 유형을 찾을 수 없습니다."),
