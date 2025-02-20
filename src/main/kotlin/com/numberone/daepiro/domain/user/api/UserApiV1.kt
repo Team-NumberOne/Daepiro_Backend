@@ -1,5 +1,6 @@
 package com.numberone.daepiro.domain.user.api
 
+import com.numberone.daepiro.domain.user.dto.request.DeleteUserRequest
 import com.numberone.daepiro.domain.user.dto.request.OnboardingRequest
 import com.numberone.daepiro.domain.user.dto.request.UpdateFcmTokenRequest
 import com.numberone.daepiro.domain.user.dto.request.UpdateGpsRequest
@@ -73,7 +74,8 @@ interface UserApiV1 {
         """
     )
     fun deleteUser(
-        @Schema(description = "탈퇴 사유", example = "alarm") @PathVariable reason: String
+        @Schema(description = "탈퇴 사유", example = "alarm") @PathVariable reason: String,
+        @RequestBody request: DeleteUserRequest
     ): ApiResult<Unit>
 
     @PutMapping("/fcm")

@@ -14,6 +14,7 @@ import com.numberone.daepiro.domain.user.enums.SocialPlatform
 import com.numberone.daepiro.domain.user.repository.UserRepository
 import com.numberone.daepiro.domain.user.repository.findByIdOrThrow
 import com.numberone.daepiro.global.dto.ApiResult
+import com.numberone.daepiro.global.exception.CustomErrorContext.LEAVE_APPLE_FAILED
 import com.numberone.daepiro.global.exception.CustomErrorContext.INVALID_PASSWORD
 import com.numberone.daepiro.global.exception.CustomErrorContext.INVALID_SOCIAL_TOKEN
 import com.numberone.daepiro.global.exception.CustomErrorContext.INVALID_TOKEN
@@ -183,6 +184,17 @@ class AuthService(
                 isCompletedOnboarding = user.isCompletedOnboarding
             )
         )
+    }
+
+    fun leaveApple(authCode: String) {
+        val response = appleFeign.revokeToken(
+            clientId = appleClientId,
+            clientSecret = generateClientSecret(),
+            token = authCode
+        )
+        if (!response.statusCode.is2xxSuccessful) {
+            throw CustomException(LEAVE_APPLE_FAILED)
+        }
     }
 
     private fun generateClientSecret(): String {

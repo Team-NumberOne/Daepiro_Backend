@@ -1,6 +1,7 @@
 package com.numberone.daepiro.domain.user.controller
 
 import com.numberone.daepiro.domain.user.api.UserApiV1
+import com.numberone.daepiro.domain.user.dto.request.DeleteUserRequest
 import com.numberone.daepiro.domain.user.dto.request.OnboardingRequest
 import com.numberone.daepiro.domain.user.dto.request.UpdateFcmTokenRequest
 import com.numberone.daepiro.domain.user.dto.request.UpdateGpsRequest
@@ -54,8 +55,8 @@ class UserController(
         return userService.getAddresses(SecurityContextUtils.getUserId())
     }
 
-    override fun deleteUser(reason: String): ApiResult<Unit> {
-        userService.deleteUser(SecurityContextUtils.getUserId(),reason)
+    override fun deleteUser(reason: String,request:DeleteUserRequest): ApiResult<Unit> {
+        userService.deleteUser(SecurityContextUtils.getUserId(),reason,request.appleCode)
         return ApiResult.ok()
     }
 

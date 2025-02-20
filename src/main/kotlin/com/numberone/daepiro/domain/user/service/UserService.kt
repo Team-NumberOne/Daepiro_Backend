@@ -5,6 +5,7 @@ import com.numberone.daepiro.domain.address.repository.AddressRepository
 import com.numberone.daepiro.domain.address.repository.GeoLocationConverter
 import com.numberone.daepiro.domain.address.repository.UserAddressRepository
 import com.numberone.daepiro.domain.address.vo.AddressInfo
+import com.numberone.daepiro.domain.auth.service.AuthService
 import com.numberone.daepiro.domain.disaster.entity.DisasterType
 import com.numberone.daepiro.domain.disaster.entity.UserDisasterType
 import com.numberone.daepiro.domain.disaster.repository.DisasterTypeRepository
@@ -24,10 +25,12 @@ import com.numberone.daepiro.domain.user.dto.response.DisasterWithRegionResponse
 import com.numberone.daepiro.domain.user.dto.response.NotificationResponse
 import com.numberone.daepiro.domain.user.dto.response.UserAddressResponse
 import com.numberone.daepiro.domain.user.entity.UserEntity
+import com.numberone.daepiro.domain.user.enums.SocialPlatform
 import com.numberone.daepiro.domain.user.repository.UserRepository
 import com.numberone.daepiro.domain.user.repository.findByIdOrThrow
 import com.numberone.daepiro.global.dto.ApiResult
 import com.numberone.daepiro.global.exception.CustomErrorContext.ALREADY_DELETED_USER
+import com.numberone.daepiro.global.exception.CustomErrorContext.LEAVE_APPLE_FAILED
 import com.numberone.daepiro.global.exception.CustomErrorContext.INVALID_ADDRESS_FORMAT
 import com.numberone.daepiro.global.exception.CustomException
 import org.springframework.stereotype.Service
@@ -44,7 +47,8 @@ class UserService(
     private val disasterService: DisasterService,
     private val geoLocationConverter: GeoLocationConverter,
     private val reasonRepository: ReasonRepository,
-    private val notificationRepository: NotificationRepository
+    private val notificationRepository: NotificationRepository,
+    private val authService: AuthService
 ) {
     fun checkNickname(
         nickname: String,
@@ -156,9 +160,15 @@ class UserService(
     }
 
     @Transactional
-    fun deleteUser(userId: Long, reason: String) {
+    fun deleteUser(userId: Long, reason: String, appleCode: String?) {
         val user = userRepository.findByIdOrThrow(userId)
         if (user.deletedAt != null) throw CustomException(ALREADY_DELETED_USER)
+        if (user.socialLoginInformation?.platform == SocialPlatform.APPLE) {
+            if (appleCode == null) {
+                throw CustomException(LEAVE_APPLE_FAILED)
+            }
+            authService.leaveApple(appleCode)
+        }
         user.delete()
         reasonRepository.save(Reason.of(ReasonType.valueOf(reason.uppercase()), user.id!!))
     }
