@@ -339,7 +339,7 @@ class ArticleService(
                     notificationService.sendNotification(
                         users = listOf(article.authUser!!),
                         title = "${user.nickname}님이 내 게시글을 좋아해요.",
-                        body = "${user.nickname}님이 내 게시글을 좋아해요.",
+                        body = article.title,
                         category = NotificationCategory.COMMUNITY
                     )
                 }
