@@ -69,7 +69,7 @@ class UserAddressVerifiedService(
         // 1. 요청받은 address 에 대해서 현재 주소와 일치하는지 검사한다.
 
         // ㄴ 1.1 위경도 기반으로 Address 를 collect
-        val addressByGeoLocation = addressRepository.findChildWithMe(
+        val addressByGeoLocation = addressRepository.findParentWithMe(
             address = geoLocationConverter.findByLongitudeAndLatitudeOrThrow(
                 request.longitude,
                 request.latitude,
@@ -107,23 +107,24 @@ class UserAddressVerifiedService(
         userEntity: UserEntity
     ) {
         TransactionUtils.writable {
+            val allAddresses = addressRepository.findParentWithMe(addressToVerify)
 
-            val isExist = userVerifiedRepository.existsByUserIdAndAddressId(
-                userId = userId,
-                addressId = addressToVerify.id!!,
-            )
-
-            if (isExist) {
-                return@writable
-            }
-
-            userVerifiedRepository.save(
-                UserAddressVerified(
-                    verified = true,
-                    userEntity = userEntity,
-                    address = addressToVerify
+            for(a in allAddresses){
+                val isExist = userVerifiedRepository.existsByUserIdAndAddressId(
+                    userId = userId,
+                    addressId = a.id!!,
                 )
-            )
+
+                if(!isExist) {
+                    userVerifiedRepository.save(
+                        UserAddressVerified(
+                            verified = true,
+                            userEntity = userEntity,
+                            address = a
+                        )
+                    )
+                }
+            }
         }
     }
 

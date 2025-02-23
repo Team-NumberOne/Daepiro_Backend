@@ -113,7 +113,7 @@ class CommentService(
                 notificationService.sendNotification(
                     users = listOf(comment.authUser!!),
                     title = "${user.nickname}님이 내 댓글을 좋아해요.",
-                    body = "${user.nickname}님이 내 댓글을 좋아해요.",
+                    body = comment.body,
                     category = NotificationCategory.COMMUNITY
                 )
             }
