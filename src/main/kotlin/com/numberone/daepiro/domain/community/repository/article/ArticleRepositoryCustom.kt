@@ -12,6 +12,11 @@ interface ArticleRepositoryCustom {
         addressValues: List<Address>
     ): Slice<ArticleListResponse>
 
+    fun getLatestArticles(
+        request: GetArticleRequest,
+        addressValues: List<Address>
+    ): Slice<ArticleListResponse>
+
     fun getMyArticles(
         userId: Long,
         request: GetMyArticleRequest

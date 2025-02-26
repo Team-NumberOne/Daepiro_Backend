@@ -16,6 +16,7 @@ import com.querydsl.core.types.dsl.CaseBuilder
 import com.querydsl.jpa.impl.JPAQueryFactory
 import org.springframework.data.domain.Slice
 import org.springframework.data.domain.SliceImpl
+import java.time.LocalDateTime
 
 class ArticleRepositoryCustomImpl(
     private val queryFactory: JPAQueryFactory,
@@ -64,6 +65,67 @@ class ArticleRepositoryCustomImpl(
                 request.type?.let { article.type.eq(it) },
                 request.category?.let { article.category.eq(it) },
                 request.status?.let { article.status.eq(it) },
+            )
+            .orderBy(article.id.desc())
+            .offset(pageable.offset)
+            .limit(pageable.pageSize + 1L)
+            .fetch()
+
+
+        return SliceImpl(
+            content,
+            pageable,
+            hasNextPage(content, pageable.pageSize)
+        )
+    }
+
+    override fun getLatestArticles(
+        request: GetArticleRequest,
+        addressValues: List<com.numberone.daepiro.domain.address.entity.Address>
+    ): Slice<ArticleListResponse> {
+        val pageable = request.getPageable()
+
+        val oneWeekAgo = LocalDateTime.now().minusWeeks(1)
+
+        val content = queryFactory.select(
+            QArticleListResponse(
+                article.id,
+                article.status,
+                article.type.stringValue(),
+                article.category,
+                article.title,
+                article.body,
+                article.likeCount,
+                article.viewCount,
+                article.commentCount,
+                article.reportCount,
+                QAddressResponse(
+                    caseWhenLocationVisible(address.id, null),
+                    caseWhenLocationVisible(address.siDo, null),
+                    caseWhenLocationVisible(address.siGunGu, null),
+                    caseWhenLocationVisible(address.eupMyeonDong, null),
+                ),
+                article.createdAt,
+                article.lastModifiedAt,
+                QAuthorResponse(
+                    article.authUser.id,
+                    article.authUser.nickname,
+                    article.authUser.realname,
+                    article.authUser.isCompletedOnboarding,
+                    article.authUser.profileImageUrl
+                ),
+                article.authUser.id.eq(SecurityContextUtils.getUserId()),
+            )
+        ).from(article)
+            .leftJoin(address).on(article.address.id.eq(address.id))
+            .where(
+                addressValues.map { addr ->
+                    address.siDo.eq(addr.siDo).and(address.siGunGu.eq(addr.siGunGu))
+                }.reduce(BooleanExpression::or),
+                request.type?.let { article.type.eq(it) },
+                request.category?.let { article.category.eq(it) },
+                request.status?.let { article.status.eq(it) },
+                article.createdAt.after(oneWeekAgo)
             )
             .orderBy(article.id.desc())
             .offset(pageable.offset)

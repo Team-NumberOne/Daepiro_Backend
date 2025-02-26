@@ -268,7 +268,7 @@ class ArticleService(
             user.address?.let { user.userAddresses.map { it2 -> it2.address } + it }
                 ?: user.userAddresses.map { it.address }
 
-        val slice = articleRepository.getArticles(
+        val slice = articleRepository.getLatestArticles(
             request = request,
             addressValues = addresses,
         )
