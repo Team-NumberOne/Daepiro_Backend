@@ -42,6 +42,7 @@ class Article(
     sponsorDescription: String? = null,
     sponsorUrl: String? = null,
     thumbnail: String? = null,
+    sponsorPostUrl: String? = null,
 
     @ElementCollection
     val summary: List<String> = emptyList(),
@@ -124,6 +125,10 @@ class Article(
         protected set
 
     @Column(nullable = true)
+    var sponsorPostUrl: String? = sponsorPostUrl
+        protected set
+
+    @Column(nullable = true)
     var thumbnail: String? = thumbnail
         protected set
 
@@ -158,6 +163,7 @@ class Article(
             sponsorName: String? = null,
             sponsorDescription: String? = null,
             sponsorUrl: String? = null,
+            sponsorPostUrl: String? = null,
             thumbnail: String? = null,
             summary: List<String> = emptyList(),
             deadline: LocalDateTime? = null,
@@ -182,6 +188,7 @@ class Article(
                 sponsorName = sponsorName,
                 sponsorDescription = sponsorDescription,
                 sponsorUrl = sponsorUrl,
+                sponsorPostUrl = sponsorPostUrl,
                 thumbnail = thumbnail,
                 summary = summary,
                 deadline = deadline,
