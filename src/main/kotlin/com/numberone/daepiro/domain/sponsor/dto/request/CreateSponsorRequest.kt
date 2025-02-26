@@ -24,6 +24,9 @@ data class CreateSponsorRequest(
     @Schema(description = "후원사 URL", example = "https://www.naver.com")
     val sponsorUrl: String,
 
+    @Schema(description = "후원사 게시글 URL", example = "https://www.naver.com")
+    val sponsorPostUrl: String,
+
     @Schema(description = "썸네일", example = "https://img8.yna.co.kr/photo/yna/YH/2024/11/05/PYH2024110509530001300_T2.jpg")
     val thumbnail: String,
 

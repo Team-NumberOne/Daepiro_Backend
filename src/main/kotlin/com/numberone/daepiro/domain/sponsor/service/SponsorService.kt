@@ -57,6 +57,7 @@ class SponsorService(
             sponsorName = request.sponsorName,
             sponsorDescription = request.sponsorDescription,
             sponsorUrl = request.sponsorUrl,
+            sponsorPostUrl = request.sponsorPostUrl,
             thumbnail = request.thumbnail,
             summary = request.summary,
             deadline = request.deadline,

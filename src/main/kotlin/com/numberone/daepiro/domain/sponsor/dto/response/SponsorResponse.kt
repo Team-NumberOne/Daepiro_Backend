@@ -40,6 +40,9 @@ data class SponsorResponse(
     @Schema(description = "후원사 URL", example = "https://www.naver.com")
     val sponsorUrl: String,
 
+    @Schema(description = "후원사 게시글 URL", example = "https://www.naver.com")
+    val sponsorPostUrl: String,
+
     @Schema(description = "요약")
     val summary: List<String>,
 
@@ -67,6 +70,7 @@ data class SponsorResponse(
                 targetHeart = article.targetHeart!!,
                 sponsorDescription = article.sponsorDescription!!,
                 sponsorUrl = article.sponsorUrl!!,
+                sponsorPostUrl = article.sponsorPostUrl!!,
                 summary = article.summary,
                 body = article.body,
                 disasterType = article.disasterType!!.type.korean
