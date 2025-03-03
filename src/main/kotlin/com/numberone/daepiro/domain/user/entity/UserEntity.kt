@@ -87,10 +87,13 @@ class UserEntity(
     ) {
         this.realname = realname
         this.nickname = nickname
-        this.profileImageUrl = "https://daepiro-dev.s3.ap-northeast-2.amazonaws.com/article/profile/" + (Random.nextInt(
-            1,
-            8
-        )) + ".png"
+        if (this.profileImageUrl == null) {
+            this.profileImageUrl =
+                "https://daepiro-dev.s3.ap-northeast-2.amazonaws.com/article/profile/" + (Random.nextInt(
+                    1,
+                    8
+                )) + ".png"
+        }
     }
 
     fun initFcmToken(fcmToken: String?) {

@@ -13,6 +13,9 @@ data class DisasterSituationResponse(
     @Schema(description = "재난 종류", example = "호우")
     val type: String,
 
+    @Schema(description = "재난 종류 id", example = "호우")
+    val typeId: Long,
+
     @Schema(description = "제목", example = "서울특별시 성북구 쌍문동 호우 발생")
     val title: String,
 
@@ -43,6 +46,7 @@ data class DisasterSituationResponse(
         ): DisasterSituationResponse {
             return DisasterSituationResponse(
                 id = article.id!!,
+                typeId = article.disasterType!!.id!!,
                 type = article.disasterType!!.type.korean,
                 title = article.title,
                 content = article.body,
