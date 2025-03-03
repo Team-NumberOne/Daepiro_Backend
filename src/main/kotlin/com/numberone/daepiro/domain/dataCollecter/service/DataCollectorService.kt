@@ -16,6 +16,7 @@ import com.numberone.daepiro.domain.disaster.repository.DisasterTypeRepository
 import com.numberone.daepiro.domain.disasterSituation.service.DisasterSituationService
 import com.numberone.daepiro.domain.notification.entity.NotificationCategory
 import com.numberone.daepiro.domain.notification.service.NotificationService
+import com.numberone.daepiro.domain.user.repository.UserRepository
 import com.numberone.daepiro.global.dto.ApiResult
 import com.numberone.daepiro.global.exception.CustomErrorContext.INVALID_ADDRESS_FORMAT
 import com.numberone.daepiro.global.exception.CustomErrorContext.NOT_FOUND_DISASTER_TYPE
@@ -34,7 +35,8 @@ class DataCollectorService(
     private val disasterTypeRepository: DisasterTypeRepository,
     private val userAddressRepository: UserAddressRepository,
     private val disasterSituationService: DisasterSituationService,
-    private val notificationService: NotificationService
+    private val notificationService: NotificationService,
+    private val userRepository: UserRepository
 ) {
     fun getLatestNews(): ApiResult<GetLatestNewsResponse> {
         val news = newsRepository.findLatestNews().firstOrNull()
@@ -104,10 +106,12 @@ class DataCollectorService(
             val addresses = addressRepository.findChildAddress(addressInfo) + currentAddress
             val users = userAddressRepository
                 .findByAddressIdIn(addresses.map { it.id!! })
-                .map{ it.user }
+                .map { it.user }
+            val gpsUsers = userRepository.findByAddressIdIn(addresses.map { it.id!! })
+            val uniqueUsers = (users + gpsUsers).distinctBy { it.id!! }
 
             notificationService.sendNotification(
-                users,
+                uniqueUsers,
                 NotificationCategory.DISASTER,
                 "${disaster.address.toFullAddress()} ${disaster.disasterType.type.korean} 발생",
                 "대피로에서 ${disaster.disasterType.type.korean} 행동요령을 확인해보세요."

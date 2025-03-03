@@ -110,4 +110,9 @@ class UserEntity(
         this.longitude = longitude
         this.latitude = latitude
     }
+
+    override fun delete() {
+        super.delete()
+        fcmToken = null
+    }
 }
