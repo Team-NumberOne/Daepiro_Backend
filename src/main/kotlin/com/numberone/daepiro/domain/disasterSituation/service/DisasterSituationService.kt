@@ -65,8 +65,9 @@ class DisasterSituationService(
         }
 
         val articles = articleRepository.findDisasterSituation(LocalDateTime.now().minusDays(1))
+        val selectedArticles = articles.filter { it.address!!.id in addressIds }
 
-        return ApiResult.ok(articles.map {
+        return ApiResult.ok(selectedArticles.map {
             val commentEntities = commentRepository.findPopularComments(it.id!!)
             val comments = commentEntities.map { comment ->
                 Pair(comment, listOf<Comment>())//todo 의미없이 pair를 썼음. 고쳐야함. 쩔수 없나.
