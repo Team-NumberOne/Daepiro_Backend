@@ -51,8 +51,9 @@ class HomeService(
             user.userAddresses.map { it.address }+user.address!!,
             user.userDisasterTypes.map { it.disasterType }
         )
+        val sortedDisasters = disasters.sortedByDescending { it.generatedAt }
         val twentyFourHoursAgo = LocalDateTime.now().minusHours(24)
-        val disaster = disasters.firstOrNull()
+        val disaster = sortedDisasters.firstOrNull()
             ?: throw CustomException(NOT_FOUND_OCCURRED_DISASTER)
         if (disaster.generatedAt.isBefore(twentyFourHoursAgo))
             throw CustomException(NOT_FOUND_OCCURRED_DISASTER)
