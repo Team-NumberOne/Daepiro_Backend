@@ -48,10 +48,11 @@ class HomeService(
     fun getWarning(userId: Long): ApiResult<GetWarningResponse> {
         val user = userRepository.findByIdOrThrow(userId)
         val disasters = disasterService.getDisasterByAddressAndType(
-            user.userAddresses.map { it.address }+user.address!!,
+            user.address!!,
             user.userDisasterTypes.map { it.disasterType }
         )
-        val sortedDisasters = disasters.sortedByDescending { it.generatedAt }
+        val sixHourBefore = LocalDateTime.now().minusHours(6)
+        val sortedDisasters = disasters.sortedByDescending { it.generatedAt }.filter { it.generatedAt.isAfter(sixHourBefore) }
         val twentyFourHoursAgo = LocalDateTime.now().minusHours(24)
         val disaster = sortedDisasters.firstOrNull()
             ?: throw CustomException(NOT_FOUND_OCCURRED_DISASTER)
