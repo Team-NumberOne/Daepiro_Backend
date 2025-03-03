@@ -108,6 +108,9 @@ class UserService(
                     address = addressEntity
                 )
             )
+            if(addressReq.name == "집") {
+                user.updateAddress(addressEntity)
+            }
         }
         userAddressRepository.saveAll(userAddressList)
     }

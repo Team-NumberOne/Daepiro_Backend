@@ -114,6 +114,12 @@ class UserEntity(
         this.latitude = latitude
     }
 
+    fun updateAddress(
+        address:Address
+    ){
+        this.address = address
+    }
+
     override fun delete() {
         super.delete()
         fcmToken = null
