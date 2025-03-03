@@ -8,6 +8,7 @@ import com.numberone.daepiro.domain.disaster.entity.DisasterType
 import com.numberone.daepiro.domain.disaster.repository.DisasterRepository
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.time.LocalDateTime
 
 @Service
 @Transactional(readOnly = true)
@@ -28,8 +29,12 @@ class DisasterService(
                 .map { it.id!! }
             addressIds.addAll(parentAddressIds + address.id!!)
         }
+
+        val oneMonthBefore = LocalDateTime.now().minusMonths(1)
+
         return disasterRepository.findByAddressIdInOrderByGeneratedAtDesc(addressIds)
             .filter { disasterTypes.contains(it.disasterType.type) }
+            .filter { it.createdAt.isAfter(oneMonthBefore) }
     }
 
     fun getDisasterByAddressAndType(

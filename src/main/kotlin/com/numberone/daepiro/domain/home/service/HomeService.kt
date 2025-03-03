@@ -48,7 +48,7 @@ class HomeService(
     fun getWarning(userId: Long): ApiResult<GetWarningResponse> {
         val user = userRepository.findByIdOrThrow(userId)
         val disasters = disasterService.getDisasterByAddressAndType(
-            user.userAddresses.map { it.address },
+            user.userAddresses.map { it.address }+user.address!!,
             user.userDisasterTypes.map { it.disasterType }
         )
         val twentyFourHoursAgo = LocalDateTime.now().minusHours(24)

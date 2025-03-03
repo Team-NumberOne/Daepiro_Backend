@@ -1,5 +1,6 @@
 package com.numberone.daepiro.domain.user.repository
 
+import com.numberone.daepiro.domain.address.entity.Address
 import com.numberone.daepiro.domain.user.entity.UserEntity
 import com.numberone.daepiro.domain.user.enums.SocialPlatform
 import com.numberone.daepiro.global.exception.CustomErrorContext
@@ -27,6 +28,8 @@ interface UserRepository : JpaRepository<UserEntity, Long> {
     fun findBySocialIdAndPlatform(socialId: String, platform: SocialPlatform): UserEntity?
 
     fun findByNicknameAndDeletedAtIsNull(nickname: String): UserEntity?
+
+    fun findByAddressIdIn(address: List<Long>):List<UserEntity>
 }
 
 fun UserRepository.findByIdOrThrow(id: Long): UserEntity {
