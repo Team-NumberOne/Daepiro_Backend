@@ -26,7 +26,8 @@ class UserController(
     override fun checkNickname(
         nickname: String
     ): ApiResult<CheckNicknameResponse> {
-        return userService.checkNickname(nickname)
+        val userId = SecurityContextUtils.getUserId()
+        return userService.checkNickname(nickname, userId)
     }
 
     override fun setOnboardingData(
@@ -55,8 +56,8 @@ class UserController(
         return userService.getAddresses(SecurityContextUtils.getUserId())
     }
 
-    override fun deleteUser(reason: String,request:DeleteUserRequest): ApiResult<Unit> {
-        userService.deleteUser(SecurityContextUtils.getUserId(),reason,request.appleCode)
+    override fun deleteUser(reason: String, request: DeleteUserRequest): ApiResult<Unit> {
+        userService.deleteUser(SecurityContextUtils.getUserId(), reason, request.appleCode)
         return ApiResult.ok()
     }
 
