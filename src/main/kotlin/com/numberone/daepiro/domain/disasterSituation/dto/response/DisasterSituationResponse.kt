@@ -52,7 +52,7 @@ data class DisasterSituationResponse(
                 content = article.body,
                 location = article.address!!.toFullAddress(),
                 time = article.createdAt,
-                commentCount = comments.size.toLong(),
+                commentCount = article.commentCount.toLong(),
                 isReceived = isReceived,
                 comments = comments.map { SituationCommentResponse.of(it.first, user, false,it.second, mapOf()) }
             )

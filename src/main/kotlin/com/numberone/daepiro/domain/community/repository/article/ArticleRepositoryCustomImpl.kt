@@ -100,9 +100,9 @@ class ArticleRepositoryCustomImpl(
                 article.commentCount,
                 article.reportCount,
                 QAddressResponse(
-                    caseWhenLocationVisible(address.id, null),
-                    caseWhenLocationVisible(address.siDo, null),
-                    caseWhenLocationVisible(address.siGunGu, null),
+                    address.id,
+                    address.siDo,
+                    address.siGunGu,
                     caseWhenLocationVisible(address.eupMyeonDong, null),
                 ),
                 article.createdAt,
