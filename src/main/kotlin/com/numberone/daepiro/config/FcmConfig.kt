@@ -10,12 +10,13 @@ import org.springframework.core.io.ClassPathResource
 
 @Configuration
 class FcmConfig(
-    @Value("\${fcm.key-path}") private val keyPath: String,
+    @Value("\${fcm.json}") private val firebaseJson: String
 ) {
     @PostConstruct
     fun init() {
         try {
-            val serviceAccount = ClassPathResource(keyPath).getInputStream()
+            //val serviceAccount = ClassPathResource(keyPath).getInputStream()
+            val serviceAccount = firebaseJson.byteInputStream()
             val options: FirebaseOptions = FirebaseOptions.builder()
                 .setCredentials(GoogleCredentials.fromStream(serviceAccount))
                 .build()
