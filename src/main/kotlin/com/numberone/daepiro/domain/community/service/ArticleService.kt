@@ -386,7 +386,7 @@ class ArticleService(
     }
 
     fun getAvailablePosition(request: GetAvailablePositionRequest): Boolean {
-        val addresses = addressRepository.findChildWithMe(
+        val addresses = addressRepository.findParentWithMe(
             address = geoLocationConverter.findByLongitudeAndLatitudeOrThrow(
                 request.longitude,
                 request.latitude,
