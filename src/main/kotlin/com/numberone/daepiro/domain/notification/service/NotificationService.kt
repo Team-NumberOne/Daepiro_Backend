@@ -15,7 +15,10 @@ class NotificationService(
 ) {
     @Transactional
     fun sendNotification(users: List<UserEntity>, category: NotificationCategory, title: String, body: String) {
-        val targets = users.filter { it.deletedAt == null && it.fcmToken != null}
+        val targets = users.filter { it.deletedAt == null && it.fcmToken != null }
+            .filter { category != NotificationCategory.DISASTER || it.isDisasterNotificationEnabled }
+            .filter { category != NotificationCategory.COMMUNITY || it.isCommunityNotificationEnabled }
+            .filter { category != NotificationCategory.SPONSOR || it.isCommunityNotificationEnabled}
         FcmUtils.sendFcm(targets.mapNotNull { it.fcmToken }, title, body)
 
         notificationRepository.saveAll(
