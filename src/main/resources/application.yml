@@ -55,7 +55,7 @@ apple:
   redirect-uri: ${APPLE_REDIRECT_URI}
   grant-type: ${APPLE_GRANT_TYPE}
 fcm:
-  key-path: ${FCM_KEY_PATH}
+  json: ${FIREBASE_JSON}
 
 s3:
   credentials:

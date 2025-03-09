@@ -52,9 +52,11 @@ class UserService(
 ) {
     fun checkNickname(
         nickname: String,
+        userId: Long
     ): ApiResult<CheckNicknameResponse> {
+        val me = userRepository.findByIdOrThrow(userId)
         val user = userRepository.findByNicknameAndDeletedAtIsNull(nickname)
-        return ApiResult.ok(CheckNicknameResponse.from(user == null))
+        return ApiResult.ok(CheckNicknameResponse.from(user == null || user.id == me.id))
     }
 
     @Transactional
@@ -108,7 +110,7 @@ class UserService(
                     address = addressEntity
                 )
             )
-            if(addressReq.name == "집") {
+            if (addressReq.name == "집") {
                 user.updateAddress(addressEntity)
             }
         }
