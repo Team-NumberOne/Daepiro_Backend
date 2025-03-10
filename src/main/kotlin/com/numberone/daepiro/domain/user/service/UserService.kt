@@ -183,6 +183,7 @@ class UserService(
         user.initFcmToken(request.fcmToken)
     }
 
+    @Transactional
     fun logout(userId: Long) {
         val user = userRepository.findByIdOrThrow(userId)
         user.initFcmToken(null)
