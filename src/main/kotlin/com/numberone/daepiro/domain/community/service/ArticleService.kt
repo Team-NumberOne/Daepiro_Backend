@@ -131,12 +131,12 @@ class ArticleService(
             isLocationVisible = request.visibility ?: article.isLocationVisible,
         )
 
+
+        fileRepository.deleteAllByDocumentTypeAndDocumentId(
+            documentType = FileDocumentType.ARTICLE,
+            documentId = article.id!!,
+        )
         attachFileList?.let { files ->
-            // 해당 아티클에 매핑된 파일을 모두 제거하고
-            fileRepository.deleteAllByDocumentTypeAndDocumentId(
-                documentType = FileDocumentType.ARTICLE,
-                documentId = article.id!!,
-            )
             // 새로 요청온 파일을 적용함
             eventPublisher.publishEvent(ArticleFileUploadEvent(article.id!!, files.map { RawFile.of(it) }))
         }
@@ -335,7 +335,7 @@ class ArticleService(
                         documentId = article.id!!,
                     )
                 )
-                if(article.type==ArticleType.DONGNE) {
+                if (article.type == ArticleType.DONGNE) {
                     notificationService.sendNotification(
                         users = listOf(article.authUser!!),
                         title = "${user.nickname}님이 내 게시글을 좋아해요.",
