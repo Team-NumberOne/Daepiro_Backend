@@ -8,7 +8,7 @@ data class SaveDisastersRequest(
 )
 
 data class DisasterRequest(
-    @Schema(description = "재난 발생 시간", example = "2021-08-01T00:00:00")
+    @Schema(description = "재난 알림 시간", example = "2021-08-01T00:00:00")
     val generatedAt: LocalDateTime,
 
     @Schema(description = "재난 메시지 ID", example = "1")
@@ -20,7 +20,7 @@ data class DisasterRequest(
     )
     val message: String,
 
-    @Schema(description = "재난 발생 위치", example = "서울특별시 종로구")
+    @Schema(description = "재난 알림 위치", example = "서울특별시 종로구")
     val locationStr: String,
 
     @Schema(description = "재난 종류", example = "지진")
