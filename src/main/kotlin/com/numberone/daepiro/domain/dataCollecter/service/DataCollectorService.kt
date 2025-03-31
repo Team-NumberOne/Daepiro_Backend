@@ -113,7 +113,7 @@ class DataCollectorService(
             notificationService.sendNotification(
                 uniqueUsers,
                 NotificationCategory.DISASTER,
-                "${disaster.address.toFullAddress()} ${disaster.disasterType.type.korean} 발생",
+                "${disaster.address.toFullAddress()} ${disaster.disasterType.type.korean} 알림",
                 "대피로에서 ${disaster.disasterType.type.korean} 행동요령을 확인해보세요."
             )
         }

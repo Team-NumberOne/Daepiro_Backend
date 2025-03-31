@@ -34,7 +34,7 @@ class HomeService(
     fun getHomeDisasters(userId: Long): ApiResult<List<HomeDisasterFeed>> {
         val user = userRepository.findByIdOrThrow(userId)
         val disasters = disasterService.getDisasterByAddressAndType(
-            user.userAddresses.map { it.address } + user.address!!,
+            user.userAddresses.map { it.address },
             user.userDisasterTypes.map { it.disasterType }
         )
 
