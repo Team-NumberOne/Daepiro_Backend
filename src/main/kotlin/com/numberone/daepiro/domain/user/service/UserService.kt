@@ -178,6 +178,8 @@ class UserService(
         reasonRepository.save(Reason.of(ReasonType.valueOf(reason.uppercase()), user.id!!))
     }
 
+
+    @Transactional
     fun updateFcmToken(request: UpdateFcmTokenRequest, userId: Long) {
         val user = userRepository.findByIdOrThrow(userId)
         user.initFcmToken(request.fcmToken)
