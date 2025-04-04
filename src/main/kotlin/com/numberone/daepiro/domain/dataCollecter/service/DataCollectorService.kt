@@ -108,7 +108,13 @@ class DataCollectorService(
                 .findByAddressIdIn(addresses.map { it.id!! })
                 .map { it.user }
             val gpsUsers = userRepository.findByAddressIdIn(addresses.map { it.id!! })
-            val uniqueUsers = (users + gpsUsers).distinctBy { it.id!! }
+            val uniqueUsers = (users + gpsUsers)
+                .distinctBy { it.id!! }
+                .filter { user ->
+                    user.userDisasterTypes.any { disasterType ->
+                        disasterType.disasterType.type == disaster.disasterType.type
+                    }
+                }
 
             notificationService.sendNotification(
                 uniqueUsers,
